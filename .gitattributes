@@ -1,3 +1,4 @@
 *.smk linguist-language=Python
 Snakefile linguist-language=Python
+*.gz filter=lfs diff=lfs merge=lfs -text
 . !text !filter !merge !diff
