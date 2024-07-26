@@ -54,17 +54,14 @@ rule qc_report_count:
         dna_oligo_coor_plot = "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_DNA_pairwise.png",
         ratio_oligo_coor_plot = "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_Ratio_pairwise.png",
         ratio_oligo_min_thre_plot = "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_Ratio_pairwise_minThreshold.png",
-        statistics_all = "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}_{config}.tsv",
+        statistics_all_merged = "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}_{config}.tsv",
+        statistics_all_single = "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}_{config}.tsv",
+        statistics_all_oligo_cor_merged = "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
         per_bar_code_dna = "results/experiments/{project}/statistic/barcode/counts/{condition}_{config}_{type}_perBarcode.png",
-        # TODO also add the minimum threashold value.
         # TODO add some explanation from the documentation about the headers in the table.
-        # TODO Total oligos seprately just one 
-        # TODO remove extra decimal points.
-        # TODO add single table as well.
-        # DNA_pearson	RNA_pearson	Ratio_pearson Remove the columns from this table and add this table statistic_oligo_correlation_merged_fromFile_default.
         # TODO add a lightening system. Warning pearson coorelation between replcate 1 and 2 is log.
         # TODO Later, after discussion with Max you can get multiple files for the pngs expanding {condition}.
-
+        # resources/count_basic/results/experiments/exampleCount/statistic/statistic_assigned_counts_single_fromFile_default.tsv
 
     output:  
         count_file = "results/experiments/{project}/qc_report/qc_report.{assignment}.{config}.{type}.{condition}.{raw_or_assigned}.html",
@@ -74,6 +71,7 @@ rule qc_report_count:
     params:
         condition = lambda wildcards: getConditions(wildcards.project),
         workdir = os.getcwd(),
+        tresh=lambda wildcards: str(config["experiments"][wildcards.project]["configs"][wildcards.config]["filter"]["bc_threshold"])
 
     shell:
         """
@@ -89,8 +87,11 @@ rule qc_report_count:
         -P rna_oligo_coor_plot:{input.rna_oligo_coor_plot} \
         -P ratio_oligo_coor_plot:{input.ratio_oligo_coor_plot} \
         -P ratio_oligo_min_thre_plot:{input.ratio_oligo_min_thre_plot} \
-        -P statistics_all:{input.statistics_all} \
+        -P statistics_all_merged:{input.statistics_all_merged} \
         -P per_bar_code_dna:{input.per_bar_code_dna} \
+        -P statistics_all_single:{input.statistics_all_single} \
+        -P statistics_all_oligo_cor_merged:{input.statistics_all_oligo_cor_merged} \
+        -P tresh:{params.tresh} \
         -P workdir:{params.workdir}
         rm config.yml
         """

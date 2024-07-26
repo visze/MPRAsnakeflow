@@ -61,7 +61,7 @@ def display_image(file_path, root_path=ROOT_PATH):
 display(Image(f"{workdir}/{per_bar_code_dna}")) 
 ```
 
-# Oligo Corelation with Minimum Threashold
+# Oligo Corelation with Minimum Threashold `{python} tresh`
 ## DNA
 ```{python}
 #| echo: false
@@ -84,8 +84,33 @@ display(Image(f"{workdir}/{ratio_oligo_min_thre_plot}"))
 # Oligo Correlation Table
 ```{python}
 #| echo: false
-pd.read_csv(f"{workdir}/{statistics_all}", sep='\t')
+first_value = pd.read_csv(f"{workdir}/{statistics_all_merged}", sep='\t')['oligos design'].iloc[0]
 ```
+The total number of oligos in this experiment is `{python} first_value`.
+
+
+## Merged
+```{python}
+#| echo: false
+a = pd.read_csv(f"{workdir}/{statistics_all_merged}", sep='\t').round(1)
+a.drop(columns=['oligos design'], inplace=True)
+a
+```
+
+## Single
+```{python}
+#| echo: false
+pd.read_csv(f"{workdir}/{statistics_all_single}", sep='\t').round(1)
+```
+
+```{python}
+#| echo: false
+oligo_cor_merged_table = pd.read_csv(f"{workdir}/{statistics_all_oligo_cor_merged}", sep='\t').round(1)
+oligo_cor_merged_table = oligo_cor_merged_table[oligo_cor_merged_table[oligo_cor_merged_table.columns[-1]] == True]
+oligo_cor_merged_table.drop(columns=['DNA_pearson','RNA_pearson', 'Ratio_pearson'], inplace=True)
+oligo_cor_merged_table
+```
+
 
 
 # Oligo Corelation
