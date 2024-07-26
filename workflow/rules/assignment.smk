@@ -227,9 +227,12 @@ rule assignment_filter:
             wc.assignment_config
         ]["fraction"],
 <<<<<<< HEAD
+<<<<<<< HEAD
         unknown_other="-o",
         ambiguous="-a",
 =======
+=======
+>>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
         unknown_other=lambda wc: (
             "-o"
             if config["assignments"][wc.assignment]["configs"][wc.assignment_config][
@@ -244,6 +247,9 @@ rule assignment_filter:
             ]
             else ""
         ),
+<<<<<<< HEAD
+>>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
+=======
 >>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
         bc_length=lambda wc: config["assignments"][wc.assignment]["bc_length"],
     shell:
