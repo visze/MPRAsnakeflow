@@ -75,7 +75,6 @@ rule qc_report_count:
 
     shell:
         """
-        cp config.yml results/experiments/{wildcards.project}/qc_report/config.yml;
         cp {input.quarto_script} {output.quarto_file};
         cd `dirname {output.quarto_file}`;
         quarto render `basename {output.quarto_file}` --output `basename {output.count_file}` \
@@ -93,5 +92,4 @@ rule qc_report_count:
         -P statistics_all_oligo_cor_merged:{input.statistics_all_oligo_cor_merged} \
         -P tresh:{params.tresh} \
         -P workdir:{params.workdir}
-        rm config.yml
         """
