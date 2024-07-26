@@ -228,9 +228,12 @@ rule assignment_filter:
         ]["fraction"],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         unknown_other="-o",
         ambiguous="-a",
 =======
+=======
+>>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
 =======
 >>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
         unknown_other=lambda wc: (
@@ -248,6 +251,9 @@ rule assignment_filter:
             else ""
         ),
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
+=======
 >>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
 =======
 >>>>>>> 6a603035e4c5c20627c191d3c212f3de3300c25e
