@@ -59,9 +59,7 @@ rule qc_report_count:
         statistics_all_oligo_cor_merged = "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
         per_bar_code_dna = "results/experiments/{project}/statistic/barcode/counts/{condition}_{config}_{type}_perBarcode.png",
         # TODO add some explanation from the documentation about the headers in the table.
-        # TODO add a lightening system. Warning pearson coorelation between replcate 1 and 2 is log.
         # TODO Later, after discussion with Max you can get multiple files for the pngs expanding {condition}.
-        # resources/count_basic/results/experiments/exampleCount/statistic/statistic_assigned_counts_single_fromFile_default.tsv
 
     output:  
         count_file = "results/experiments/{project}/qc_report/qc_report.{assignment}.{config}.{type}.{condition}.{raw_or_assigned}.html",
