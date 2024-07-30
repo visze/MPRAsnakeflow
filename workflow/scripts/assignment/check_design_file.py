@@ -12,7 +12,6 @@ import click
 import numpy as np
 
 
-
 # options
 @click.command()
 @click.option(
@@ -36,7 +35,19 @@ import numpy as np
     type=int,
     help="length of the sequence to lok at,",
 )
-def cli(input_file, start, length):
+@click.option(
+    "--fast-dict/--slow-string-search",
+    "fast_search",
+    default=True,
+    help="Using a simple dictionary to find identical sequences. This is faster but uses only the whole (or center part depending on start/length) of the design file. But in theory a substring can only be present and for more correct, but slower, search use the --slow-string-search.",
+)
+@click.option(
+    "--perform-sequence-check/--skip-sequence-check",
+    "sequence_search",
+    default=True,
+    help="When set to False, the script will not check for sequence collisions. This is useful when you know collisions but still want to preoceed with the design file.",
+)
+def cli(input_file, start, length, fast_search, sequence_search):
 
     seq_dict = dict()
 
@@ -55,57 +66,89 @@ def cli(input_file, start, length):
 
     # check for illegal characters
     click.echo("Searching for illegal characters in header...")
-    illegal_characters =  np.array([True if "[" in i or "]" in i else False for i in set(ids)], dtype=bool).sum()
+    illegal_characters = np.array(
+        [True if "[" in i or "]" in i else False for i in set(ids)], dtype=bool
+    ).sum()
     if illegal_characters > 0:
-        click.echo(f"{illegal_characters} headers contain illegal characters ('[',']').", err=True)
+        click.echo(
+            f"{illegal_characters} headers contain illegal characters ('[',']').",
+            err=True,
+        )
         exit(1)
 
-    # build seq dict
-    click.echo("Building sequence dictionary...")
-    for i in range(len(fa)):
-        names = seq_dict.get(fa[i].seq, set())
-        names.add(fa[i].name)
-        seq_dict[fa[i].seq] = names
+    if sequence_search:
+        # build seq dict
+        click.echo("Building sequence dictionary...")
+        for i in range(len(fa)):
+            if fast_search:
+                seq = fa[i][start - 1 : start + length - 1].seq
+            else:
+                seq = fa[i].seq
 
-    # search for collisions
-    click.echo("Searching for collisions...")
-    for i in range(len(fa)):
-        sub_seq = fa[i][start - 1 : start + length - 1]
-        sub_seq_forward = sub_seq.seq
-        sub_seq_antisense = sub_seq.antisense
+            names = seq_dict.get(seq, set())
+            names.add(fa[i].name)
+            seq_dict[seq] = names
 
-        forward_collition = set()
-        antisense_collition = set()
-        for seq, names in seq_dict.items():
-            if sub_seq_forward in seq:
-                forward_collition.update(names)
-            if sub_seq_antisense in seq:
-                antisense_collition.update(names)
+        # search for collisions
+        click.echo("Searching for collisions...")
+        for i in range(len(fa)):
+            sub_seq = fa[i][start - 1 : start + length - 1]
+            sub_seq_forward = sub_seq.seq
+            sub_seq_antisense = sub_seq.antisense
 
-        if len(forward_collition) > 1:
-            forward_collitions.append(forward_collition)
-        if len(antisense_collition) > 1:
-            antisense_collitions.append(antisense_collition)
+            forward_collition = set()
+            antisense_collition = set()
+            if fast_search:
+                forward_collition.update(seq_dict.get(sub_seq_forward, set()))
+                antisense_collition.update(seq_dict.get(sub_seq_antisense, set()))
+            else:
+                for seq, names in seq_dict.items():
+                    if sub_seq_forward in seq:
+                        forward_collition.update(names)
+                    if sub_seq_antisense in seq:
+                        antisense_collition.update(names)
 
-    # unique names
-    forward_collitions = [list(i) for i in set(tuple(i) for i in forward_collitions)]
-    antisense_collition = [list(i) for i in set(tuple(i) for i in antisense_collition)]
+            if len(forward_collition) > 1:
+                forward_collitions.append(forward_collition)
+            if len(antisense_collition) > 1:
+                antisense_collitions.append(antisense_collition)
 
-    if (len(forward_collitions) > 0) or (len(antisense_collitions) > 0):
-        click.echo("Collisions found:", err=True)
-        for i in range(len(forward_collitions)):
+        # unique names
+        forward_collitions = [
+            list(i) for i in set(tuple(i) for i in forward_collitions)
+        ]
+        antisense_collition = [
+            list(i) for i in set(tuple(i) for i in antisense_collition)
+        ]
+
+        if (len(forward_collitions) > 0) or (len(antisense_collitions) > 0):
             click.echo(
-                f"Forward collision {i+1} for sequences:\t{"\t".join(forward_collitions[i])}", err=True
-            )
-        for i in range(len(antisense_collitions)):
-            click.echo(
-                f"Antisense collision {i+1} for sequences:\t{"\t".join(antisense_collitions[i])}",
+                f"Found {len(forward_collitions)} forward and {len(antisense_collitions)} antisense collisions",
                 err=True,
             )
-        exit(1)
+            click.echo(
+                "-----------------FORWARD COLLISIONS-----------------",
+                err=True,
+            )
+            for i in range(len(forward_collitions)):
+                click.echo(
+                    "\t".join(forward_collitions[i]),
+                    err=True,
+                )
 
-    else:
-        click.echo("No collisions found. Design file seems to be in a good shape.")
+            click.echo(
+                "-----------------ANTISENSE COLLISIONS-----------------",
+                err=True,
+            )
+            for i in range(len(antisense_collitions)):
+                click.echo(
+                    "\t".join(antisense_collitions[i]),
+                    err=True,
+                )
+            exit(1)
+
+        else:
+            click.echo("No collisions found. Design file seems to be in a good shape.")
 
 
 if __name__ == "__main__":
