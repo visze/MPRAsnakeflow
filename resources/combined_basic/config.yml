@@ -35,6 +35,5 @@ experiments:
         type: config
         assignment_name: assocBasic
         assignment_config: configs
-    design_file: data/design.fa
     configs:
       default: {}
