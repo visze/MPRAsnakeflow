@@ -50,6 +50,56 @@ rule assignment_mapping_bwa:
         """
 
 
+rule assignment_getBCs_fullBAM:
+    """
+    Get the barcodes.
+    """
+    conda:
+        "../../envs/bwa_samtools_picard_htslib.yaml"
+    input:
+        "results/assignment/{assignment}/aligned_merged_reads.bam",
+    output:
+        "results/assignment/{assignment}/barcodes_incl_other.sorted.tsv.gz",
+    params:
+        alignment_start_min=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["alignment_start"]["min"],
+        alignment_start_max=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["alignment_start"]["max"],
+        sequence_length_min=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["sequence_length"]["min"],
+        sequence_length_max=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["sequence_length"]["max"],
+        mapping_quality_min=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["min_mapping_quality"],
+        additional_filter=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["additional_filter_string"],
+    log:
+        temp("results/logs/assignment/getBCs.{assignment}.log"),
+    threads: 20
+    shell:
+        """
+        export LC_ALL=C # speed up sorting
+        samtools view -F 1792 {input} | \
+        awk -v "OFS=\\t" '{{
+            split($(NF),a,":");
+            split(a[3],a,",");
+            if (a[1] !~ /N/) {{
+                if ((($5 >= {params.mapping_quality_min}) && ($4 >= {params.alignment_start_min}) && ($4 <= {params.alignment_start_max}) && (length($10) >= {params.sequence_length_min}) && (length($10) <= {params.sequence_length_max})) {params.additional_filter}) {{
+                    print a[1],$3,$4";"$6";"$12";"$13";"$5 
+                }} else {{
+                    print a[1],"other","NA" 
+                }}
+            }}
+        }}' | sort -k1,1 -k2,2 -k3,3 -S 7G --parallel={threads} | gzip -c > {output} 2> {log}
+        """
+
+
 rule assignment_getBCs:
     """
     Get the barcodes.
@@ -76,6 +126,9 @@ rule assignment_getBCs:
         mapping_quality_min=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"
         ]["configs"]["min_mapping_quality"],
+        additional_filter=lambda wc: config["assignments"][wc.assignment][
+            "alignment_tool"
+        ]["configs"]["additional_filter_string"],
     log:
         temp("results/logs/assignment/getBCs.{assignment}.{split}.log"),
     shell:
@@ -86,7 +139,7 @@ rule assignment_getBCs:
             split($(NF),a,":");
             split(a[3],a,",");
             if (a[1] !~ /N/) {{
-                if (($5 >= {params.mapping_quality_min}) && ($4 >= {params.alignment_start_min}) && ($4 <= {params.alignment_start_max}) && (length($10) >= {params.sequence_length_min}) && (length($10) <= {params.sequence_length_max})) {{
+                if ((($5 >= {params.mapping_quality_min}) && ($4 >= {params.alignment_start_min}) && ($4 <= {params.alignment_start_max}) && (length($10) >= {params.sequence_length_min}) && (length($10) <= {params.sequence_length_max})) {params.additional_filter}) {{
                     print a[1],$3,$4";"$6";"$12";"$13";"$5 
                 }} else {{
                     print a[1],"other","NA" 

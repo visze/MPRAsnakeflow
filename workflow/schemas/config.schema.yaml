@@ -83,6 +83,9 @@ properties:
                           required:
                             - min
                             - max
+                        additional_filter_string:
+                          type: string
+                          default: ""
                       additionalProperties: false
                       required:
                         - sequence_length

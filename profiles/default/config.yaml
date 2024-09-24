@@ -44,6 +44,11 @@ set-resources:
     runtime: 240
     threads: 1
     slurm_partition: medium
+  assignment_getBCs_fullBAM:
+    runtime: 3120
+    threads: 20
+    mem: 10G
+    slurm_partition: medium
   assignment_collectBCs:
     runtime: 3120
     threads: 20
