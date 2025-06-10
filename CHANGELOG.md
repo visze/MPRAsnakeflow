@@ -1,5 +1,93 @@
 # Changelog
 
+## [0.6.0](https://github.com/visze/MPRAsnakeflow/compare/v0.5.3...v0.6.0) (2025-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* restructure folders and conda env import. Renaming of rules. Old SLURM ressoucres have to be updated
+* version change because of config changes
+* versioned config ([#140](https://github.com/visze/MPRAsnakeflow/issues/140))
+* latest development for new release ([#133](https://github.com/visze/MPRAsnakeflow/issues/133))
+
+### Features
+
+* Add assignment_merge thread configuration ([26e68c2](https://github.com/visze/MPRAsnakeflow/commit/26e68c26f315c524cf28692d636127fbf3bdeb2b))
+* assignment statistics ([fed4ad9](https://github.com/visze/MPRAsnakeflow/commit/fed4ad9e6f71a06a0f6a442425c2e34bad2fb98c))
+* bbmap for mapping ([7c143e3](https://github.com/visze/MPRAsnakeflow/commit/7c143e3dd6d61eb4c5f7e24500bbdce13b906416))
+* BC output ([48b4109](https://github.com/visze/MPRAsnakeflow/commit/48b41097149bb532b10e3afe1eee44457f93c143))
+* better assignment BC statistics ([00187e6](https://github.com/visze/MPRAsnakeflow/commit/00187e689b2fad10fd317aa2efbd0214fad14434))
+* configurable min mapping quality ([28045ae](https://github.com/visze/MPRAsnakeflow/commit/28045aea23d6fa03f3883b3dc44b3cbc3e8f6205))
+* containerization ([c52c0ea](https://github.com/visze/MPRAsnakeflow/commit/c52c0eaa8f412d98c2430aed3e1309fd0b4eb448))
+* extending figure width ([8bf81c4](https://github.com/visze/MPRAsnakeflow/commit/8bf81c45e45f9b4c23856c0915bd527f9699b6cd))
+* faster design check ([315b402](https://github.com/visze/MPRAsnakeflow/commit/315b402499d92850382d4110e153602020381e8a))
+* fastq-join implementation ([aaf5315](https://github.com/visze/MPRAsnakeflow/commit/aaf5315364ebb3e3117c3996c2fc357aa9c4d595))
+* IGVF qc metrics report ([3ec5012](https://github.com/visze/MPRAsnakeflow/commit/3ec5012bec438a65da7e5cb15b1d39bfd6b6b0ec))
+* latest development for new release ([#133](https://github.com/visze/MPRAsnakeflow/issues/133)) ([bdfc557](https://github.com/visze/MPRAsnakeflow/commit/bdfc557a64cecc19d1d86eead8bdb691a1ff2166))
+* new final output file with merged replicates ([66cf017](https://github.com/visze/MPRAsnakeflow/commit/66cf0172cb6b556e507be4daabf7e859447787f3))
+* NGmerge ([b8c5666](https://github.com/visze/MPRAsnakeflow/commit/b8c5666f85ae6928dacf3da80848f43958d9457e))
+* QC plots for count data ([a9ee7e4](https://github.com/visze/MPRAsnakeflow/commit/a9ee7e4c95a383f0d828c2d18b23029c032fe4ea))
+* QC report ([3732026](https://github.com/visze/MPRAsnakeflow/commit/3732026a78bf6f696b6e64f652c4de7d8f86e28e))
+* Quality metric json file (for IGVF) and included within QC report ([981baac](https://github.com/visze/MPRAsnakeflow/commit/981baaca6ac62b46c374aef3c146c80a35940071))
+* remove space, speedup BC extraction ([70e9bd0](https://github.com/visze/MPRAsnakeflow/commit/70e9bd06b91ccb37333e0a69c47917a5eacbf639))
+* replace merging by NGmerge ([0aa8cad](https://github.com/visze/MPRAsnakeflow/commit/0aa8cad6884a953f9c89a2fdd7af397e4e9ccf3e))
+* snakemake 8 compatibility ([cf38ed9](https://github.com/visze/MPRAsnakeflow/commit/cf38ed9de68367d0d1700ccff262e91ad6f1fbc0))
+* snakemake 8 ready with workflow profile ([d637e1f](https://github.com/visze/MPRAsnakeflow/commit/d637e1fdbebfca0616d944101898fbf522df9c82))
+* statistic for assignment workflow ([10c3b26](https://github.com/visze/MPRAsnakeflow/commit/10c3b2677ada59925ddd3de777f7488c9a20e981))
+* supporting UNC data ([7a23f1f](https://github.com/visze/MPRAsnakeflow/commit/7a23f1f960cd6f0ed6c42a5c05209d667dd021e4))
+* update license ([876c2d7](https://github.com/visze/MPRAsnakeflow/commit/876c2d76fb98f021d67af88b588457039066ae4b))
+* using reverese compelment BCs ([d009a6c](https://github.com/visze/MPRAsnakeflow/commit/d009a6c3de7de50a210479b73f5d41969287e234))
+* version change because of config changes ([fd8430f](https://github.com/visze/MPRAsnakeflow/commit/fd8430ff6c9259d82b38a6c691813c8376203504))
+* versioned config ([#140](https://github.com/visze/MPRAsnakeflow/issues/140)) ([9573b66](https://github.com/visze/MPRAsnakeflow/commit/9573b661afb83590b7ac5aedac7b6d3d5e61d8a4))
+
+
+### Bug Fixes
+
+* A bug fix of BIH logo not appearing in the report. ([5e6b768](https://github.com/visze/MPRAsnakeflow/commit/5e6b768293207b180279f953b341e22a0baf7419))
+* assignment barcode counting ([9584802](https://github.com/visze/MPRAsnakeflow/commit/95848023860f9b43e9c5a2e594c0fb9d3eda4205))
+* Assignment design check change the length of the sequence we want to check in the attach_sequence case ([f484d15](https://github.com/visze/MPRAsnakeflow/commit/f484d15401e4f4befe22dd6916795e3a9d10a98a))
+* Assignment design check change the length of the sequence we want to check in the attach_sequence case ([f484d15](https://github.com/visze/MPRAsnakeflow/commit/f484d15401e4f4befe22dd6916795e3a9d10a98a))
+* batch size issue in sort ([487ba8c](https://github.com/visze/MPRAsnakeflow/commit/487ba8ce059517030fcab3708c3cea40ac210f7e))
+* change the length of the sequence we want to check in the attach_sequence case ([#177](https://github.com/visze/MPRAsnakeflow/issues/177)) ([e3db5cf](https://github.com/visze/MPRAsnakeflow/commit/e3db5cf487423126ada0fda5305f42a0b38f25cb))
+* channel order has to be correct for newer samtools ([d0ada2b](https://github.com/visze/MPRAsnakeflow/commit/d0ada2b38170015867f6173e217bf057508e97d4))
+* channel order has to be correct for newer samtools ([e0cef63](https://github.com/visze/MPRAsnakeflow/commit/e0cef63b28a5930e389fd1b5923acf221c6e0b34))
+* corrected qc_report_assoc ([afb0127](https://github.com/visze/MPRAsnakeflow/commit/afb012750bc1c3c39f2348b283c23ff97695f672))
+* Detach from anaconda ([#122](https://github.com/visze/MPRAsnakeflow/issues/122)) ([16bcea2](https://github.com/visze/MPRAsnakeflow/commit/16bcea2f04190a5965ad1865cf30f6dd44f1b6a0))
+* experiment countplots ([#149](https://github.com/visze/MPRAsnakeflow/issues/149)) ([d2be468](https://github.com/visze/MPRAsnakeflow/commit/d2be46891650ff9aaab61f750a4b3bc3b65e3e88))
+* filter config ([38ee37e](https://github.com/visze/MPRAsnakeflow/commit/38ee37ecfcf4a71b840575504811512e0d64609a))
+* Fixed the FW, BC and REV in the config file ([ae4aa83](https://github.com/visze/MPRAsnakeflow/commit/ae4aa835fdd3e54d8d1c2f683287464c825bdf9c))
+* for assignment not matched reads where mapped ([f562e17](https://github.com/visze/MPRAsnakeflow/commit/f562e170f11369c622c3b088d5a9d5691fb56ba8))
+* issue with stats and asisgnment ([d935fa1](https://github.com/visze/MPRAsnakeflow/commit/d935fa1f62825dfdcd2cd77e4c73bc37686519a0))
+* memory resources for bbmap ([#123](https://github.com/visze/MPRAsnakeflow/issues/123)) ([af93f58](https://github.com/visze/MPRAsnakeflow/commit/af93f588e9387ddf91197f5587d36c3481499b38))
+* merge.label.py does not return pseudocounts in barcode file ([#187](https://github.com/visze/MPRAsnakeflow/issues/187)) ([023110a](https://github.com/visze/MPRAsnakeflow/commit/023110a5368704e0efb464dbaef1a1d5fdcf6c86))
+* missed config version upgrades ([df5391a](https://github.com/visze/MPRAsnakeflow/commit/df5391aae45086ae592fa462dc7c0c9a83f14da0))
+* mpralib environment file ([070da2a](https://github.com/visze/MPRAsnakeflow/commit/070da2a4944d25ecfd7aee7b4cbbfa5cfec92b73))
+* paths in assignment quarto ([e830dd5](https://github.com/visze/MPRAsnakeflow/commit/e830dd58adbaca038a3a87144bde76618be93bd2))
+* qc report count typo fix ([#174](https://github.com/visze/MPRAsnakeflow/issues/174)) ([d78d339](https://github.com/visze/MPRAsnakeflow/commit/d78d3391700c092c90742d1e47dc7b65b4d6d808))
+* rename barcoe output header ([635f043](https://github.com/visze/MPRAsnakeflow/commit/635f0431c78d3d5bf9b77a16f6ce26d9ff6c82c2))
+* report also barcodes that are lower than the min barcodes. ([90f1b14](https://github.com/visze/MPRAsnakeflow/commit/90f1b14d04737723fa5852c809c44e497b2e2d3b)), closes [#185](https://github.com/visze/MPRAsnakeflow/issues/185)
+* revert fix of 0.4.5. Not necessary ([7b50cfc](https://github.com/visze/MPRAsnakeflow/commit/7b50cfc57785bb0af99d66b755ca88a4d028fba1))
+* revert v0.4.5. The fix was already implemented within the common.smk file ([7997440](https://github.com/visze/MPRAsnakeflow/commit/799744050b540d96545ac72bc2280e8e37a2b61e))
+* set htslib and samtools version to 1.21 ([4e8d480](https://github.com/visze/MPRAsnakeflow/commit/4e8d4804d68b15fb64c93a7b17c1636a17cf6d1d))
+* set htslib and samtools version to 1.21 to avoid ncurses lib clashes ([cb59bd4](https://github.com/visze/MPRAsnakeflow/commit/cb59bd435b837b46775b412f883e38c7eec2ff0c))
+* statistic total counts ([6381b92](https://github.com/visze/MPRAsnakeflow/commit/6381b928fd6c14eb16801a459b8546fa37004c74))
+* swap activity threshold and all output file paths in qc_report rule ([#172](https://github.com/visze/MPRAsnakeflow/issues/172)) ([ff1b11c](https://github.com/visze/MPRAsnakeflow/commit/ff1b11cc3baf84a0a0c45201d93b36d8f630d42b))
+* swapped barcode output files ([bac8b92](https://github.com/visze/MPRAsnakeflow/commit/bac8b92fe540cd20d31a9cdd235309dac188454a))
+* swapped barcode output files ([a851ad2](https://github.com/visze/MPRAsnakeflow/commit/a851ad2d74aad0834b853eb7432da10f369f8e21))
+* typo in report ([ace8cca](https://github.com/visze/MPRAsnakeflow/commit/ace8ccacb3d7ece04af43c9b0b1dc9c9c087a2c4))
+* update configs to 0.4 ([5db0d8c](https://github.com/visze/MPRAsnakeflow/commit/5db0d8cbbcacfbc5003b2a8ebfbfa010e6deacea))
+* update configs to 0.4 ([bd79b6b](https://github.com/visze/MPRAsnakeflow/commit/bd79b6b22118749a5eec89ec95815b243318dd25))
+* upgrade code to new pandas version ([aaea236](https://github.com/visze/MPRAsnakeflow/commit/aaea236bc83f459e7a6c2d3fee96d49c79762325))
+* using correct threads ([6dcad7d](https://github.com/visze/MPRAsnakeflow/commit/6dcad7d34173f37d4538644b1ba0d918afd8f149))
+* using MPRAlib v0.6.1 ([4f45075](https://github.com/visze/MPRAsnakeflow/commit/4f4507540f84a1133a1440c30175f47367911d58))
+* using multiple fastq inputs in counts ([1e262bb](https://github.com/visze/MPRAsnakeflow/commit/1e262bbe363f35476fbeb62441b7a990244d53d8))
+* using multiple fastq inputs in counts ([95935cf](https://github.com/visze/MPRAsnakeflow/commit/95935cfe69956ca50307a9c6a774c4b96dff860f))
+
+
+### Code Refactoring
+
+* restructure folders and conda env import. Renaming of rules. Old SLURM ressoucres have to be updated ([f21cdca](https://github.com/visze/MPRAsnakeflow/commit/f21cdcaf974f98d97a23c2a520a2d6862dd5c333))
+
 ## [0.5.3](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.5.2...v0.5.3) (2025-05-13)
 
 
