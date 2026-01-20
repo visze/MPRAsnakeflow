@@ -317,9 +317,39 @@ properties:
           umi_length:
             type: integer
             minimum: 1
-          adapter:
-            type: string
-            pattern: ^[ATCGNatcgn]+$
+          adapters:
+            type: object
+            properties:
+              UMI:
+                oneOf:
+                  - type: array
+                    items:
+                      type: string
+                      pattern: ^[ATCGNatcgn]+$
+                      minItems: 1
+                      uniqueItems: true
+                  - type: integer
+                    minimum: 1
+              FWD:
+                oneOf:
+                  - type: array
+                    items:
+                      type: string
+                      pattern: ^[ATCGNatcgn]+$
+                      minItems: 1
+                      uniqueItems: true
+                  - type: integer
+                    minimum: 1
+              REV:
+                oneOf:
+                  - type: array
+                    items:
+                      type: string
+                      pattern: ^[ATCGNatcgn]+$
+                      minItems: 1
+                      uniqueItems: true
+                  - type: integer
+                    minimum: 1
           data_folder:
             type: string
           experiment_file:

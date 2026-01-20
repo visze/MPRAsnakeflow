@@ -13,8 +13,12 @@ rule experiment_counts_onlyFWUMI_raw_counts:
     conda:
         getCondaEnv("default.yaml")
     input:
-        fw_fastq=lambda wc: getFW(wc.project, wc.condition, wc.replicate, wc.type),
-        umi_fastq=lambda wc: getUMI(wc.project, wc.condition, wc.replicate, wc.type),
+        fw_fastq=lambda wc: getFW(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
+        umi_fastq=lambda wc: getUMI(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
     output:
         "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
     params:

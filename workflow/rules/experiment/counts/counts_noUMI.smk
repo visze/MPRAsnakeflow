@@ -11,8 +11,12 @@ rule experiment_counts_noUMI_create_BAM:
     Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
     """
     input:
-        fw_fastq=lambda wc: getFW(wc.project, wc.condition, wc.replicate, wc.type),
-        rev_fastq=lambda wc: getRev(wc.project, wc.condition, wc.replicate, wc.type),
+        fw_fastq=lambda wc: getFW(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
+        rev_fastq=lambda wc: getRev(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
         script_FastQ2doubleIndexBAM=getScript("count/FastQ2doubleIndexBAM_python3.py"),
         module_FastQ2doubleIndexBAM=getScript("count/library_python3.py"),
         script_MergeTrimReadsBAM=getScript("count/MergeTrimReadsBAM_python3.py"),

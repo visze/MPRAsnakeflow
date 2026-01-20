@@ -1,3 +1,7 @@
+# experiment common
+include: "experiment/common.smk"
+# experiment preprocessing
+include: "experiment/preprocessing.smk"
 # experiment statistics
 include: "experiment/statistic.smk"
 # count workflow
