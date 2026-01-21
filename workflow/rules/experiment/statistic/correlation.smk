@@ -436,7 +436,7 @@ rule experiment_statistic_correlation_combine_oligo:
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}.{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_oligo_correlation_merged.{assignment}.{config}.tsv",
             caption="../../../report/oligo_correlation.rst",
             category="{project}",
             subcategory="Oligo correlation",

@@ -49,7 +49,7 @@ rule experiment_statistic_assigned_counts_combine_BC_assignment_stats:
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}.{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_assigned_counts_single.{assignment}.{config}.tsv",
             caption="../../../report/assigned_counts_beforeMerge.rst",
             category="{project}",
             subcategory="Assignment",
@@ -131,7 +131,7 @@ rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge_all:
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}.{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_assigned_counts_merged.{assignment}.{config}.tsv",
             caption="../../../report/assigned_counts_afterMerge.rst",
             category="{project}",
             subcategory="Assignment",
