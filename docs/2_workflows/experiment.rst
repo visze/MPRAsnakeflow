@@ -147,9 +147,7 @@ experiment_counts_noUMI_raw_counts
   Counting BCsxUMIs from the BAM files.
 experiment_counts_onlyFWUMI_raw_counts
   Getting the BCs and UMIs from the reads using fixed length.
-experiment_counts_onlyFW_raw_counts_by_cutadapt
-  Getting the BCs from the reads using cutadapt.
-experiment_counts_onlyFW_raw_counts_by_length
+experiment_counts_onlyFW_raw_counts
   Getting the BCs from the reads using fixed length.
 experiment_counts_umi_raw_counts
   Counting BCsxUMIs from the BAM files.

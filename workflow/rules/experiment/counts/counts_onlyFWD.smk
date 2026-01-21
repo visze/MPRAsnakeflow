@@ -19,6 +19,9 @@ rule experiment_counts_onlyFW_raw_counts:
         "results/experiments/{project}/counts/onlyFW.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
+        bc_extraction=lambda wc: config["experiments"][wc.project].get(
+            "bc_extraction", "start"
+        ),
     log:
         temp(
             "results/logs/experiment/counts/onlyFW/onlyFW_raw_counts.{project}.{condition}.{replicate}.{type}.log"
@@ -26,7 +29,7 @@ rule experiment_counts_onlyFW_raw_counts:
     shell:
         """
         zcat {input} | \
-        awk 'NR%4==2 {{print substr($1,1,{params.bc_length})}}' | \
+        awk 'NR%4==2 {{if ("{params.bc_extraction}" == "start") print substr($1,1,{params.bc_length}); else print substr($1,length($1)-{params.bc_length}+1)}}' | \
         sort | \
         gzip -c > {output} 2> {log}
         """
