@@ -279,7 +279,7 @@ You should see a list of rules that will be executed. Here is the summary:
     experiment_counts_dna_rna_merge_counts                                        10
     experiment_counts_filter_counts                                                6
     experiment_counts_final_counts                                                 6
-    experiment_counts_onlyFW_raw_counts                                            6
+    experiment_counts_onlyFWD_raw_counts                                            6
     experiment_statistic_assigned_counts_combine_BC_assignment_stats               1
     experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper        1
     experiment_statistic_assigned_counts_combine_stats_dna_rna_merge               1

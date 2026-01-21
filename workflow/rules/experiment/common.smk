@@ -152,7 +152,7 @@ def getRawCounts(project, type):
     if useUMI(project, type):
         if onlyFW(project, type):
             return (
-                "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+                "results/experiments/{project}/counts/onlyFWDUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
                 % type
             )
         else:
@@ -167,7 +167,7 @@ def getRawCounts(project, type):
         )
     elif onlyFW(project, type):
         return (
-            "results/experiments/{project}/counts/onlyFW.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+            "results/experiments/{project}/counts/onlyFWD.{condition}_{replicate}_%s_raw_counts.tsv.gz"
             % type
         )
     else:

@@ -6,7 +6,7 @@
 ### Create_BAM_umi without demultiplexing ###
 
 
-rule experiment_counts_onlyFWUMI_raw_counts:
+rule experiment_counts_onlyFWDUMI_raw_counts:
     """
     Getting the BCs and UMIs from the reads using fixed length.
     """
@@ -20,7 +20,7 @@ rule experiment_counts_onlyFWUMI_raw_counts:
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
     output:
-        "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/onlyFWDUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
@@ -32,7 +32,7 @@ rule experiment_counts_onlyFWUMI_raw_counts:
         ),
     log:
         temp(
-            "results/logs/experiment/counts/onlyFW/onlyFWUMI_raw_counts_by_length.{project}.{condition}.{replicate}.{type}.log"
+            "results/logs/experiment/counts/onlyFWD/onlyFWDUMI_raw_counts_by_length.{project}.{condition}.{replicate}.{type}.log"
         ),
     shell:
         """
