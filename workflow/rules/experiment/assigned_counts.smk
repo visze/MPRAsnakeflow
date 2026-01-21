@@ -159,9 +159,9 @@ rule experiment_assigned_counts_make_master_tables:
         ),
         script=getScript("count/make_master_tables.R"),
     output:
-        statistic="results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.average_allreps_merged.tsv.gz",
-        all="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
-        thresh="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.tsv.gz",
+        statistic="results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.average_allreps.merged.tsv.gz",
+        all="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+        thresh="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged.tsv.gz",
     params:
         files=lambda wc: ",".join(
             expand(
@@ -211,8 +211,8 @@ rule experiment_assigned_counts_combine_replicates_barcode_output:
         ),
         script=getScript("count/merge_replicates_barcode_counts.py"),
     output:
-        bc_merged_thresh="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
-        bc_merged_all="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
+        bc_merged_thresh="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz",
+        bc_merged_all="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged_barcode_assigned_counts.tsv.gz",
     params:
         thresh=lambda wc: config["experiments"][wc.project]["configs"][wc.config][
             "filter"
@@ -275,8 +275,8 @@ rule experiment_assigned_counts_copy_final_all_files:
     conda:
         getCondaEnv("default.yaml")
     input:
-        all=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
-        bc_all=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
+        all=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+        bc_all=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged_barcode_assigned_counts.tsv.gz",
     output:
         all="results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.all.tsv.gz",
         bc_all="results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.all.tsv.gz",
@@ -298,8 +298,8 @@ rule experiment_assigned_counts_copy_final_thresh_files:
     conda:
         getCondaEnv("default.yaml")
     input:
-        thresh=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.tsv.gz",
-        bc_thresh=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
+        thresh=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged.tsv.gz",
+        bc_thresh=lambda wc: "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz",
     output:
         thresh="results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.min_oligo_threshold_{threshold}.tsv.gz",
         bc_thresh="results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.min_oligo_threshold_{threshold}.tsv.gz",

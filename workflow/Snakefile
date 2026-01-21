@@ -142,11 +142,12 @@ rule all:
         # assignment
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.all.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.all.tsv.gz",
             ]
@@ -289,11 +290,12 @@ rule all_experiments:
         # assignment
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.all.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.all.tsv.gz",
             ]
@@ -384,9 +386,9 @@ rule all_experiments_assignments:
     input:
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps.merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold.merged.combined.tsv.gz",
             ]
         ),
 
