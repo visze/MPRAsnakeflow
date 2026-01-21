@@ -58,7 +58,7 @@ def useTrimming(project, read_type):
     return False
 
 
-def getFW(project, condition, replicate, rnaDna_type, check_trimming=False):
+def getFWD(project, condition, replicate, rnaDna_type, check_trimming=False):
     if check_trimming and useTrimming(project, "FWD"):
         return "results/experiments/{project}/fastq/FWD.trimmed.{condition}.{replicate}.{type}.fastq.gz"
 
@@ -71,14 +71,14 @@ def getFW(project, condition, replicate, rnaDna_type, check_trimming=False):
     ]
 
 
-def getFWWithIndex(project):
+def getFWDWithIndex(project):
     return [
         "%s/%s" % (config["experiments"][project]["data_folder"], f)
         for f in getExperiments(project).BC_F.iloc[0].split(";")
     ]
 
 
-def getRev(project, condition, replicate, rnaDna_type, check_trimming=False):
+def getREV(project, condition, replicate, rnaDna_type, check_trimming=False):
     if check_trimming and useTrimming(project, "REV"):
         return "results/experiments/{project}/fastq/REV.trimmed.{condition}.{replicate}.{type}.fastq.gz"
     else:
@@ -91,7 +91,7 @@ def getRev(project, condition, replicate, rnaDna_type, check_trimming=False):
         ]
 
 
-def getRevWithIndex(project):
+def getREVWithIndex(project):
     return [
         "%s%s" % (config["experiments"][project]["data_folder"], f)
         for f in getExperiments(project).BC_R.iloc[0].split(";")

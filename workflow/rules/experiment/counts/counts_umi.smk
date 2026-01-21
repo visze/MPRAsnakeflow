@@ -11,10 +11,10 @@ rule experiment_counts_umi_create_BAM:
     Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
     """
     input:
-        fw_fastq=lambda wc: getFW(
+        fw_fastq=lambda wc: getFWD(
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
-        rev_fastq=lambda wc: getRev(
+        rev_fastq=lambda wc: getREV(
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
         umi_fastq=lambda wc: getUMI(
@@ -25,7 +25,7 @@ rule experiment_counts_umi_create_BAM:
         script_MergeTrimReadsBAM=getScript("count/MergeTrimReadsBAM_python3.py"),
         module_MergeTrimReadsBAM=getScript("count/MergeTrimReads_python3.py"),
     output:
-        "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.{type}.bam",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],

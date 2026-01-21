@@ -12,11 +12,11 @@ rule experiment_counts_onlyFWD_raw_counts:
     conda:
         getCondaEnv("default.yaml")
     input:
-        lambda wc: getFW(
+        lambda wc: getFWD(
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
     output:
-        "results/experiments/{project}/counts/onlyFWD.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/onlyFWD.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
         bc_extraction=lambda wc: config["experiments"][wc.project].get(
