@@ -1,16 +1,26 @@
 # preprocessing.smk specific functions
 
 
-def getExperimentCutadaptAdapters(adapters_config):
-    if isinstance(adapters_config is list) and isinstance(adapters_config[0], int):
-        return " ".join(["-u %d" % u for u in adapters_config])
-    else:
-        return " ".join(
-            [
-                "-g %s" % adapter[0] if adapter[1] == "5prime" else "-a %s" % adapter[0]
-                for adapter in adapters_config
-            ]
-        )
+def getExperimentCutadaptAdapters(project, read):
+    output = []
+    if (
+        "adapters" in config["experiments"][project]
+        and read in config["experiments"][project]["adapters"]
+    ):
+        adapters_config = config["experiments"][project]["adapters"][read]
+        if isinstance(adapters_config, list) and isinstance(adapters_config[0], int):
+            output = ["-u %d" % u for u in adapters_config]
+        else:
+
+            if "three_prime" in adapters_config:
+                for adapter in adapters_config["three_prime"]:
+                    output.append("-a %s" % adapter)
+            if "five_prime" in adapters_config:
+                for adapter in adapters_config["five_prime"]:
+                    output.append("-g %s" % adapter)
+
+            return " ".join(output)
+    return " ".join(output)
 
 
 # count.smk specific functions
@@ -142,7 +152,7 @@ def getRawCounts(project, type):
     if useUMI(project, type):
         if onlyFW(project, type):
             return (
-                "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+                "results/experiments/{project}/counts/onlyFWDUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
                 % type
             )
         else:
@@ -157,7 +167,7 @@ def getRawCounts(project, type):
         )
     elif onlyFW(project, type):
         return (
-            "results/experiments/{project}/counts/onlyFW.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+            "results/experiments/{project}/counts/onlyFWD.{condition}_{replicate}_%s_raw_counts.tsv.gz"
             % type
         )
     else:
@@ -219,21 +229,6 @@ def counts_getSamplingConfig(project, conf, dna_or_rna, command):
                     return "--%s %f" % (command, value)
 
     return ""
-
-
-def getReplicatesOfConditionType(project, condition, rna_or_dna):
-    exp = getExperiments(project)
-
-    replicates = getReplicatesOfCondition(project, condition)
-
-    if f"{rna_or_dna}_BC_F" in exp.columns:
-
-        exp_filter = exp[exp.Condition == condition]
-
-        if len(replicates) > 1 and exp_filter[f"{rna_or_dna}_BC_F"].nunique() == 1:
-            return [replicates[0]]
-
-    return replicates
 
 
 def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
