@@ -143,8 +143,27 @@ class MissingVariantInConfigException(Exception):
         return "Config %s has no variants defined!" % (self.config_name)
 
 
-##### get helpers for different things (like Conditions etc) #####
+##### get helpers for different things (like conditions etc) #####
+
+
 def getAssignments(match_methods=None):
+    """
+    Retrieve assignment configurations, optionally filtered by alignment tool method.
+
+    Args:
+        match_methods (list, optional): List of alignment tool names to filter by.
+            If provided, only assignments using these tools are returned.
+            Defaults to None.
+
+    Returns:
+        list: List of assignment keys/names. If match_methods is specified,
+            returns only assignments whose alignment tool is in match_methods.
+            Returns empty list if "assignments" key is not in config.
+
+    Examples:
+        - getAssignments() -> returns all assignment keys from config
+        - getAssignments(["bowtie2", "bwa"]) -> returns assignments using bowtie2 or bwa
+    """
     if "assignments" in config:
         if match_methods:
             output = []
@@ -159,25 +178,6 @@ def getAssignments(match_methods=None):
             return list(config["assignments"].keys())
     else:
         return []
-
-
-def getAssignmentFile(project, assignment):
-    if config["experiments"][project]["assignments"][assignment]["type"] == "file":
-        return config["experiments"][project]["assignments"][assignment][
-            "assignment_file"
-        ]
-    if config["experiments"][project]["assignments"][assignment]["type"] == "config":
-        conf = config["experiments"][project]["assignments"][assignment][
-            "assignment_config"
-        ]
-        name = config["experiments"][project]["assignments"][assignment][
-            "assignment_name"
-        ]
-        return expand(
-            "results/assignment/{assignment}/assignment_barcodes.{config}.tsv.gz",
-            assignment=name,
-            config=conf,
-        )
 
 
 def getProjects():
@@ -217,68 +217,6 @@ def getReplicatesOfCondition(project, condition):
     exp = getExperiments(project)
     exp = exp[exp.Condition == condition]
     return list(exp.Replicate.astype(str))
-
-
-def getVariantsBCThreshold(project):
-    return getVariants(project)["min_barcodes"]
-
-
-def getFW(project, condition, replicate, rnaDna_type):
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    exp = exp[exp.Replicate.astype(str) == replicate]
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in exp["%s_BC_F" % rnaDna_type].iloc[0].split(";")
-    ]
-
-
-def getFWWithIndex(project):
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_F.iloc[0].split(";")
-    ]
-
-
-def getRev(project, condition, replicate, rnaDna_type):
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    exp = exp[exp.Replicate.astype(str) == replicate]
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in exp["%s_BC_R" % rnaDna_type].iloc[0].split(";")
-    ]
-
-
-def getRevWithIndex(project):
-    return [
-        "%s%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_R.iloc[0].split(";")
-    ]
-
-
-def getUMI(project, condition, replicate, rnaDna_type):
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    exp = exp[exp.Replicate.astype(str) == replicate]
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in exp["%s_UMI" % rnaDna_type].iloc[0].split(";")
-    ]
-
-
-def getUMIWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).UMI.iloc[0].split(";")
-    ]
-
-
-def getIndexWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).INDEX.iloc[0].split(";")
-    ]
 
 
 def hasReplicates(project, condition=None):
@@ -598,284 +536,3 @@ def getSplitNumber():
         splits += [config["assignments"][assignment]["alignment_tool"]["split_number"]]
 
     return max(splits)
-
-
-# count.smk specific functions
-
-
-def getUMIBamFile(project, condition, replicate, type):
-    """
-    gelper to get the correct BAM file (demultiplexed or not)
-    """
-    if config["experiments"][project]["demultiplex"]:
-        return "results/%s/counts/merged_demultiplex.%s_%s_%s.bam" % (
-            project,
-            condition,
-            replicate,
-            type,
-        )
-    else:
-        return "results/experiments/%s/counts/useUMI.%s_%s_%s.bam" % (
-            project,
-            condition,
-            replicate,
-            type,
-        )
-
-
-def useUMI(project, type="DNA"):
-    """
-    helper to check if UMI should be used
-    """
-    return "UMI" in experiments[project] or f"{type}_UMI" in experiments[project]
-
-
-def onlyFW(project, type="DNA"):
-    """
-    helper to check if only forward reads should be used (length option)
-    """
-    return f"{type}_BC_R" not in experiments[project]
-
-
-def noUMI(project, type="DNA"):
-    """
-    helper to check if UMI should not be used
-    """
-    return (
-        "UMI" not in experiments[project]
-        and f"{type}_UMI" not in experiments[project]
-        and f"{type}_BC_R" in experiments[project]
-    )
-
-
-def onlyFWByLength(project, type="DNA"):
-    """
-    helper to check if only forward reads should be used (length option)
-    """
-    return (
-        "UMI" not in experiments[project]
-        and f"{type}_BC_R" not in experiments[project]
-        and "adapter" not in config["experiments"][project]
-    )
-
-
-def onlyFWbyCutadapt(project, type="DNA"):
-    """
-    helper to check if only forward reads should be used (cutadapt option)
-    """
-    return (
-        "UMI" not in experiments[project]
-        and f"{type}_BC_R" not in experiments[project]
-        and "adapter" in config["experiments"][project]
-    )
-
-
-def getRawCounts(project, type):
-    """
-    Helper to get the correct raw counts file (umi/noUMI or just FW read)
-    """
-    if useUMI(project, type):
-        if onlyFW(project, type):
-            return (
-                "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
-                % type
-            )
-        else:
-            return (
-                "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
-                % type
-            )
-    elif noUMI(project, type):
-        return (
-            "results/experiments/{project}/counts/noUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
-            % type
-        )
-    elif onlyFWByLength(project, type):
-        return (
-            "results/experiments/{project}/counts/onlyFWByLength.{condition}_{replicate}_%s_raw_counts.tsv.gz"
-            % type
-        )
-    elif onlyFWbyCutadapt(project, type):
-        return (
-            "results/experiments/{project}/counts/onlyFWByCutadapt.{condition}_{replicate}_%s_raw_counts.tsv.gz"
-            % type
-        )
-    else:
-        raise RuntimeError(
-            "Error in getRawCounts: no valid option for %s and %s found"
-            % (project, type)
-        )
-
-
-def counts_aggregate_demultiplex_input(project):
-    output = []
-    conditions = getConditions(project)
-    for condition in conditions:
-        replicates = getReplicatesOfCondition(project, condition)
-        names = expand(
-            "{condition}_{replicate}_{type}",
-            condition=condition,
-            replicate=replicates,
-            type=["DNA", "RNA"],
-        )
-        for name in names:
-            with (
-                checkpoints.experiment_counts_demultiplex_BAM_umi.get(
-                    project=project, name=name
-                )
-                .output[0]
-                .open() as f
-            ):
-                output += [f.name]
-    return output
-
-
-def counts_getFilterConfig(project, conf, dna_or_rna, command):
-    value = config["experiments"][project]["configs"][conf]["filter"][
-        "min_%s_counts" % dna_or_rna.lower()
-    ]
-    filterMap = {"min_counts": "minCounts"}
-    if isinstance(value, int):
-        return "--%s %d" % (filterMap.get(command, command), value)
-    else:
-        return "--%s %f" % (filterMap.get(command, command), value)
-
-
-def counts_getSamplingConfig(project, conf, dna_or_rna, command):
-    if useSampling(project, conf, dna_or_rna):
-        if dna_or_rna in config["experiments"][project]["configs"][conf]["sampling"]:
-            if (
-                command
-                in config["experiments"][project]["configs"][conf]["sampling"][
-                    dna_or_rna
-                ]
-            ):
-                value = config["experiments"][project]["configs"][conf]["sampling"][
-                    dna_or_rna
-                ][command]
-                if isinstance(value, int):
-                    return "--%s %d" % (command, value)
-                else:
-                    return "--%s %f" % (command, value)
-
-    return ""
-
-
-def getReplicatesOfConditionType(project, condition, rna_or_dna):
-    exp = getExperiments(project)
-
-    replicates = getReplicatesOfCondition(project, condition)
-
-    if f"{rna_or_dna}_BC_F" in exp.columns:
-
-        exp_filter = exp[exp.Condition == condition]
-
-        if len(replicates) > 1 and exp_filter[f"{rna_or_dna}_BC_F"].nunique() == 1:
-            return [replicates[0]]
-
-    return replicates
-
-
-def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
-    output = ""
-
-    replicates = getReplicatesOfConditionType(project, condition, rna_or_dna)
-    if len(replicates) > 1:
-        replicate = "{replicate}"
-    else:
-        replicate = replicates[0]
-
-    if raw_or_assigned == "counts":
-        if useSampling(project, conf, rna_or_dna):
-            output = (
-                "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.sampling.{config}.tsv.gz"
-                % (raw_or_assigned, replicate, rna_or_dna)
-            )
-
-        else:
-            output = (
-                "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.tsv.gz"
-                % (raw_or_assigned, replicate, rna_or_dna)
-            )
-    else:
-        output = (
-            "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.config.{config}.tsv.gz"
-            % (raw_or_assigned, replicate, rna_or_dna)
-        )
-    return output
-
-
-# assigned_counts.smk specific functions
-
-
-def assignedCounts_getAssignmentSamplingConfig(project, assignment, command):
-    if "sampling" in config["experiments"][project]["assignments"][assignment]:
-        if (
-            command
-            in config["experiments"][project]["assignments"][assignment]["sampling"]
-        ):
-            value = config["experiments"][project]["assignments"][assignment][
-                "sampling"
-            ][command]
-            if isinstance(value, int):
-                return "--%s %d" % (command, value)
-            else:
-                return "--%s %f" % (command, value)
-
-    return ""
-
-
-# statistic.smk specific functions
-
-
-# get all barcodes of experiment (rule statistic_BC_in_RNA_DNA)
-def getBCinRNADNAStats(wc):
-    exp = getExperiments(wc.project)
-    output = []
-    for index, row in exp.iterrows():
-        output += expand(
-            "results/experiments/{project}/statistic/counts/{condition}_{replicate}_{countType}_BC_in_RNA_DNA.tsv.gz",
-            project=wc.project,
-            condition=row["Condition"],
-            replicate=row["Replicate"],
-            countType=wc.countType,
-        )
-    return output
-
-
-def getAssignedCountsStatistic(project, assignment, conf, condition):
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    output = []
-    for index, row in exp.iterrows():
-        output += [
-            "--statistic %s results/experiments/%s/statistic/assigned_counts/%s/%s/%s_%s_merged_assigned_counts.statistic.tsv.gz"
-            % (
-                str(row["Replicate"]),
-                project,
-                assignment,
-                conf,
-                condition,
-                str(row["Replicate"]),
-            )
-        ]
-    return output
-
-
-# get all barcodes of experiment (rule dna_rna_merge_counts_withoutZeros or rule dna_rna_merge_counts_withZeros)
-def getMergedCounts(project, raw_or_assigned, condition, conf):
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    files = []
-    replicates = []
-    for index, row in exp.iterrows():
-        files += expand(
-            "results/experiments/{project}/{raw_or_assigned}/{condition}_{replicate}.merged.config.{config}.tsv.gz",
-            raw_or_assigned=raw_or_assigned,
-            project=project,
-            condition=condition,
-            replicate=row["Replicate"],
-            config=conf,
-        )
-        replicates += [str(row["Replicate"])]
-    return [files, replicates]
