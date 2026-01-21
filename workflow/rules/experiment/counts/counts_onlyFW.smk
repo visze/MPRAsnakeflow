@@ -16,7 +16,7 @@ rule experiment_counts_onlyFW_raw_counts:
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
     output:
-        "results/experiments/{project}/counts/onlyFW.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/onlyFW.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
     log:

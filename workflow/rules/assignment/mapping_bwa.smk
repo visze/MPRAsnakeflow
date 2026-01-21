@@ -58,7 +58,7 @@ rule assignment_mapping_bwa_getBCs:
     input:
         "results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam",
     output:
-        temp("results/assignment/{assignment}/BCs/barcodes_bwa.{split}.tsv"),
+        temp("results/assignment/{assignment}/BCs/barcodes.bwa.{split}.tsv"),
     params:
         alignment_start_min=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"
@@ -103,7 +103,7 @@ rule assignment_mapping_bwa_getBCs_additional_filter:
         bam="results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam",
         script=getScript("assignment/filter_bc_from_bam.py"),
     output:
-        "results/assignment/{assignment}/BCs/barcodes_bwa-additional-filtering.{split}.tsv",
+        "results/assignment/{assignment}/BCs/barcodes.bwa-additional-filtering.{split}.tsv",
     params:
         identity_threshold=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"

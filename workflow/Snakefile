@@ -97,7 +97,7 @@ rule all:
         # statistic BC nucleotide composition
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}_{replicate}_{type}.tsv.gz"
+                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}.{replicate}.{type}.tsv.gz"
             ]
         ),
         # counts statistic
@@ -108,23 +108,23 @@ rule all:
         ),
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}_{replicate}_{type}.txt"
+                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}.{replicate}.{type}.txt"
             ]
         ),
         getOutputProjectConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_bc_correlation_merged_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_bc_correlation_merged.{config}.tsv",
             ],
             True,
         ),
         getOutputProjectConditionConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/counts/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/counts/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
         getOutputProjectConditionAssignmentConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
         # bc_overlap statistic
@@ -134,7 +134,7 @@ rule all:
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged_{assignment}.{config}.tsv",
                 "results/experiments/{project}/statistic/bc_overlap.assigned_counts.{config}.{assignment}.tsv",
             ],
             True,
@@ -142,11 +142,11 @@ rule all:
         # assignment
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_minThreshold_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged_barcode_assigned_counts.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.all.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.all.tsv.gz",
             ]
@@ -160,15 +160,15 @@ rule all:
         # assignment statistic
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box.png",
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box_minThreshold.png",
-                "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box.png",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box_minThreshold.png",
+                "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}.{config}.tsv",
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
-                "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}.{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}.{config}.tsv",
             ],
             True,
         ),
@@ -181,7 +181,7 @@ rule all:
         ),
         getOutputVariants_helper(
             [
-                "results/experiments/{project}/variants/{assignment}/{config}/{condition}_variantTable.tsv.gz",
+                "results/experiments/{project}/variants/{assignment}/{config}/{condition}.variantTable.tsv.gz",
             ],
             False,
         ),
@@ -231,14 +231,14 @@ rule all_experiments:
         # stats BC nucleotide composition
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}_{replicate}_{type}.tsv.gz",
-                "results/experiments/{project}/counts/{condition}_{replicate}_{type}_final_counts.tsv.gz",
+                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}.{replicate}.{type}.tsv.gz",
+                "results/experiments/{project}/counts/{condition}.{replicate}.{type}.final_counts.tsv.gz",
             ]
         ),
         # counts
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/counts/{condition}_{replicate}_{type}.bam"
+                "results/experiments/{project}/counts/{condition}.{replicate}.{type}.bam"
             ],
             skip={"demultiplex": True},
         ),
@@ -250,28 +250,28 @@ rule all_experiments:
         ),
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}_{replicate}_{type}.txt"
+                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}.{replicate}.{type}.txt"
             ]
         ),
         getOutputProjectConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_bc_correlation_merged_{config}.tsv"
+                "results/experiments/{project}/statistic/statistic_bc_correlation_merged.{config}.tsv"
             ],
             True,
         ),
         getOutputProjectConditionConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/counts/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/counts/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
         getOutputProjectConditionAssignmentConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged.{assignment}.{config}.tsv",
             ],
             True,
         ),
@@ -289,11 +289,11 @@ rule all_experiments:
         # assignment
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_minThreshold_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged_barcode_assigned_counts.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged_barcode_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged_barcode_assigned_counts.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.oligo.{condition}.{assignment}.{config}.all.tsv.gz",
                 "results/experiments/{project}/reporter_experiment.barcode.{condition}.{assignment}.{config}.all.tsv.gz",
             ]
@@ -307,19 +307,19 @@ rule all_experiments:
         # assignment statistic
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box.png",
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box_minThreshold.png",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box.png",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box_minThreshold.png",
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}_{config}.tsv"
+                "results/experiments/{project}/statistic/statistic_assigned_counts_merged.{assignment}.{config}.tsv"
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
-                "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged.{assignment}.{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_assigned_counts_single.{assignment}.{config}.tsv",
             ],
             True,
         ),
@@ -339,23 +339,23 @@ rule all_experiments_counts_stats:
     input:
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}_{replicate}_{type}.txt"
+                "results/experiments/{project}/statistic/counts.freqUMIs.{condition}.{replicate}.{type}.txt"
             ]
         ),
         getOutputProjectConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_bc_correlation_merged_{config}.tsv"
+                "results/experiments/{project}/statistic/statistic_bc_correlation_merged.{config}.tsv"
             ],
             True,
         ),
         getOutputProjectConditionConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/counts/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/counts/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
         getOutputProjectConditionAssignmentConfigType_helper(
             [
-                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}_{config}_{type}_perBarcode.png"
+                "results/experiments/{project}/statistic/barcode/assigned_counts/{assignment}/{condition}.{config}.{type}.perBarcode.png"
             ]
         ),
 
@@ -384,9 +384,9 @@ rule all_experiments_assignments:
     input:
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_merged.combined.tsv.gz",
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_allreps_minThreshold_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_merged.combined.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.allreps_minThreshold_merged.combined.tsv.gz",
             ]
         ),
 
@@ -398,19 +398,19 @@ rule all_experiments_assignments_statistic:
     input:
         getOutputProjectConditionAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box.png",
-                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box_minThreshold.png",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box.png",
+                "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box_minThreshold.png",
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_assigned_counts_merged_{assignment}_{config}.tsv"
+                "results/experiments/{project}/statistic/statistic_assigned_counts_merged.{assignment}.{config}.tsv"
             ]
         ),
         getOutputProjectAssignmentConfig_helper(
             [
-                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
-                "results/experiments/{project}/statistic/statistic_assigned_counts_single_{assignment}_{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_oligo_correlation_merged.{assignment}.{config}.tsv",
+                "results/experiments/{project}/statistic/statistic_assigned_counts_single.{assignment}.{config}.tsv",
             ],
             True,
         ),
@@ -423,7 +423,7 @@ rule all_stats_BCNucleotideComposition:
     input:
         getOutputProjectConditionReplicateType_helper(
             [
-                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}_{replicate}_{type}.tsv.gz"
+                "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}.{replicate}.{type}.tsv.gz"
             ]
         ),
 
@@ -441,7 +441,7 @@ rule all_variants:
         ),
         getOutputVariants_helper(
             [
-                "results/experiments/{project}/variants/{assignment}/{config}/{condition}_variantTable.tsv.gz"
+                "results/experiments/{project}/variants/{assignment}/{config}/{condition}.variantTable.tsv.gz"
             ],
             False,
         ),

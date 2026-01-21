@@ -22,10 +22,10 @@ rule experiment_counts_noUMI_create_BAM:
         script_MergeTrimReadsBAM=getScript("count/MergeTrimReadsBAM_python3.py"),
         module_MergeTrimReadsBAM=getScript("count/MergeTrimReads_python3.py"),
     output:
-        "results/experiments/{project}/counts/noUMI.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.{type}.bam",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     conda:
         getCondaEnv("python3.yaml")
     log:
@@ -64,11 +64,11 @@ rule experiment_counts_noUMI_raw_counts:
     conda:
         getCondaEnv("bwa_samtools_picard_htslib.yaml")
     input:
-        "results/experiments/{project}/counts/noUMI.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.{type}.bam",
     output:
-        "results/experiments/{project}/counts/noUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     log:
         temp(
             "results/logs/experiment/counts/noUMI/raw_counts_umi.{project}.{condition}.{replicate}.{type}.log"

@@ -90,11 +90,11 @@ rule experiment_counts_demultiplex_mergeTrimReads_BAM_umi:
         demultiplex="results/experiments/{project}/counts/demultiplex.done",
         script=getScript("count/MergeTrimReadsBAM.py"),
     output:
-        "results/experiments/{project}/counts/merged_demultiplex.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/merged_demultiplex.{condition}.{replicate}.{type}.bam",
     conda:
         getCondaEnv("python27.yaml")
     params:
-        bam="results/experiments/{project}/counts/demultiplex.{condition}_{replicate}_{type}.bam",
+        bam="results/experiments/{project}/counts/demultiplex.{condition}.{replicate}.{type}.bam",
     log:
         temp(
             "results/logs/experiment/counts/mergeTrimReads_demultiplex_BAM_umi.{project}.{condition}.{replicate}.{type}.log"

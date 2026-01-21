@@ -19,7 +19,7 @@ rule experiment_counts_filter_counts:
     input:
         lambda wc: getRawCounts(wc.project, wc.type),
     output:
-        "results/experiments/{project}/counts/{condition}_{replicate}_{type}_filtered_counts.tsv.gz",
+        "results/experiments/{project}/counts/{condition}.{replicate}.{type}.filtered_counts.tsv.gz",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
     log:
@@ -45,9 +45,9 @@ rule experiment_counts_final_counts:
     conda:
         getCondaEnv("default.yaml")
     input:
-        "results/experiments/{project}/counts/{condition}_{replicate}_{type}_filtered_counts.tsv.gz",
+        "results/experiments/{project}/counts/{condition}.{replicate}.{type}.filtered_counts.tsv.gz",
     output:
-        counts="results/experiments/{project}/counts/{condition}_{replicate}_{type}_final_counts.tsv.gz",
+        counts="results/experiments/{project}/counts/{condition}.{replicate}.{type}.final_counts.tsv.gz",
     log:
         temp(
             "results/logs/experiment/counts/final_counts_umi.{project}.{condition}.{replicate}.{type}.log"
@@ -68,10 +68,10 @@ rule experiment_counts_final_counts_sampler:
     conda:
         getCondaEnv("python3.yaml")
     input:
-        counts="results/experiments/{project}/counts/{condition}_{replicate}_{type}_final_counts.tsv.gz",
+        counts="results/experiments/{project}/counts/{condition}.{replicate}.{type}.final_counts.tsv.gz",
         script=getScript("count/samplerer.py"),
     output:
-        "results/experiments/{project}/counts/{condition}_{replicate}_{type}_final_counts.sampling.{config}.tsv.gz",
+        "results/experiments/{project}/counts/{condition}.{replicate}.{type}.final_counts.sampling.{config}.tsv.gz",
     params:
         samplingprop=lambda wc: counts_getSamplingConfig(
             wc.project, wc.config, wc.type, "prop"
@@ -118,7 +118,7 @@ rule experiment_counts_dna_rna_merge_counts:
             wc.project, wc.config, wc.condition, "RNA", wc.raw_or_assigned
         ),
     output:
-        "results/experiments/{project}/{raw_or_assigned}/{condition}_{replicate}.merged.config.{config}.tsv.gz",
+        "results/experiments/{project}/{raw_or_assigned}/{condition}.{replicate}.merged.config.{config}.tsv.gz",
     params:
         zero=lambda wc: "false" if withoutZeros(wc.project, wc.config) else "true",
         minRNACounts=lambda wc: counts_getFilterConfig(

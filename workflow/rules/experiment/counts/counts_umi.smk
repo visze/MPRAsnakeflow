@@ -25,11 +25,11 @@ rule experiment_counts_umi_create_BAM:
         script_MergeTrimReadsBAM=getScript("count/MergeTrimReadsBAM_python3.py"),
         module_MergeTrimReadsBAM=getScript("count/MergeTrimReads_python3.py"),
     output:
-        "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.{type}.bam",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     conda:
         getCondaEnv("python3.yaml")
     log:
@@ -69,10 +69,10 @@ rule experiment_counts_umi_raw_counts:
     input:
         lambda wc: getUMIBamFile(wc.project, wc.condition, wc.replicate, wc.type),
     output:
-        "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     log:
         temp(
             "results/logs/experiment/counts/umi/raw_counts.{project}.{condition}.{replicate}.{type}.log"

@@ -288,7 +288,7 @@ rule assignment_collectBCs:
         getCondaEnv("default.yaml")
     input:
         lambda wc: expand(
-            "results/assignment/{{assignment}}/BCs/barcodes_{mapper}.{split}.tsv",
+            "results/assignment/{{assignment}}/BCs/barcodes.{mapper}.{split}.tsv",
             split=range(0, getSplitNumber()),
             mapper=config["assignments"][wc.assignment]["alignment_tool"]["tool"],
         ),

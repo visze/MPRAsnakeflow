@@ -20,7 +20,7 @@ rule experiment_counts_onlyFWUMI_raw_counts:
             wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
         ),
     output:
-        "results/experiments/{project}/counts/onlyFWUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/onlyFWUMI.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
     log:
