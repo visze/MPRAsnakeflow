@@ -33,7 +33,7 @@ rule assignment_mapping_exact:
         reads=lambda wc: getMappingRead(wc.assignment),
         reference="results/assignment/{assignment}/reference/reference_exact.fa",
     output:
-        temp("results/assignment/{assignment}/BCs/barcodes_exact.{split}.tsv"),
+        temp("results/assignment/{assignment}/BCs/barcodes.exact.{split}.tsv"),
     log:
         temp("results/logs/assignment/mapping_exact.{assignment}.{split}.log"),
     params:

@@ -130,14 +130,14 @@ def getUMIBamFile(project, condition, replicate, type):
     gelper to get the correct BAM file (demultiplexed or not)
     """
     if config["experiments"][project]["demultiplex"]:
-        return "results/%s/counts/merged_demultiplex.%s_%s_%s.bam" % (
+        return "results/%s/counts/merged_demultiplex.%s.%s.%s.bam" % (
             project,
             condition,
             replicate,
             type,
         )
     else:
-        return "results/experiments/%s/counts/useUMI.%s_%s_%s.bam" % (
+        return "results/experiments/%s/counts/useUMI.%s.%s.%s.bam" % (
             project,
             condition,
             replicate,
@@ -152,22 +152,22 @@ def getRawCounts(project, type):
     if useUMI(project, type):
         if onlyFW(project, type):
             return (
-                "results/experiments/{project}/counts/onlyFWDUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+                "results/experiments/{project}/counts/onlyFWUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
                 % type
             )
         else:
             return (
-                "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+                "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
                 % type
             )
     elif noUMI(project, type):
         return (
-            "results/experiments/{project}/counts/noUMI.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+            "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
             % type
         )
     elif onlyFW(project, type):
         return (
-            "results/experiments/{project}/counts/onlyFWD.{condition}_{replicate}_%s_raw_counts.tsv.gz"
+            "results/experiments/{project}/counts/onlyFW.{condition}.{replicate}.%s.raw_counts.tsv.gz"
             % type
         )
     else:
@@ -183,7 +183,7 @@ def counts_aggregate_demultiplex_input(project):
     for condition in conditions:
         replicates = getReplicatesOfCondition(project, condition)
         names = expand(
-            "{condition}_{replicate}_{type}",
+            "{condition}.{replicate}.{type}",
             condition=condition,
             replicate=replicates,
             type=["DNA", "RNA"],
@@ -243,18 +243,18 @@ def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
     if raw_or_assigned == "counts":
         if useSampling(project, conf, rna_or_dna):
             output = (
-                "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.sampling.{config}.tsv.gz"
+                "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.sampling.{config}.tsv.gz"
                 % (raw_or_assigned, replicate, rna_or_dna)
             )
 
         else:
             output = (
-                "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.tsv.gz"
+                "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.tsv.gz"
                 % (raw_or_assigned, replicate, rna_or_dna)
             )
     else:
         output = (
-            "results/experiments/{project}/%s/{condition}_%s_%s_final_counts.config.{config}.tsv.gz"
+            "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.config.{config}.tsv.gz"
             % (raw_or_assigned, replicate, rna_or_dna)
         )
     return output
@@ -308,7 +308,7 @@ def getBCinRNADNAStats(wc):
     output = []
     for index, row in exp.iterrows():
         output += expand(
-            "results/experiments/{project}/statistic/counts/{condition}_{replicate}_{countType}_BC_in_RNA_DNA.tsv.gz",
+            "results/experiments/{project}/statistic/counts/{condition}.{replicate}.{countType}_BC_in_RNA_DNA.tsv.gz",
             project=wc.project,
             condition=row["Condition"],
             replicate=row["Replicate"],
@@ -323,7 +323,7 @@ def getAssignedCountsStatistic(project, assignment, conf, condition):
     output = []
     for index, row in exp.iterrows():
         output += [
-            "--statistic %s results/experiments/%s/statistic/assigned_counts/%s/%s/%s_%s_merged_assigned_counts.statistic.tsv.gz"
+            "--statistic %s results/experiments/%s/statistic/assigned_counts/%s/%s/%s.%s_merged_assigned_counts.statistic.tsv.gz"
             % (
                 str(row["Replicate"]),
                 project,
@@ -344,7 +344,7 @@ def getMergedCounts(project, raw_or_assigned, condition, conf):
     replicates = []
     for index, row in exp.iterrows():
         files += expand(
-            "results/experiments/{project}/{raw_or_assigned}/{condition}_{replicate}.merged.config.{config}.tsv.gz",
+            "results/experiments/{project}/{raw_or_assigned}/{condition}.{replicate}.merged.config.{config}.tsv.gz",
             raw_or_assigned=raw_or_assigned,
             project=project,
             condition=condition,

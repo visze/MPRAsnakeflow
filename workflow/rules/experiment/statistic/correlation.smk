@@ -16,7 +16,7 @@ rule experiment_statistic_correlation_bc_counts:
         script=getScript("count/plot_perBCCounts_correlation.R"),
     output:
         report(
-            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_barcode_DNA_pairwise.png",
+            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.barcode.DNA.pairwise.png",
             category="{project}",
             subcategory="BC correlation plots",
             labels={
@@ -27,7 +27,7 @@ rule experiment_statistic_correlation_bc_counts:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_barcode_RNA_pairwise.png",
+            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.barcode.RNA.pairwise.png",
             category="{project}",
             subcategory="BC correlation plots",
             labels={
@@ -38,7 +38,7 @@ rule experiment_statistic_correlation_bc_counts:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_barcode_Ratio_pairwise.png",
+            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.barcode.Ratio.pairwise.png",
             category="{project}",
             subcategory="BC correlation plots",
             labels={
@@ -49,14 +49,14 @@ rule experiment_statistic_correlation_bc_counts:
             },
         ),
         temp(
-            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_barcode_correlation.tsv"
+            "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.barcode.correlation.tsv"
         ),
     params:
         replicates=lambda wc: ",".join(
             getMergedCounts(wc.project, wc.raw_or_assigned, wc.condition, wc.config)[1]
         ),
         cond="{condition}",
-        outdir="results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}",
+        outdir="results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}",
         input=lambda wc: ",".join(
             getMergedCounts(wc.project, wc.raw_or_assigned, wc.condition, wc.config)[0]
         ),
@@ -92,14 +92,14 @@ rule experiment_statistic_correlation_bc_counts_hist:
         )[0],
         script=getScript("count/plot_perBCCounts_stats.R"),
     output:
-        "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_DNA_perBarcode.png",
-        "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}_RNA_perBarcode.png",
+        "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.DNA.perBarcode.png",
+        "results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}.RNA.perBarcode.png",
     params:
         replicates=lambda wc: ",".join(
             getMergedCounts(wc.project, wc.raw_or_assigned, wc.condition, wc.config)[1]
         ),
         cond="{condition}",
-        outdir="results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}_{config}",
+        outdir="results/experiments/{project}/statistic/barcode/{raw_or_assigned}/{condition}.{config}",
         input=lambda wc: ",".join(
             getMergedCounts(wc.project, wc.raw_or_assigned, wc.condition, wc.config)[0]
         ),
@@ -131,12 +131,12 @@ rule experiment_statistic_correlation_combine_bc_raw:
         getCondaEnv("default.yaml")
     input:
         files=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/barcode/counts/{condition}_{{config}}_barcode_correlation.tsv",
+            "results/experiments/{{project}}/statistic/barcode/counts/{condition}.{{config}}.barcode.correlation.tsv",
             condition=getConditions(wc.project),
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_bc_correlation_merged_{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_bc_correlation_merged.{config}.tsv",
             caption="../../../report/bc_correlation.rst",
             category="{project}",
             subcategory="Barcode correlation",
@@ -166,12 +166,12 @@ rule experiment_statistic_correlation_combine_bc_assigned:
         getCondaEnv("default.yaml")
     input:
         files=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/barcode/assigned_counts/{{assignment}}/{condition}_{{config}}_barcode_correlation.tsv",
+            "results/experiments/{{project}}/statistic/barcode/assigned_counts/{{assignment}}/{condition}.{{config}}.barcode.correlation.tsv",
             condition=getConditions(wc.project),
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged_{assignment}_{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_assigned_bc_correlation_merged.{assignment}.{config}.tsv",
             caption="../../../report/bc_correlation_assigned.rst",
             category="{project}",
             subcategory="Barcode correlation",
@@ -182,7 +182,7 @@ rule experiment_statistic_correlation_combine_bc_assigned:
         ),
     log:
         temp(
-            "results/logs/experiment/statistic/correlation/combine_bc_assigned.{project}.{assignment}_{config}.log"
+            "results/logs/experiment/statistic/correlation/combine_bc_assigned.{project}.{assignment}.{config}.log"
         ),
     shell:
         """
@@ -208,7 +208,7 @@ rule experiment_statistic_correlation_calculate:
         getCondaEnv("r.yaml")
     input:
         counts=lambda wc: expand(
-            "results/experiments/{{project}}/assigned_counts/{{assignment}}/{{config}}/{{condition}}_{replicate}_merged_assigned_counts.tsv.gz",
+            "results/experiments/{{project}}/assigned_counts/{{assignment}}/{{config}}/{{condition}}.{replicate}.merged_assigned_counts.tsv.gz",
             replicate=getReplicatesOfCondition(wc.project, wc.condition),
         ),
         label=(
@@ -221,7 +221,7 @@ rule experiment_statistic_correlation_calculate:
         script=getScript("count/plot_perInsertCounts_correlation.R"),
     output:
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_DNA_pairwise.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.DNA.pairwise.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels={
@@ -233,7 +233,7 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_RNA_pairwise.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.RNA.pairwise.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels={
@@ -245,7 +245,7 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_Ratio_pairwise.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.Ratio.pairwise.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels={
@@ -257,7 +257,7 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_DNA_pairwise_minThreshold.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.DNA.pairwise.minThreshold.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels=lambda wc: {
@@ -273,7 +273,7 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_RNA_pairwise_minThreshold.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.RNA.pairwise.minThreshold.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels=lambda wc: {
@@ -289,7 +289,7 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         report(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_Ratio_pairwise_minThreshold.png",
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.Ratio.pairwise.minThreshold.png",
             category="{project}",
             subcategory="Oligo correlation plots",
             labels=lambda wc: {
@@ -305,16 +305,16 @@ rule experiment_statistic_correlation_calculate:
             },
         ),
         temp(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_correlation.tsv"
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.correlation.tsv"
         ),
         temp(
-            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_correlation_minThreshold.tsv"
+            "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.correlation.minThreshold.tsv"
         ),
     params:
         cond="{condition}",
         files=lambda wc: ",".join(
             expand(
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_{replicate}_merged_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.{replicate}.merged_assigned_counts.tsv.gz",
                 replicate=getReplicatesOfCondition(wc.project, wc.condition),
                 project=wc.project,
                 condition=wc.condition,
@@ -360,7 +360,7 @@ rule experiment_statistic_correlation_hist_box_plots:
         getCondaEnv("r.yaml")
     input:
         counts=lambda wc: expand(
-            "results/experiments/{{project}}/assigned_counts/{{assignment}}/{{config}}/{{condition}}_{replicate}_merged_assigned_counts.tsv.gz",
+            "results/experiments/{{project}}/assigned_counts/{{assignment}}/{{config}}/{{condition}}.{replicate}.merged_assigned_counts.tsv.gz",
             replicate=getReplicatesOfCondition(wc.project, wc.condition),
         ),
         label=(
@@ -372,16 +372,16 @@ rule experiment_statistic_correlation_hist_box_plots:
         ),
         script=getScript("count/plot_perInsertCounts_stats.R"),
     output:
-        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_barcodesPerInsert.png",
-        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box.png",
-        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_group_barcodesPerInsert_box_minThreshold.png",
-        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_dna_vs_rna.png",
-        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}_dna_vs_rna_minThreshold.png",
+        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.barcodesPerInsert.png",
+        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box.png",
+        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.group_barcodesPerInsert_box_minThreshold.png",
+        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.dna_vs_rna.png",
+        "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.dna_vs_rna_minThreshold.png",
     params:
         cond="{condition}",
         files=lambda wc: ",".join(
             expand(
-                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_{replicate}_merged_assigned_counts.tsv.gz",
+                "results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.{replicate}.merged_assigned_counts.tsv.gz",
                 replicate=getReplicatesOfCondition(wc.project, wc.condition),
                 project=wc.project,
                 condition=wc.condition,
@@ -427,16 +427,16 @@ rule experiment_statistic_correlation_combine_oligo:
         getCondaEnv("default.yaml")
     input:
         correlation=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/{condition}_correlation.tsv",
+            "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/{condition}.correlation.tsv",
             condition=getConditions(wc.project),
         ),
         correlation_thresh=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/{condition}_correlation_minThreshold.tsv",
+            "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/{condition}.correlation.minThreshold.tsv",
             condition=getConditions(wc.project),
         ),
     output:
         report(
-            "results/experiments/{project}/statistic/statistic_oligo_correlation_merged_{assignment}_{config}.tsv",
+            "results/experiments/{project}/statistic/statistic_oligo_correlation_merged.{assignment}.{config}.tsv",
             caption="../../../report/oligo_correlation.rst",
             category="{project}",
             subcategory="Oligo correlation",

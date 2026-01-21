@@ -6,7 +6,7 @@ def statistic_counts_BC_in_RNA_DNA_helper(project, condition, dna_or_rna, countT
         output = getRawCounts(project, dna_or_rna)
     else:
         output = (
-            "results/experiments/{project}/counts/{condition}_{replicate}_%s_{countType}_counts.tsv.gz"
+            "results/experiments/{project}/counts/{condition}.{replicate}.%s.{countType}_counts.tsv.gz"
             % dna_or_rna
         )
 
@@ -29,7 +29,7 @@ def getCountStats(project, countType):
             else:
                 replicate = row["Replicate"]
             output += expand(
-                "results/experiments/{{project}}/statistic/counts/{condition}_{replicate}_{type}_{{countType}}_counts.tsv.gz",
+                "results/experiments/{{project}}/statistic/counts/{condition}.{replicate}.{type}.{{countType}}_counts.tsv.gz",
                 condition=condition,
                 replicate=replicate,
                 type=dna_or_rna,

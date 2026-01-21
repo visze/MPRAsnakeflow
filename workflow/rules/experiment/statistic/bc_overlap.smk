@@ -22,7 +22,7 @@ rule experiment_statistic_bc_overlap_run:
         script=getScript("count/BCCounts_betweenReplicates.R"),
     output:
         temp(
-            "results/experiments/{project}/statistic/bc_overlap/{raw_or_assigned}/overlapBCandCounts.{condition}_{type}.{config}.tsv"
+            "results/experiments/{project}/statistic/bc_overlap/{raw_or_assigned}/overlapBCandCounts.{condition}.{type}.{config}.tsv"
         ),
     params:
         input=lambda wc: ",".join(
@@ -61,7 +61,7 @@ rule experiment_statistic_bc_overlap_combine_counts:
         getCondaEnv("default.yaml")
     input:
         statistic=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/bc_overlap/counts/overlapBCandCounts.{condition}_{type}.{config}.tsv",
+            "results/experiments/{{project}}/statistic/bc_overlap/counts/overlapBCandCounts.{condition}.{type}.{config}.tsv",
             type=["DNA", "RNA"],
             condition=getConditions(wc.project),
             config=wc.config,
@@ -102,7 +102,7 @@ rule experiment_statistic_bc_overlap_combine_assigned_counts:
         getCondaEnv("default.yaml")
     input:
         statistic=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/bc_overlap/assigned_counts/{{assignment}}/overlapBCandCounts.{condition}_{type}.{{config}}.tsv",
+            "results/experiments/{{project}}/statistic/bc_overlap/assigned_counts/{{assignment}}/overlapBCandCounts.{condition}.{type}.{{config}}.tsv",
             type=["DNA", "RNA"],
             condition=getConditions(wc.project),
         ),
