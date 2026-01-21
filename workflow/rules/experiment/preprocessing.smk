@@ -10,16 +10,23 @@ rule experiment_preprocess_trim_reads:
             wc.read_type, wc.project, wc.condition, wc.replicate, wc.type
         ),
     output:
-        "results/experiments/{project}/fastq/{read_type}.trimmed.{condition}.{replicate}.{type}.fastq.gz",
+        trimmed_reads=temp(
+            "results/experiments/{project}/fastq/{read_type}.trimmed.{condition}.{replicate}.{type}.fastq.gz"
+        ),
     params:
-        adapter=lambda wc: config["experiments"][wc.project]["adapter"],
+        adapter=lambda wc: config["experiments"][wc.project]["adapters"],
+    wildcard_constraints:
+        read_type=r"(FWD)|(REV)|(UMI)",
+    params:
+        adapters=lambda wc: getExperimentCutadaptAdapters(
+            config["experiments"][wc.project]["adapters"][wc.read_type]
+        ),
     log:
         temp(
             "results/logs/experiment/preprocess/trim_reads.{read_type}.{project}.{condition}.{replicate}.{type}.log"
         ),
     shell:
         """
-        zcat {input} | \
-        cutadapt --cores {threads} -a {params.adapter} - |
-        gzip -c > {output} 2> {log}
+        cutadapt --cores {threads} {params.adapters} \
+        -o {output.trimmed_reads} <(zcat {input.reads}) &> {log}
         """

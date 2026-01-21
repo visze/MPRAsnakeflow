@@ -1,4 +1,118 @@
+# preprocessing.smk specific functions
+
+
+def getExperimentCutadaptAdapters(adapters_config):
+    if isinstance(adapters_config is list) and isinstance(adapters_config[0], int):
+        return " ".join(["-u %d" % u for u in adapters_config])
+    else:
+        return " ".join(
+            [
+                "-g %s" % adapter[0] if adapter[1] == "5prime" else "-a %s" % adapter[0]
+                for adapter in adapters_config
+            ]
+        )
+
+
 # count.smk specific functions
+
+
+def useUMI(project, type="DNA"):
+    """
+    Helper to check if UMI should be used
+    """
+    return "UMI" in experiments[project] or f"{type}_UMI" in experiments[project]
+
+
+def onlyFW(project, type="DNA"):
+    """
+    Helper to check if only forward reads should be used
+    """
+    return f"{type}_BC_R" not in experiments[project]
+
+
+def noUMI(project, type="DNA"):
+    """
+    Helper to check if UMI should not be used
+    """
+    return (
+        "UMI" not in experiments[project]
+        and f"{type}_UMI" not in experiments[project]
+        and f"{type}_BC_R" in experiments[project]
+    )
+
+
+def useTrimming(project, read_type):
+    if "adapters" in config["experiments"][project]:
+        if read_type in config["experiments"][project]["read_type"]:
+            return True
+    return False
+
+
+def getFW(project, condition, replicate, rnaDna_type, check_trimming=False):
+    if check_trimming and useTrimming(project, "FWD"):
+        return "results/experiments/{project}/fastq/FWD.trimmed.{condition}.{replicate}.{type}.fastq.gz"
+
+    exp = getExperiments(project)
+    exp = exp[exp.Condition == condition]
+    exp = exp[exp.Replicate.astype(str) == replicate]
+    return [
+        "%s/%s" % (config["experiments"][project]["data_folder"], f)
+        for f in exp["%s_BC_F" % rnaDna_type].iloc[0].split(";")
+    ]
+
+
+def getFWWithIndex(project):
+    return [
+        "%s/%s" % (config["experiments"][project]["data_folder"], f)
+        for f in getExperiments(project).BC_F.iloc[0].split(";")
+    ]
+
+
+def getRev(project, condition, replicate, rnaDna_type, check_trimming=False):
+    if check_trimming and useTrimming(project, "REV"):
+        return "results/experiments/{project}/fastq/REV.trimmed.{condition}.{replicate}.{type}.fastq.gz"
+    else:
+        exp = getExperiments(project)
+        exp = exp[exp.Condition == condition]
+        exp = exp[exp.Replicate.astype(str) == replicate]
+        return [
+            "%s/%s" % (config["experiments"][project]["data_folder"], f)
+            for f in exp["%s_BC_R" % rnaDna_type].iloc[0].split(";")
+        ]
+
+
+def getRevWithIndex(project):
+    return [
+        "%s%s" % (config["experiments"][project]["data_folder"], f)
+        for f in getExperiments(project).BC_R.iloc[0].split(";")
+    ]
+
+
+def getUMI(project, condition, replicate, rnaDna_type, check_trimming=False):
+    if check_trimming and useTrimming(project, "UMI"):
+        return "results/experiments/{project}/fastq/UMI.trimmed.{condition}.{replicate}.{type}.fastq.gz"
+    else:
+        exp = getExperiments(project)
+        exp = exp[exp.Condition == condition]
+        exp = exp[exp.Replicate.astype(str) == replicate]
+        return [
+            "%s/%s" % (config["experiments"][project]["data_folder"], f)
+            for f in exp["%s_UMI" % rnaDna_type].iloc[0].split(";")
+        ]
+
+
+def getUMIWithIndex(project):
+    return [
+        config["experiments"][project]["data_folder"] + f
+        for f in getExperiments(project).UMI.iloc[0].split(";")
+    ]
+
+
+def getIndexWithIndex(project):
+    return [
+        config["experiments"][project]["data_folder"] + f
+        for f in getExperiments(project).INDEX.iloc[0].split(";")
+    ]
 
 
 def getUMIBamFile(project, condition, replicate, type):
@@ -19,31 +133,6 @@ def getUMIBamFile(project, condition, replicate, type):
             replicate,
             type,
         )
-
-
-def useUMI(project, type="DNA"):
-    """
-    helper to check if UMI should be used
-    """
-    return "UMI" in experiments[project] or f"{type}_UMI" in experiments[project]
-
-
-def onlyFW(project, type="DNA"):
-    """
-    helper to check if only forward reads should be used
-    """
-    return f"{type}_BC_R" not in experiments[project]
-
-
-def noUMI(project, type="DNA"):
-    """
-    helper to check if UMI should not be used
-    """
-    return (
-        "UMI" not in experiments[project]
-        and f"{type}_UMI" not in experiments[project]
-        and f"{type}_BC_R" in experiments[project]
-    )
 
 
 def getRawCounts(project, type):
@@ -179,6 +268,25 @@ def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
 # assigned_counts.smk specific functions
 
 
+def getAssignmentFile(project, assignment):
+    if config["experiments"][project]["assignments"][assignment]["type"] == "file":
+        return config["experiments"][project]["assignments"][assignment][
+            "assignment_file"
+        ]
+    if config["experiments"][project]["assignments"][assignment]["type"] == "config":
+        conf = config["experiments"][project]["assignments"][assignment][
+            "assignment_config"
+        ]
+        name = config["experiments"][project]["assignments"][assignment][
+            "assignment_name"
+        ]
+        return expand(
+            "results/assignment/{assignment}/assignment_barcodes.{config}.tsv.gz",
+            assignment=name,
+            config=conf,
+        )
+
+
 def assignedCounts_getAssignmentSamplingConfig(project, assignment, command):
     if "sampling" in config["experiments"][project]["assignments"][assignment]:
         if (
@@ -250,3 +358,10 @@ def getMergedCounts(project, raw_or_assigned, condition, conf):
         )
         replicates += [str(row["Replicate"])]
     return [files, replicates]
+
+
+# variants.smk specific functions
+
+
+def getVariantsBCThreshold(project):
+    return getVariants(project)["min_barcodes"]

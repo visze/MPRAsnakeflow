@@ -143,8 +143,27 @@ class MissingVariantInConfigException(Exception):
         return "Config %s has no variants defined!" % (self.config_name)
 
 
-##### get helpers for different things (like Conditions etc) #####
+##### get helpers for different things (like conditions etc) #####
+
+
 def getAssignments(match_methods=None):
+    """
+    Retrieve assignment configurations, optionally filtered by alignment tool method.
+
+    Args:
+        match_methods (list, optional): List of alignment tool names to filter by.
+            If provided, only assignments using these tools are returned.
+            Defaults to None.
+
+    Returns:
+        list: List of assignment keys/names. If match_methods is specified,
+            returns only assignments whose alignment tool is in match_methods.
+            Returns empty list if "assignments" key is not in config.
+
+    Examples:
+        - getAssignments() -> returns all assignment keys from config
+        - getAssignments(["bowtie2", "bwa"]) -> returns assignments using bowtie2 or bwa
+    """
     if "assignments" in config:
         if match_methods:
             output = []
@@ -159,25 +178,6 @@ def getAssignments(match_methods=None):
             return list(config["assignments"].keys())
     else:
         return []
-
-
-def getAssignmentFile(project, assignment):
-    if config["experiments"][project]["assignments"][assignment]["type"] == "file":
-        return config["experiments"][project]["assignments"][assignment][
-            "assignment_file"
-        ]
-    if config["experiments"][project]["assignments"][assignment]["type"] == "config":
-        conf = config["experiments"][project]["assignments"][assignment][
-            "assignment_config"
-        ]
-        name = config["experiments"][project]["assignments"][assignment][
-            "assignment_name"
-        ]
-        return expand(
-            "results/assignment/{assignment}/assignment_barcodes.{config}.tsv.gz",
-            assignment=name,
-            config=conf,
-        )
 
 
 def getProjects():
@@ -217,84 +217,6 @@ def getReplicatesOfCondition(project, condition):
     exp = getExperiments(project)
     exp = exp[exp.Condition == condition]
     return list(exp.Replicate.astype(str))
-
-
-def getVariantsBCThreshold(project):
-    return getVariants(project)["min_barcodes"]
-
-
-def useTrimming(project, read_type):
-    if "adapters" in config["experiments"][project]:
-        if read_type in config["experiments"][project]["read_type"]:
-            return True
-    return False
-
-
-def getFW(project, condition, replicate, rnaDna_type, check_trimming=False):
-    if check_trimming and useTrimming(project, "FWD"):
-        return "results/experiments/{project}/fastq/FWD.trimmed.{condition}.{replicate}.{type}.fastq.gz"
-
-    exp = getExperiments(project)
-    exp = exp[exp.Condition == condition]
-    exp = exp[exp.Replicate.astype(str) == replicate]
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in exp["%s_BC_F" % rnaDna_type].iloc[0].split(";")
-    ]
-
-
-def getFWWithIndex(project):
-    return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_F.iloc[0].split(";")
-    ]
-
-
-def getRev(project, condition, replicate, rnaDna_type, check_trimming=False):
-    if check_trimming and useTrimming(project, "REV"):
-        return "results/experiments/{project}/fastq/REV.trimmed.{condition}.{replicate}.{type}.fastq.gz"
-    else:
-        exp = getExperiments(project)
-        exp = exp[exp.Condition == condition]
-        exp = exp[exp.Replicate.astype(str) == replicate]
-        return [
-            "%s/%s" % (config["experiments"][project]["data_folder"], f)
-            for f in exp["%s_BC_R" % rnaDna_type].iloc[0].split(";")
-        ]
-
-
-def getRevWithIndex(project):
-    return [
-        "%s%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_R.iloc[0].split(";")
-    ]
-
-
-def getUMI(project, condition, replicate, rnaDna_type, check_trimming=False):
-    if check_trimming and useTrimming(project, "UMI"):
-        return "results/experiments/{project}/fastq/UMI.trimmed.{condition}.{replicate}.{type}.fastq.gz"
-    else:
-        exp = getExperiments(project)
-        exp = exp[exp.Condition == condition]
-        exp = exp[exp.Replicate.astype(str) == replicate]
-        return [
-            "%s/%s" % (config["experiments"][project]["data_folder"], f)
-            for f in exp["%s_UMI" % rnaDna_type].iloc[0].split(";")
-        ]
-
-
-def getUMIWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).UMI.iloc[0].split(";")
-    ]
-
-
-def getIndexWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).INDEX.iloc[0].split(";")
-    ]
 
 
 def hasReplicates(project, condition=None):
