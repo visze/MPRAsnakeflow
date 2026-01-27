@@ -161,7 +161,7 @@ Indices and Tables
     1_getting_started/cluster
 
 .. toctree::
-    :caption: MPRAsnakeflow Workflows
+    :caption: Workflows
     :name: mprasnakeflow-workflows
     :maxdepth: 1
     :hidden:
@@ -171,15 +171,16 @@ Indices and Tables
     2_workflows/experiment
 
 .. toctree::
-    :caption: MPRAsnakeflow Tutorials
-    :name: mprasnakeflow-tutorials
+    :caption: Further documentation
+    :name: mprasnakeflow-further-documentation
     :maxdepth: 1
     :hidden:
 
-    3_tutorial/tutorial
+    3_further_documentation/tutorial
+    3_further_documentation/adapter
 
 .. toctree::
-    :caption: MPRAsnakeflow Examples
+    :caption: Examples
     :name: mprasnakeflow-examples
     :maxdepth: 2
     :hidden:
@@ -208,4 +209,3 @@ Indices and Tables
    6_info/authors
    6_info/history
    6_info/license
-   6_info/todo_list

@@ -107,171 +107,151 @@ Rules
 
 Rules run by snakemake in the experiment workflow. Some rules will be run only if certain options
 
-experiment_assigned_counts_assignBarcodes 
-  Assign RNA and DNA barcodes seperately to make the statistic for assigned
-experiment_assigned_counts_combine_replicates
-  Combine replicates of master table by summing counts up and using also the average.
-experiment_assigned_counts_combine_replicates_barcode_output
-  Combine replictes of assigned barcode counts into one file."""
-experiment_counts_umi_create_BAM
-  Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
-experiment_assigned_counts_copy_final_all_files
-  Will copy final files to the main folder so that it is creal which files to use.
-experiment_assigned_counts_copy_final_thresh_files
-  Will copy final files to the main folder so that it is creal which files to use.
-experiment_assigned_counts_dna_rna_merge
-  Assign merged RNA/DNA barcodes. Filter BC depending on the min_counts option.
-experiment_assigned_counts_filterAssignment
-  Use only unique assignments and do sampling if needed.
-experiment_assigned_counts_make_master_tables
-  Final master table with all replicates combined. With and without threshold.
-experiment_counts_demultiplex_BAM_umi
-  Demultiplexing the data and create demultiplexed bam files per condition.
-experiment_counts_demultiplex_aggregate
-  Aggregate the demultiplexed bam files per condition.
-experiment_counts_demultiplex_create_index
-  Create the demultiplexing index file for the experiment.
-experiment_counts_demultiplex_mergeTrimReads_BAM_umi
-  Merge and trim reads in demultiplexed bam files.
-experiment_counts_dna_rna_merge_counts
-  Merge DNA and RNA counts together. Is done in two ways. First no not allow zeros in DNA or RNA BCs (RNA and DNA min_counts not zero). Second with zeros, so a BC can be defined only in the DNA or RNA (RNA or DNA min_counts zero)
-experiment_counts_filter_counts
-  Filter the counts to BCs only of the correct length (defined in the config file)
-experiment_counts_final_counts
-  Counting BCs. Discarding PCR duplicates (taking BCxUMI only one time)
-experiment_counts_final_counts_sampler
-  Creates full + new distribution DNA files
-experiment_counts_noUMI_create_BAM
-  Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
-experiment_counts_noUMI_raw_counts
-  Counting BCsxUMIs from the BAM files.
-experiment_counts_onlyFWDUMI_raw_counts
-  Getting the BCs and UMIs from the reads using fixed length.
-experiment_counts_onlyFWD_raw_counts
-  Getting the BCs from the reads using fixed length.
-experiment_counts_umi_raw_counts
-  Counting BCsxUMIs from the BAM files.
-experiment_statistic_assigned_counts_combine_BC_assignment_stats
-  Combined assinged counts statistic per condition (DNA and aRNA not merged)
-experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper
-  Combine assigned counts statistic per replicate and modality (DNA and RNA not merged)
-experiment_statistic_assigned_counts_combine_stats_dna_rna_merge
-  Combine assigned counts statistic per replicate (DNA and RNA merged)
-experiment_statistic_assigned_counts_combine_stats_dna_rna_merge_all
-  Combine assigned counts statistic per condition (DNA and RNA merged)
-experiment_statistic_bc_overlap_combine_assigned_counts
-  Combine overlap BC and count statistic into one file (assigned counts).
-experiment_statistic_bc_overlap_combine_counts
-  Combine overlap BC and count statistic into one file (raw counts).
-experiment_statistic_bc_overlap_run
-  Get overlap of counts and barcodes between replicates.
-experiment_statistic_correlation_bc_counts
-  Calculate the correlation of the raw counts for each condition across replicates.
-experiment_statistic_correlation_bc_counts_hist
-  Generate histogram and boxplots of the raw counts for each condition across replicates.
-experiment_statistic_correlation_calculate
-  Calculate the correlation of oligos for each condition across replicates.
-experiment_statistic_correlation_combine_bc_assigned
-  Combine the correlation of the assigned counts for each condition across replicates into one table.
-experiment_statistic_correlation_combine_bc_raw
-  Combine the correlation of the raw counts for each condition across replicates into one table.
-experiment_statistic_correlation_combine_oligo
-  Combine the correlation of oligos for each condition across replicates into one table.
-experiment_statistic_correlation_hist_box_plots
-  Generate histogram and boxplots of the oligos for each condition across replicates.
-experiment_statistic_counts_BC_in_RNA_DNA
-  Count the number of barcodes shared between RNA and DNA per condition and replicate.
-experiment_statistic_counts_BC_in_RNA_DNA_merge
-  Merge the shared barcodes statistic of all replicates and conditions into one table.
-experiment_statistic_counts_barcode_base_composition
-  Count the nucleotide composition of the barcodes per condition, replicate and DNA/RNA.
-experiment_statistic_counts_final
-  Combine the final count statistic of all replicates and conditions into one table.
-experiment_statistic_counts_frequent_umis
-  Count the 10 most frequent UMIs per condition, replicate and DNA/RNA.
-experiment_statistic_counts_stats_merge
-  Merge the count statistic of all replicates and conditions into one table.
-experiment_statistic_counts_table
-  Count statistic of barcodes and UMIs per condition, replicate and DNA/RNA.
-experiment_statistic_quality_metric
-  Quality metrics of the assignment run
+- **all**: General all rule to get all output files for MPRAsnakeflow (default rule).
+- **all_bc_overlap_statistic**: All rule to get BC overlap statistic of the experiment workflow.
+- **all_experiments**: All rule to get all output files for the experiment workflow.
+- **all_experiments_assignments**: All rule to get assigned counts for experiment workflow.
+- **all_experiments_assignments_statistic**: All rule to get assigned counts statistic for experiment workflow.
+- **all_experiments_counts_stats**: All rule to get count statistics of the experiment workflow.
+- **all_qc_report**: All rule to generate QC reports.
+- **all_stats_BCNucleotideComposition**: All rule to get BC nucleotide composition of the experiment workflow.
+- **experiment_assigned_counts_assignBarcodes**: Assign RNA and DNA barcodes seperately to make the statistic for assigned
+- **experiment_assigned_counts_combine_replicates**: Combine replicates of master table by summing counts up and using also the average.
+- **experiment_assigned_counts_combine_replicates_barcode_output**: Combine replictes of assigned barcode counts into one file.
+- **experiment_assigned_counts_copy_final_all_files**: Will copy final files to the main folder so that it is clear which files to use.
+- **experiment_assigned_counts_copy_final_thresh_files**: Will copy final files to the main folder so that it is clear which files to use.
+- **experiment_assigned_counts_createAssignmentPickleFile**: Create a pickle file for assigned counts.
+- **experiment_assigned_counts_dna_rna_merge**: Assign merged RNA/DNA barcodes. Filter BC depending on the min_counts option.
+- **experiment_assigned_counts_filterAssignment**: Use only unique assignments and do sampling if needed.
+- **experiment_assigned_counts_make_master_tables**: Final master table with all replicates combined. With and without threshold.
+- **experiment_counts_demultiplex_BAM_umi**: Demultiplexing the data and create demultiplexed bam files per condition.
+- **experiment_counts_demultiplex_aggregate**: Aggregate the demultiplexed bam files per condition.
+- **experiment_counts_demultiplex_create_index**: Create the demultiplexing index file for the experiment.
+- **experiment_counts_demultiplex_mergeTrimReads_BAM_umi**: Merge and trim reads in demultiplexed bam files.
+- **experiment_counts_dna_rna_merge_counts**: Merge DNA and RNA counts together.
+- **experiment_counts_filter_counts**: Filter the counts to BCs only of the correct length (defined in the config file)
+- **experiment_counts_final_counts**: Counting BCs. Discarding PCR duplicates (taking BCxUMI only one time)
+- **experiment_counts_final_counts_sampler**: Creates full + new distribution DNA files
+- **experiment_counts_noUMI_create_BAM**: Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
+- **experiment_counts_noUMI_raw_counts**: Counting BCsxUMIs from the BAM files.
+- **experiment_counts_onlyFWDUMI_raw_counts**: Getting the BCs and UMIs from the reads using fixed length.
+- **experiment_counts_onlyFWD_raw_counts**: Getting the BCs from the reads using fixed length.
+- **experiment_counts_umi_create_BAM**: Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
+- **experiment_counts_umi_raw_counts**: Counting BCsxUMIs from the BAM files.
+- **experiment_preprocessing_trim_reads**: Getting the BCs from the reads using cutadapt.
+- **experiment_statistic_assigned_counts_combine_BC_assignment_stats**: Combined assinged counts statistic per condition (DNA and aRNA not merged)
+- **experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper**: Combine assigned counts statistic per replicate and modality (DNA and RNA not merged)
+- **experiment_statistic_assigned_counts_combine_stats_dna_rna_merge**: Combine assigned counts statistic per replicate (DNA and RNA merged)
+- **experiment_statistic_assigned_counts_combine_stats_dna_rna_merge_all**: Combine assigned counts statistic per condition (DNA and RNA merged)
+- **experiment_statistic_bc_overlap_combine_assigned_counts**: Combine overlap BC and count statistic into one file (assigned counts).
+- **experiment_statistic_bc_overlap_combine_counts**: Combine overlap BC and count statistic into one file (raw counts).
+- **experiment_statistic_bc_overlap_run**: Get overlap of counts and barcodes between replicates.
+- **experiment_statistic_correlation_bc_counts**: Calculate the correlation of the raw counts for each condition across replicates.
+- **experiment_statistic_correlation_bc_counts_hist**: Generate histogram and boxplots of the raw counts for each condition across replicates.
+- **experiment_statistic_correlation_calculate**: Calculate the correlation of oligos for each condition across replicates.
+- **experiment_statistic_correlation_combine_bc_assigned**: Combine the correlation of the assigned counts for each condition across replicates into one table.
+- **experiment_statistic_correlation_combine_bc_raw**: Combine the correlation of the raw counts for each condition across replicates into one table.
+- **experiment_statistic_correlation_combine_oligo**: Combine the correlation of oligos for each condition across replicates into one table.
+- **experiment_statistic_correlation_hist_box_plots**: Generate histogram and boxplots of the oligos for each condition across replicates.
+- **experiment_statistic_counts_BC_in_RNA_DNA**: Count the number of barcodes shared between RNA and DNA per condition and replicate.
+- **experiment_statistic_counts_BC_in_RNA_DNA_merge**: Merge the shared barcodes statistic of all replicates and conditions into one table.
+- **experiment_statistic_counts_barcode_base_composition**: Count the nucleotide composition of the barcodes per condition, replicate and DNA/RNA.
+- **experiment_statistic_counts_final**: Combine the final count statistic of all replicates and conditions into one table.
+- **experiment_statistic_counts_frequent_umis**: Count the 10 most frequent UMIs per condition, replicate and DNA/RNA.
+- **experiment_statistic_counts_stats_merge**: Merge the count statistic of all replicates and conditions into one table.
+- **experiment_statistic_counts_table**: Count statistic of barcodes and UMIs per condition, replicate and DNA/RNA.
+- **experiment_statistic_quality_metric**: Quality metrics of the assignment run
+- **qc_report_count**: This rule generates the QC report for the count data.
+
 
   
 Output
 ==========
 
-The output can be found in the folder defined by the option :code:`results/experiments/`. It is structured in folders of the condition as
+The output can be found in the folder defined by the option :code:`results/experiments/`. It is structured in folders of the experiment name, defined in the config file. It is structured in folders of the experiemnt name as follows:
 
 Files
 -------------
 Once the pipline is finished running then all the output files can be seen in the results folder. This pipline also generates a qc report. 
 For more details, refer to the `HTML QC report <https://kircherlab.github.io/mprasnakeflow/experiment.html>`_.
 
-File tree
+
+File tree of the result folder (names in :code:`< >` can be specified in the config file). Might be slightly different when using wih/without UMI or with/without paired reads:
 
 .. code-block:: text
 
-    experimet_name
-      |-Condition
-        |-allreps.tsv
-        |-average_allreps.tsv
-    |-HepG2.1.2.correlation.txt
-    |-HepG2.1.2.DNA_pairwise.png
-    |-HepG2.1.2.Ratio_pairwise.png
-    |-HepG2.1.2.RNA_pairwise.png
-    |-HepG2.barcodesPerInsert.png
-        |-Reps
-            |-HepG2.1.counts.tsv
-            |-HepG2.1.counts.tsv.gz
-            |-HepG2.1.DNA_counts_full.tsv
-            |-HepG2.1.DNA_counts_full_samplingN.tsv
-            |-HepG2.1.DNA_raw_counts.tsv.gz  
-            |-HepG2.1.RNA_filtered_counts.tsv.gz
-            |-HepG2.1.DNA_filtered_counts.tsv.gz
-            |-HepG2.1.RNA_counts.tsv
-            |-HepG2.1.RNA_raw_counts.tsv.gz
+    experiments
+    └── <experiment_name>
+        ├── assigned_counts
+        │   └── <assignment_name>
+        │       ├── <condition>.<replicate>.<modality>.final_counts.config.<config_name>.tsv.gz
+        │       ├── <condition>.<replicate>.merged.config.<config_name>.tsv.gz
+        │       └── <config_name>
+        │           ├── <condition>.<replicate>.barcode_assigned_counts.tsv.gz
+        │           ├── <condition>.<replicate>.barcodesRemoved_assigned_counts.tsv.gz
+        │           ├── <condition>.<replicate>.merged_assigned_counts.tsv.gz
+        │           ├── <condition>.<replicate>.merged.combined.tsv.gz
+        │           ├── <condition>.<replicate>.merged.tsv.gz
+        │           ├── <condition>.<replicate>.merged_barcode_assigned_counts.tsv.gz
+        │           ├── <condition>.allreps_minThreshold.merged.combined.tsv.gz
+        │           ├── <condition>.allreps_minThreshold.merged.tsv.gz
+        │           └── <condition>.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz
+        ├── assignment
+        │   └── <assignment_name>.tsv.gz
+        ├── counts
+        │   ├── <condition>.<replicate>.<modality>.filtered_counts.tsv.gz
+        │   ├── <condition>.<replicate>.<modality>.final_counts.tsv.gz
+        │   ├── <condition>.<replicate>.merged.<config_name>.tsv.gz
+        │   ├── useUMI.<condition>.<replicate>.<modality>.bam
+        │   └── useUMI.<condition>.<replicate>.<modality>.raw_counts.tsv.gz
+        ├── qc_metrics.<condition>.<assignment_name>.<config_name>.json
+        ├── qc_report.<condition>.<assignment_name>.<config_name>.html
+        ├── reporter_experiment.barcode.<condition>.<assignment_name>.<config_name>.all.tsv.gz
+        ├── reporter_experiment.barcode.<condition>.<assignment_name>.<config_name>.min_oligo_threshold_10.tsv.gz
+        ├── reporter_experiment.oligo.<condition>.<assignment_name>.<config_name>.all.tsv.gz
+        ├── reporter_experiment.oligo.<condition>.<assignment_name>.<config_name>.min_oligo_threshold_10.tsv.gz
+        └── statistic
+            ├── assigned_counts
+            │   └── <assignment_name>
+            │       └── <config_name>
+            │           ├── <condition>.<modality>.pairwise.minThreshold.png
+            │           ├── <condition>.<modality>.pairwise.png
+            │           ├── <condition>.Ratio.pairwise.minThreshold.png
+            │           ├── <condition>.Ratio.pairwise.png
+            │           ├── <condition>.average_allreps.merged.tsv.gz
+            │           ├── <condition>.barcodesPerInsert.png
+            │           ├── <condition>.dna_vs_rna.png
+            │           ├── <condition>.dna_vs_rna_minThreshold.png
+            │           ├── <condition>.group_barcodesPerInsert_box.png
+            │           └── <condition>.group_barcodesPerInsert_box_minThreshold.png
+            ├── barcode
+            │   ├── assigned_counts
+            │   │   └── <assignment_name>
+            │   │       ├── <condition>.<config_name>.<modality>.perBarcode.png
+            │   │       ├── <condition>.<config_name>.barcode.<modality>.pairwise.png
+            │   │       └── <condition>.<config_name>.barcode.Ratio.pairwise.png
+            │   └── counts
+            │       ├── <condition>.<config_name>.<modality>.perBarcode.png
+            │       ├── <condition>.<config_name>.barcode.<modality>.pairwise.png
+            │       └── <condition>.<config_name>.barcode.Ratio.pairwise.png
+            ├── bc_overlap.assigned_counts.<config_name>.<assignment_name>.tsv
+            ├── bc_overlap.counts.<config_name>.tsv
+            ├── counts
+            │   └── BCNucleotideComposition.<condition>.<replicate>.<modality>.tsv.gz
+            ├── counts.filtered.tsv
+            ├── counts.freqUMIs.<condition>.<replicate>.<modality>.txt
+            ├── counts.raw.tsv
+            ├── statistic_assigned_bc_correlation_merged.<assignment_name>.<config_name>.tsv
+            ├── statistic_assigned_counts_merged.<assignment_name>.<config_name>.tsv
+            ├── statistic_assigned_counts_single.<assignment_name>.<config_name>.tsv
+            ├── statistic_bc_correlation_merged.<config_name>.tsv
+            └── statistic_oligo_correlation_merged.<assignment_name>.<config_name>.tsv
 
 
-Files for each Condition
-------------------------
-allreps.tsv
-  TSV of normalized DNA and RNA count, ratio, log2ratio, and number of observed barcodes for each condition, replicate, of every CRS
-average_allreps.tsv
-  mean ratio, log2 ratio, and observed barcodes per condidition normalized for all replicates
-HepG2.1.2.correlation.txt
-  correlation values for a condition and 2 replicates (ie: HepG2 replicate 1 vs replicate 2)
-HepG2.1.2.DNA_pairwise.png
-  Correlation plot of DNA counts condition vs two reps (ie: HepG2 replicate 1 vs replicate 2)
-HepG2.1.2.Ratio_pairwise.png
-  Correlation plot of normalized log2(RNA/DNA) condition vs two reps (ie: HepG2 replicate 1 vs replicate 2)
-HepG2.1.2.RNA_pairwise.png
-  Correlation plot of RNA counts condition vs two reps (ie: HepG2 replicate 1 vs replicate 2)
-HepG2.barcodesPerInsert.png
-  Histogram of number of barcodes detected per CRS
-HepG2.group_barcodesPerInsert_box.png
-  Boxplot of CRS normalized per insert, grouped by labels
+Key output files:
 
-.. todo:: These are not the correct files for each condition in the experiment workflow
-
-Files for each replicate in each condition
--------------------------------------------
-HepG2.1.counts.tsv  
-  mean ratio, log2 ratio, and observed barcodes per condidition for each replicate
-HepG2.1.counts.tsv.gz
-  table of barcodes with DNA counts and RNA counts
-HepG2.1.DNA_counts_full.tsv              
-  table of barcodes with DNA counts
-HepG2.1.DNA_counts_full_samplingN.tsv              
-  table of barcodes with DNA counts with adjusted sampling.
-HepG2.1.DNA_raw_counts.tsv.gz  
-  table of barcodes, UMI, and DNA counts raw
-HepG2.1.DNA_filtered_counts.tsv.gz  
-  table of barcodes, UMI, and DNA counts raw, filtered for barcodes of correct length
-HepG2.1.RNA_counts.tsv
-  table of barcodes with RNA counts
-HepG2.1.RNA_raw_counts.tsv.gz
-  table of barcodes, UMI, and RNA counts raw
-HepG2.1.RNA_filtered_counts.tsv.gz
-  table of barcodes, UMI, and DNA counts raw, filtered for barcodes of correct length
-
-.. todo:: These are not the correct files for the experiment workflow
+- **qc_report.<config_name>.html**: QC report of the experimemt.
+- **reporter_experiment.barcode.<condition>.<assignment_name>.<config_name>.all.tsv.gz**: Reporter experiment barcode count file containing barcode, oligo ID, and then columns for DNA and RNA counts for each replicate. If not observed the entry is empty.
+- **reporter_experiment.barcode.<condition>.<assignment_name>.<config_name>.min_oligo_threshold_10.tsv.gz**: Same as abive but just for oligos that have at least 10 barcodes.
+- **reporter_experiment.oligo.<condition>.<assignment_name>.<config_name>.all.tsv.gz**: Reporter experiment count file aggegated to oligo level. Containing replicate name, oligo ID, dna counts, rna counts, dna normalized (CPM), rna normalized (CPM), log2FoldChange, and number of barcodes.
+- **reporter_experiment.oligo.<condition>.<assignment_name>.<config_name>.min_oligo_threshold_10.tsv.gz**: Same as above but just for oligos that have at least 10 barcodes.

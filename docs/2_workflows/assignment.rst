@@ -32,7 +32,13 @@ Example file:
     >CRS4
     TTAGACCGCCCTTTACCCCGAGAAAACTCAGCTACACACTC
 
-.. note:: Headers of the design file must be unique (before any space), cannot contain :code:`[` or :code:`]`, and should not contain duplicated sequences (forward and antisense).
+.. note:: 
+
+    Headers of the design file must be unique (before any space) and should not contain duplicated sequences (forward and antisense). Headers must follow this naming rules:
+
+    - The first character must be one of: :code:`0-9`, :code:`A-Z`, :code:`a-z`, or :code:`! # $ % & + . / : ; ? @ ^ _ | ~ -` (notably, :code:`*` and :code:`=` are NOT allowed as the first character)
+    - Subsequent characters may include all of the above, plus :code:`*` and :code:`=`
+    - This prevents headers from starting with :code:`*` or :code:`=`, which may be reserved or problematic in downstream tools.
 
 Config File
 -----------
@@ -91,21 +97,40 @@ Rules
 
 Rules run by Snakemake in the assignment utility:
 
-- **all**: The overall rule. Defines what final output files are expected.
-- **all_assignments**: Run all steps of the assignment workflow.
+- **all**: General all rule to get all output files for MPRAsnakeflow (default rule).
+- **all_assignments**: All rule to get all output files for the assignments workflow.
+- **all_qc_report**: All rule to generate QC reports.
 - **assignment_attach_idx**: Extract the index sequence and add it to the header.
-- **assignment_collect**: Collect mapped reads into one BAM.
+- **assignment_check_design**: Check if the design file is correct and no duplicated sequences are present (FW and reverse). Also check if no duplicated headers and no illegal characters in header.
+- **assignment_collect**: Collect mapped reads.
 - **assignment_collectBCs**: Get the barcodes.
-- **assignment_fastq_split**: Split the fastq files into N files for parallelization. N is given by `split_read` in the configuration file.
-- **assignment_filter**: Filter the barcodes file based on the config given in the config file. Results are here: :code:`results/assignment/<assignment_name>/assignment_barcodes.<config_name>.tsv.gz`.
-- **assignment_flagstat**: Run samtools flagstat. Results are in :code:`results/assignment/<assignment_name>/statistic/assignment/bam_stats.txt`.
-- **assignment_mapping_bwa**: Map the reads to the reference using BWA.
-- **assignment_merge**: Merge the forward, reverse, and barcode fastq files into one.
+- **assignment_fastq_split**: Split the fastq files into n files for parallelisation.
+- **assignment_filter**: Filter the barcodes file based on the config given in the config-file. Results are here: :code:`results/assignment/<assignment_name>/assignment_barcodes.<config_name>.tsv.gz`.
+- **assignment_flagstat**: Run samtools flagstat
+- **assignment_hybridFWDRead_get_reads_by_cutadapt**: Get the barcode and read from the FWD read using cutadapt. Uses the paired end mode of cutadapt to write the FWD and BC read.
+- **assignment_hybridFWDRead_get_reads_by_length**: Get the barcode and read from the FW read using fixed length
+- **assignment_idx_bam**: Index the BAM file
+- **assignment_mapping_bbmap**: Map the reads to the reference and sort unsing bwa mem.
+- **assignment_mapping_bbmap_getBCs**: Get the barcodes with the bbmap routine.
+- **assignment_mapping_bwa**: Map the reads to the reference and sort unsing bwa mem.
+- **assignment_mapping_bwa_getBCs**: Get the barcodes with the bwa mem routine.
+- **assignment_mapping_bwa_getBCs_additional_filter**: Get the barcodes with a python script to rescue alignments with 0 mapping quality according to bwa.
+- **assignment_mapping_bwa_ref**: Create mapping reference for BWA from design file.
+- **assignment_mapping_exact**: Map the reads to the reference and sort using exact match.
+- **assignment_mapping_exact_reference**: Create reference to map the exact design
+- **assignment_merge**: Merge the FW,REV and BC fastq files into one. Extract the index sequence and add it to the header.
+- **assignment_preprocessing_adapter_remove**: Remove adapter sequence from the reads (3' or 5'). Uses cutadapt to trim adapters based on the primer direction.
+- **assignment_statistic_assignedCounts**: Statistic of the assigned counts.
+- **assignment_statistic_assignment**: Statistic of the filtered assignment.
+- **assignment_statistic_quality_metric**: Quality metrics of the assignment run
+- **assignment_statistic_totalCounts**: Statistic of the total (unfiltered counts).
+- **qc_report_assoc**: This rule generates the QC report for the assignment.
+
 
 Output
 ==========
 
-The output can be found in the folder defined by the option :code:`results/assignment/`. It is structured in folders of the condition as follows:
+The output can be found in the folder defined by the option :code:`results/assignment/`. It is structured in folders of the assignment name, defined in the config file. It is structured in folders of the assignment name as follows:
 
 Files
 -------------
@@ -122,27 +147,28 @@ File tree of the result folder (names in :code:`< >` can be specified in the con
         ├── BCs
         ├── aligned_merged_reads.bam
         ├── aligned_merged_reads.bam.bai
-        ├── assignment_barcodes.default.tsv.gz
-        ├── assignment_barcodes_with_ambiguous.default.tsv.gz
+        ├── assignment_barcodes.<config_name>.tsv.gz
+        ├── assignment_barcodes_with_ambiguous.<config_name>.tsv.gz
         ├── barcodes_incl_other.tsv.gz
         ├── bbmap
         ├── design_check.done
         ├── design_check.err
         ├── fastq
         │   └── splits
-        ├── qc_report.default.html
+        ├── qc_report.<config_name>.html
         ├── reference
         │   └── reference.fa
         └── statistic
-            ├── assigned_counts.default.tsv
+            ├── assigned_counts.<config_name>.tsv
             ├── assignment
             │   └── bam_stats.txt
-            ├── assignment.default.png
-            ├── assignment.default.tsv.gz
+            ├── assignment.<config_name>.png
+            ├── assignment.<config_name>.tsv.gz
             └── total_counts.tsv
 
 Key output files:
-- **qc_report.default.html**: QC report of the assignment.
+
+- **qc_report.<config_name>.html**: QC report of the assignment.
 - **total_counts.tsv**: Raw statistics of barcodes mapped to oligos.
 - **assigned_counts.<config_name>.tsv**: Statistics of barcodes mapped to oligos after filtering.
 - **assignment.<config_name>.tsv.gz**: Average/median support of barcodes per oligo.

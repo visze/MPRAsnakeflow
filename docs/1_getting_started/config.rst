@@ -81,13 +81,7 @@ For each assignment you want to process, you must give it a name like :code:`exa
 :BC:
     List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
 :adapters:
-    (Optional) List of adapter sequences to trim after merging the reads. Can be specified with:
-
-    :3prime:
-        (Optional) List of adapter sequence at the 3' end that should be removed.
-    :5prime:
-        (Optional) List of adapter sequence at the 5' end that should be removed.
-
+    (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, BC). See :ref:`Adapter trimming` for a detailed overview.
 :NGmerge:
     (Optional) Options for NGmerge. NGmerge is used to merge FW and REV reads. The following options are possible (we recommend using the default values):
 
@@ -140,8 +134,8 @@ The experiment workflow is configured in the :code:`experiments` section. Each e
     Length of the barcode. This is used to extract the barcode from the index read. The barcode is extracted from the first :code:`bc_length` bases of the index read. When no reverse read is given and :code:`adapter` is not set teh exact length is used to extract the DNA BC from the FW read.
 :umi_length:
     (Optional) Length of the UMI. This is used to extract the UMI from the index read. The UMI is extracted from the last :code:`umi_length` bases of the index read. Please provide if you use UMIs.
-:adapter:
-    (Optional) Adapter sequence in the FW read when no reverse read is given. This is used to trim the sequence and retrieve the BC using cutadapt.
+:adapters:
+    (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, UMI). See :ref:`Adapter trimming` for a detailed overview.
 :data_folder:
     Folder where the fastq files are located. Files are defined in the :code:`experiment_file`. The full or relative path to the folder should be used.
 :experiment_file:
