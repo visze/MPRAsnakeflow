@@ -149,7 +149,6 @@ plot_correlations_dna <- function(data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-  return(rna_p)
 }
 plot_correlations_rna <- function(data, condition, r1, r2, name) {
   rna_p <-
@@ -186,7 +185,6 @@ plot_correlations_rna <- function(data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-  return(rna_p)
 }
 plot_correlations_ratio <- function(data, condition, r1, r2, name) {
   ratio_p <- ggplot(data, aes(ratio_log2.x, ratio_log2.y)) +
@@ -201,7 +199,7 @@ plot_correlations_ratio <- function(data, condition, r1, r2, name) {
       y = 4.5,
       label = sprintf(
         "   r = %.2f",
-        cor(data$ratio_log2.x, res$ratio_log2.y, method = "pearson")
+        cor(data$ratio_log2.x, data$ratio_log2.y, method = "pearson")
       ),
       size = 10
     ) +
@@ -216,11 +214,10 @@ plot_correlations_ratio <- function(data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-  return(ratio_p)
 }
 
 correlate <- function(x, y, method) {
-  return(sprintf("%.5f", cor(x, y, method = method)))
+  sprintf("%.5f", cor(x, y, method = method))
 }
 
 get_correlation_stats <-
@@ -253,9 +250,9 @@ get_correlation_stats <-
       ReplicateB = r2,
       number_Oligos_ReplicateA = n_oligos_r1,
       number_Oligos_ReplicateB = n_oligos_r2,
-      number_Oligos_Joined = data %>% nrow(),
-      fraction_Oligos_ReplicateA = (data %>% nrow() / n_oligos_r1),
-      fraction_Oligos_ReplicateB = (data %>% nrow() / n_oligos_r2),
+      number_Oligos_Joined = data |> nrow(),
+      fraction_Oligos_ReplicateA = (data |> nrow() / n_oligos_r1),
+      fraction_Oligos_ReplicateB = (data |> nrow() / n_oligos_r2),
       DNA_spearman = correlate(data$dna_normalized.x, data$dna_normalized.y, "spearman"),
       RNA_spearman = correlate(data$rna_normalized.x, data$rna_normalized.y, "spearman"),
       Ratio_spearman = correlate(data$ratio.x, data$ratio.y, "spearman"),
@@ -276,7 +273,6 @@ get_correlation_stats <-
       NormSymmetry = norm,
       stringsAsFactors = FALSE
     )
-    return(outs)
   }
 
 write_correlation_plots <- function(plots, name) {
@@ -310,33 +306,32 @@ read_data <- function(file) {
     header = TRUE,
     comment.char = "",
     stringsAsFactors = FALSE
-  ) %>%
-    filter(oligo_name != "no_BC") %>%
+  ) |>
+    filter(oligo_name != "no_BC") |>
     mutate(
       dna_normalized_log2 = log2(dna_normalized),
       rna_normalized_log2 = log2(rna_normalized),
       ratio_log2 = log2(ratio)
     )
-  return(data)
 }
 
 
 print("Read data")
 all <- data.frame()
 
-for (n in 1:(data %>% nrow())) {
+for (n in 1:(data |> nrow())) {
   print(data[n, ]$File)
   print(data)
   assigned_counts <- read_data(as.character(data[n, ]$File))
   if (nrow(assigned_counts) > 0) { # can be 0 when no BCs are assigned
     assigned_counts["replicate"] <- toString(data[n, ]$Replicate)
-    all <- all %>% bind_rows(assigned_counts)
+    all <- all |> bind_rows(assigned_counts)
   }
 }
 
 if (use_labels) {
-  all <- all %>%
-    left_join(label_f, by = c("oligo_name")) %>%
+  all <- all |>
+    left_join(label_f, by = c("oligo_name")) |>
     mutate(label = replace_na(label, "NA"))
 } else {
   if (nrow(all) > 0) { # can be 0 when no BCs are assigned
@@ -344,7 +339,7 @@ if (use_labels) {
   }
 }
 
-if (data %>% nrow() > 1 && nrow(all) > 1) {
+if (data |> nrow() > 1 && nrow(all) > 1) {
   print("Pairwise comparisons")
   # make pairwise combinations
   selected <- combn(data$Replicate, 2)
@@ -362,20 +357,20 @@ if (data %>% nrow() > 1 && nrow(all) > 1) {
     print(selected[, i])
     r1 <- selected[1, i]
     r2 <- selected[2, i]
-    data1 <- all %>% filter(replicate == r1)
-    data2 <- all %>% filter(replicate == r2)
+    data1 <- all |> filter(replicate == r1)
+    data2 <- all |> filter(replicate == r2)
 
-    n_oligos_r1 <- data1 %>% nrow()
-    n_oligos_r2 <- data2 %>% nrow()
+    n_oligos_r1 <- data1 |> nrow()
+    n_oligos_r2 <- data2 |> nrow()
 
-    n_oligos_r1_thres <- data1 %>%
-      filter(n_bc >= thresh) %>%
+    n_oligos_r1_thres <- data1 |>
+      filter(n_bc >= thresh) |>
       nrow()
-    n_oligos_r2_thres <- data2 %>%
-      filter(n_bc >= thresh) %>%
+    n_oligos_r2_thres <- data2 |>
+      filter(n_bc >= thresh) |>
       nrow()
 
-    res <- data1 %>% inner_join(data2, by = c("oligo_name"))
+    res <- data1 |> inner_join(data2, by = c("oligo_name"))
 
     plots_correlations_dna[[i]] <-
       plot_correlations_dna(res, cond, r1, r2, "pairwise")
@@ -384,7 +379,7 @@ if (data %>% nrow() > 1 && nrow(all) > 1) {
     plots_correlations_ratio[[i]] <-
       plot_correlations_ratio(res, cond, r1, r2, "pairwise")
 
-    stats_correlations <- stats_correlations %>%
+    stats_correlations <- stats_correlations |>
       bind_rows(
         get_correlation_stats(
           res,
@@ -399,15 +394,15 @@ if (data %>% nrow() > 1 && nrow(all) > 1) {
 
     # Min Threshold
     res <-
-      res %>% filter(n_bc.x >= thresh, n_bc.y >= thresh)
+      res |> filter(n_bc.x >= thresh, n_bc.y >= thresh)
     plots_cor_min_thresh_dna[[i]] <-
-      plot_correlations_dna(res, cond, r1, r2, "pairwise_minThreshold")
+      plot_correlations_dna(res, cond, r1, r2, "pairwise.minThreshold")
     plots_cor_min_thresh_rna[[i]] <-
-      plot_correlations_rna(res, cond, r1, r2, "pairwise_minThreshold")
+      plot_correlations_rna(res, cond, r1, r2, "pairwise.minThreshold")
     plots_cor_min_thresh_ratio[[i]] <-
-      plot_correlations_ratio(res, cond, r1, r2, "pairwise_minThreshold")
+      plot_correlations_ratio(res, cond, r1, r2, "pairwise.minThreshold")
 
-    stats_cor_min_thresh <- stats_cor_min_thresh %>%
+    stats_cor_min_thresh <- stats_cor_min_thresh |>
       bind_rows(
         get_correlation_stats(
           res,
@@ -416,43 +411,43 @@ if (data %>% nrow() > 1 && nrow(all) > 1) {
           cond,
           r1,
           r2,
-          "correlation_minThreshold"
+          "correlation.minThreshold"
         )
       )
   }
 
   write_correlation_plots(
     plots_correlations_dna,
-    sprintf("%s_DNA_pairwise.png", outdir)
+    sprintf("%s.DNA.pairwise.png", outdir)
   )
   write_correlation_plots(
     plots_correlations_rna,
-    sprintf("%s_RNA_pairwise.png", outdir)
+    sprintf("%s.RNA.pairwise.png", outdir)
   )
   write_correlation_plots(
     plots_correlations_ratio,
-    sprintf("%s_Ratio_pairwise.png", outdir)
+    sprintf("%s.Ratio.pairwise.png", outdir)
   )
   write_correlation_plots(
     plots_cor_min_thresh_dna,
-    sprintf("%s_DNA_pairwise_minThreshold.png", outdir)
+    sprintf("%s.DNA.pairwise.minThreshold.png", outdir)
   )
   write_correlation_plots(
     plots_cor_min_thresh_rna,
-    sprintf("%s_RNA_pairwise_minThreshold.png", outdir)
+    sprintf("%s.RNA.pairwise.minThreshold.png", outdir)
   )
   write_correlation_plots(
     plots_cor_min_thresh_ratio,
-    sprintf("%s_Ratio_pairwise_minThreshold.png", outdir)
+    sprintf("%s.Ratio.pairwise.minThreshold.png", outdir)
   )
 
   write_correlation(
     stats_correlations,
-    sprintf("%s_correlation.tsv", outdir)
+    sprintf("%s.correlation.tsv", outdir)
   )
   write_correlation(
     stats_cor_min_thresh,
-    sprintf("%s_correlation_minThreshold.tsv", outdir)
+    sprintf("%s.correlation.minThreshold.tsv", outdir)
   )
 }
 

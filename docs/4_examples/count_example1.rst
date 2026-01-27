@@ -148,132 +148,193 @@ If the dry-run does not give any errors, run the workflow using 30 threads:
 
 Results
 -------
-All output files will be in the :code:`results/experiments/countBasic` folder.
 
-To generate a final report, use the following command:
-
-.. code-block:: bash
-
-    snakemake --config config.yml --snakefile /home/user/MPRAsnakeflow/workflow/Snakefile --report report.html
-
-This HTML report contains information about the Snakemake run and integrates statistics tables and plots.
+All output files will be in the :code:`results/experiments/countBasic` folder. A nice overview (QC report) is shown in ::code:`results/experiments/countBasic/qc_report.default.html`. This HTML report contains information about statistics tables and plots. You can find an example qc report here: `Example Experiment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/count_example1.qc_report.default.html>`_.
 
 Total file tree of the results folder:
 
 .. code-block:: text
 
-    results
-    └── experiments
-        └── countBasic
-            ├── assigned_counts
-            │   └── fromWorkflow
-            │       ├── default
-            │       │   ├── HEPG2.1.merged_assigned_counts.tsv.gz
-            │       │   ├── HEPG2.2.merged_assigned_counts.tsv.gz
-            │       │   ├── HEPG2.3.merged_assigned_counts.tsv.gz
-            │       │   ├── HEPG2_allreps_merged.tsv.gz
-            │       │   └── HEPG2_allreps_minThreshold_merged.tsv.gz
-            │       ├── HEPG2.1.DNA.final_counts.config.default.tsv.gz
-            │       ├── HEPG2.1.merged.config.default.tsv.gz
-            │       ├── HEPG2.1.RNA.final_counts.config.default.tsv.gz
-            │       ├── HEPG2.2.DNA.final_counts.config.default.tsv.gz
-            │       ├── HEPG2.2.merged.config.default.tsv.gz
-            │       ├── HEPG2.2.RNA.final_counts.config.default.tsv.gz
-            │       ├── HEPG2.3.DNA.final_counts.config.default.tsv.gz
-            │       ├── HEPG2.3.merged.config.default.tsv.gz
-            │       └── HEPG2.3.RNA.final_counts.config.default.tsv.gz
-            ├── assignment
-            │   └── fromWorkflow.tsv.gz
-            ├── counts
-            │   ├── HEPG2.1.DNA.bam
-            │   ├── HEPG2.1.DNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.1.DNA_final_counts.tsv.gz
-            │   ├── HEPG2.1.DNA_raw_counts.tsv.gz
-            │   ├── HEPG2.1.merged.config.default.tsv.gz
-            │   ├── HEPG2.1.RNA.bam
-            │   ├── HEPG2.1.RNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.1.RNA_final_counts.tsv.gz
-            │   ├── HEPG2.1.RNA_raw_counts.tsv.gz
-            │   ├── HEPG2.2.DNA.bam
-            │   ├── HEPG2.2.DNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.2.DNA_final_counts.tsv.gz
-            │   ├── HEPG2.2.DNA_raw_counts.tsv.gz
-            │   ├── HEPG2.2.merged.config.default.tsv.gz
-            │   ├── HEPG2.2.RNA.bam
-            │   ├── HEPG2.2.RNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.2.RNA_final_counts.tsv.gz
-            │   ├── HEPG2.2.RNA_raw_counts.tsv.gz
-            │   ├── HEPG2.3.DNA.bam
-            │   ├── HEPG2.3.DNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.3.DNA_final_counts.tsv.gz
-            │   ├── HEPG2.3.DNA_raw_counts.tsv.gz
-            │   ├── HEPG2.3.merged.config.default.tsv.gz
-            │   ├── HEPG2.3.RNA.bam
-            │   ├── HEPG2.3.RNA_filtered_counts.tsv.gz
-            │   ├── HEPG2.3.RNA_final_counts.tsv.gz
-            │   └── HEPG2.3.RNA_raw_counts.tsv.gz
-            └── statistic
-                ├── assigned_counts
-                │   └── fromWorkflow
-                │       ├── default
-                │       │   ├── combined
-                │       │   │   └── HEPG2.merged_assigned_counts.statistic.tsv.gz
-                │       │   ├── HEPG2.1.merged_assigned_counts.statistic.tsv.gz
-                │       │   ├── HEPG2.2.merged_assigned_counts.statistic.tsv.gz
-                │       │   ├── HEPG2.3.merged_assigned_counts.statistic.tsv.gz
-                │       │   ├── HEPG2_average_allreps_merged.tsv.gz
-                │       │   ├── HEPG2.barcodesPerInsert.png
-                │       │   ├── HEPG2.correlation_minThreshold.tsv
-                │       │   ├── HEPG2.correlation.tsv
-                │       │   ├── HEPG2.DNA.pairwise_minThreshold.png
-                │       │   ├── HEPG2.DNA.pairwise.png
-                │       │   ├── HEPG2.group_barcodesPerInsert_box_minThreshold.png
-                │       │   ├── HEPG2.group_barcodesPerInsert_box.png
-                │       │   ├── HEPG2.Ratio.pairwise_minThreshold.png
-                │       │   ├── HEPG2.Ratio.pairwise.png
-                │       │   ├── HEPG2.RNA.pairwise_minThreshold.png
-                │       │   └── HEPG2.RNA.pairwise.png
-                │       ├── HEPG2.1.DNA.default.statistic.tsv.gz
-                │       ├── HEPG2.1.RNA.default.statistic.tsv.gz
-                │       ├── HEPG2.2.DNA.default.statistic.tsv.gz
-                │       ├── HEPG2.2.RNA.default.statistic.tsv.gz
-                │       ├── HEPG2.3.DNA.default.statistic.tsv.gz
-                │       └── HEPG2.3.RNA.default.statistic.tsv.gz
-                ├── barcode
-                │   ├── assigned_counts
-                │   │   └── fromWorkflow
-                │   │       ├── HEPG2.default.barcode_correlation.tsv
-                │   │       ├── HEPG2.default.barcode.DNA_pairwise.png
-                │   │       ├── HEPG2.default.barcode.Ratio_pairwise.png
-                │   │       ├── HEPG2.default.barcode.RNA_pairwise.png
-                │   │       ├── HEPG2.default.DNA_perBarcode.png
-                │   │       └── HEPG2.default.RNA_perBarcode.png
-                │   └── counts
-                │       ├── HEPG2.default.barcode_correlation.tsv
-                │       ├── HEPG2.default.barcode.DNA_pairwise.png
-                │       ├── HEPG2.default.barcode.Ratio_pairwise.png
-                │       ├── HEPG2.default.barcode.RNA_pairwise.png
-                │       ├── HEPG2.default.DNA_perBarcode.png
-                │       └── HEPG2.default.RNA_perBarcode.png
-                ├── bc_overlap.assigned_counts.default.fromWorkflow.tsv
-                ├── bc_overlap.counts.default.tsv
-                ├── counts
-                │   ├── BCNucleotideComposition.HEPG2.1.DNA.tsv.gz
-                │   ├── BCNucleotideComposition.HEPG2.1.RNA.tsv.gz
-                │   ├── BCNucleotideComposition.HEPG2.2.DNA.tsv.gz
-                │   ├── BCNucleotideComposition.HEPG2.2.RNA.tsv.gz
-                │   ├── BCNucleotideComposition.HEPG2.3.DNA.tsv.gz
-                │   └── BCNucleotideComposition.HEPG2.3.RNA.tsv.gz
-                ├── counts.filtered.tsv
-                ├── counts.freqUMIs.HEPG2.1.DNA.txt
-                ├── counts.freqUMIs.HEPG2.1.RNA.txt
-                ├── counts.freqUMIs.HEPG2.2.DNA.txt
-                ├── counts.freqUMIs.HEPG2.2.RNA.txt
-                ├── counts.freqUMIs.HEPG2.3.DNA.txt
-                ├── counts.freqUMIs.HEPG2.3.RNA.txt
-                ├── counts.raw.tsv
-                ├── statistic_assigned_bc_correlation_merged_fromWorkflow_default.tsv
-                ├── statistic_assigned_counts_merged_fromWorkflow_default.tsv
-                ├── statistic_assigned_counts_single_fromWorkflow_default.tsv
-                ├── statistic_bc_correlation_merged_default.tsv
-                └── statistic_oligo_correlation_merged_fromWorkflow_default.tsv
+    results/
+    ├── experiments
+    │   └── exampleCount
+    │       ├── assigned_counts
+    │       │   └── fromFile
+    │       │       ├── HEPG2.1.DNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.1.DNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.1.RNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.1.RNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.1.merged.config.default.tsv.gz
+    │       │       ├── HEPG2.1.merged.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.2.DNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.2.DNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.2.RNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.2.RNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.2.merged.config.default.tsv.gz
+    │       │       ├── HEPG2.2.merged.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.3.DNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.3.DNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.3.RNA.final_counts.config.default.tsv.gz
+    │       │       ├── HEPG2.3.RNA.final_counts.config.outlierZscore.tsv.gz
+    │       │       ├── HEPG2.3.merged.config.default.tsv.gz
+    │       │       ├── HEPG2.3.merged.config.outlierZscore.tsv.gz
+    │       │       ├── default
+    │       │       │   ├── HEPG2.1.barcode_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.1.barcodesRemoved_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.1.merged_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.2.barcode_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.2.barcodesRemoved_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.2.merged_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.3.barcode_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.3.barcodesRemoved_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.3.merged_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.allreps.merged.combined.tsv.gz
+    │       │       │   ├── HEPG2.allreps.merged.tsv.gz
+    │       │       │   ├── HEPG2.allreps.merged_barcode_assigned_counts.tsv.gz
+    │       │       │   ├── HEPG2.allreps_minThreshold.merged.combined.tsv.gz
+    │       │       │   ├── HEPG2.allreps_minThreshold.merged.tsv.gz
+    │       │       │   └── HEPG2.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz
+    │       │       └── outlierZscore
+    │       │           ├── HEPG2.1.barcode_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.1.barcodesRemoved_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.1.merged_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.2.barcode_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.2.barcodesRemoved_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.2.merged_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.3.barcode_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.3.barcodesRemoved_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.3.merged_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.allreps.merged.combined.tsv.gz
+    │       │           ├── HEPG2.allreps.merged.tsv.gz
+    │       │           ├── HEPG2.allreps.merged_barcode_assigned_counts.tsv.gz
+    │       │           ├── HEPG2.allreps_minThreshold.merged.combined.tsv.gz
+    │       │           ├── HEPG2.allreps_minThreshold.merged.tsv.gz
+    │       │           └── HEPG2.allreps_minThreshold.merged_barcode_assigned_counts.tsv.gz
+    │       ├── assignment
+    │       │   └── fromFile.tsv.gz
+    │       ├── counts
+    │       │   ├── HEPG2.1.DNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.1.DNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.1.RNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.1.RNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.1.merged.config.default.tsv.gz
+    │       │   ├── HEPG2.1.merged.config.outlierZscore.tsv.gz
+    │       │   ├── HEPG2.2.DNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.2.DNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.2.RNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.2.RNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.2.merged.config.default.tsv.gz
+    │       │   ├── HEPG2.2.merged.config.outlierZscore.tsv.gz
+    │       │   ├── HEPG2.3.DNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.3.DNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.3.RNA.filtered_counts.tsv.gz
+    │       │   ├── HEPG2.3.RNA.final_counts.tsv.gz
+    │       │   ├── HEPG2.3.merged.config.default.tsv.gz
+    │       │   ├── HEPG2.3.merged.config.outlierZscore.tsv.gz
+    │       │   ├── useUMI.HEPG2.1.DNA.bam
+    │       │   ├── useUMI.HEPG2.1.DNA.raw_counts.tsv.gz
+    │       │   ├── useUMI.HEPG2.1.RNA.bam
+    │       │   ├── useUMI.HEPG2.1.RNA.raw_counts.tsv.gz
+    │       │   ├── useUMI.HEPG2.2.DNA.bam
+    │       │   ├── useUMI.HEPG2.2.DNA.raw_counts.tsv.gz
+    │       │   ├── useUMI.HEPG2.2.RNA.bam
+    │       │   ├── useUMI.HEPG2.2.RNA.raw_counts.tsv.gz
+    │       │   ├── useUMI.HEPG2.3.DNA.bam
+    │       │   ├── useUMI.HEPG2.3.DNA.raw_counts.tsv.gz
+    │       │   ├── useUMI.HEPG2.3.RNA.bam
+    │       │   └── useUMI.HEPG2.3.RNA.raw_counts.tsv.gz
+    │       ├── qc_metrics.HEPG2.fromFile.default.json
+    │       ├── qc_metrics.HEPG2.fromFile.outlierZscore.json
+    │       ├── qc_report.HEPG2.fromFile.default.html
+    │       ├── qc_report.HEPG2.fromFile.outlierZscore.html
+    │       ├── reporter_experiment.barcode.HEPG2.fromFile.default.all.tsv.gz
+    │       ├── reporter_experiment.barcode.HEPG2.fromFile.default.min_oligo_threshold_10.tsv.gz
+    │       ├── reporter_experiment.barcode.HEPG2.fromFile.outlierZscore.all.tsv.gz
+    │       ├── reporter_experiment.barcode.HEPG2.fromFile.outlierZscore.min_oligo_threshold_10.tsv.gz
+    │       ├── reporter_experiment.oligo.HEPG2.fromFile.default.all.tsv.gz
+    │       ├── reporter_experiment.oligo.HEPG2.fromFile.default.min_oligo_threshold_10.tsv.gz
+    │       ├── reporter_experiment.oligo.HEPG2.fromFile.outlierZscore.all.tsv.gz
+    │       ├── reporter_experiment.oligo.HEPG2.fromFile.outlierZscore.min_oligo_threshold_10.tsv.gz
+    │       └── statistic
+    │           ├── assigned_counts
+    │           │   └── fromFile
+    │           │       ├── default
+    │           │       │   ├── HEPG2.DNA.pairwise.minThreshold.png
+    │           │       │   ├── HEPG2.DNA.pairwise.png
+    │           │       │   ├── HEPG2.RNA.pairwise.minThreshold.png
+    │           │       │   ├── HEPG2.RNA.pairwise.png
+    │           │       │   ├── HEPG2.Ratio.pairwise.minThreshold.png
+    │           │       │   ├── HEPG2.Ratio.pairwise.png
+    │           │       │   ├── HEPG2.average_allreps.merged.tsv.gz
+    │           │       │   ├── HEPG2.barcodesPerInsert.png
+    │           │       │   ├── HEPG2.dna_vs_rna.png
+    │           │       │   ├── HEPG2.dna_vs_rna_minThreshold.png
+    │           │       │   ├── HEPG2.group_barcodesPerInsert_box.png
+    │           │       │   └── HEPG2.group_barcodesPerInsert_box_minThreshold.png
+    │           │       └── outlierZscore
+    │           │           ├── HEPG2.DNA.pairwise.minThreshold.png
+    │           │           ├── HEPG2.DNA.pairwise.png
+    │           │           ├── HEPG2.RNA.pairwise.minThreshold.png
+    │           │           ├── HEPG2.RNA.pairwise.png
+    │           │           ├── HEPG2.Ratio.pairwise.minThreshold.png
+    │           │           ├── HEPG2.Ratio.pairwise.png
+    │           │           ├── HEPG2.average_allreps.merged.tsv.gz
+    │           │           ├── HEPG2.barcodesPerInsert.png
+    │           │           ├── HEPG2.dna_vs_rna.png
+    │           │           ├── HEPG2.dna_vs_rna_minThreshold.png
+    │           │           ├── HEPG2.group_barcodesPerInsert_box.png
+    │           │           └── HEPG2.group_barcodesPerInsert_box_minThreshold.png
+    │           ├── barcode
+    │           │   ├── assigned_counts
+    │           │   │   └── fromFile
+    │           │   │       ├── HEPG2.default.DNA.perBarcode.png
+    │           │   │       ├── HEPG2.default.RNA.perBarcode.png
+    │           │   │       ├── HEPG2.default.barcode.DNA.pairwise.png
+    │           │   │       ├── HEPG2.default.barcode.RNA.pairwise.png
+    │           │   │       ├── HEPG2.default.barcode.Ratio.pairwise.png
+    │           │   │       ├── HEPG2.outlierZscore.DNA.perBarcode.png
+    │           │   │       ├── HEPG2.outlierZscore.RNA.perBarcode.png
+    │           │   │       ├── HEPG2.outlierZscore.barcode.DNA.pairwise.png
+    │           │   │       ├── HEPG2.outlierZscore.barcode.RNA.pairwise.png
+    │           │   │       └── HEPG2.outlierZscore.barcode.Ratio.pairwise.png
+    │           │   └── counts
+    │           │       ├── HEPG2.default.DNA.perBarcode.png
+    │           │       ├── HEPG2.default.RNA.perBarcode.png
+    │           │       ├── HEPG2.default.barcode.DNA.pairwise.png
+    │           │       ├── HEPG2.default.barcode.RNA.pairwise.png
+    │           │       ├── HEPG2.default.barcode.Ratio.pairwise.png
+    │           │       ├── HEPG2.outlierZscore.DNA.perBarcode.png
+    │           │       ├── HEPG2.outlierZscore.RNA.perBarcode.png
+    │           │       ├── HEPG2.outlierZscore.barcode.DNA.pairwise.png
+    │           │       ├── HEPG2.outlierZscore.barcode.RNA.pairwise.png
+    │           │       └── HEPG2.outlierZscore.barcode.Ratio.pairwise.png
+    │           ├── bc_overlap.assigned_counts.default.fromFile.tsv
+    │           ├── bc_overlap.assigned_counts.outlierZscore.fromFile.tsv
+    │           ├── bc_overlap.counts.default.tsv
+    │           ├── bc_overlap.counts.outlierZscore.tsv
+    │           ├── counts
+    │           │   ├── BCNucleotideComposition.HEPG2.1.DNA.tsv.gz
+    │           │   ├── BCNucleotideComposition.HEPG2.1.RNA.tsv.gz
+    │           │   ├── BCNucleotideComposition.HEPG2.2.DNA.tsv.gz
+    │           │   ├── BCNucleotideComposition.HEPG2.2.RNA.tsv.gz
+    │           │   ├── BCNucleotideComposition.HEPG2.3.DNA.tsv.gz
+    │           │   └── BCNucleotideComposition.HEPG2.3.RNA.tsv.gz
+    │           ├── counts.filtered.tsv
+    │           ├── counts.freqUMIs.HEPG2.1.DNA.txt
+    │           ├── counts.freqUMIs.HEPG2.1.RNA.txt
+    │           ├── counts.freqUMIs.HEPG2.2.DNA.txt
+    │           ├── counts.freqUMIs.HEPG2.2.RNA.txt
+    │           ├── counts.freqUMIs.HEPG2.3.DNA.txt
+    │           ├── counts.freqUMIs.HEPG2.3.RNA.txt
+    │           ├── counts.raw.tsv
+    │           ├── statistic_assigned_bc_correlation_merged.fromFile.default.tsv
+    │           ├── statistic_assigned_bc_correlation_merged.fromFile.outlierZscore.tsv
+    │           ├── statistic_assigned_counts_merged.fromFile.default.tsv
+    │           ├── statistic_assigned_counts_merged.fromFile.outlierZscore.tsv
+    │           ├── statistic_assigned_counts_single.fromFile.default.tsv
+    │           ├── statistic_assigned_counts_single.fromFile.outlierZscore.tsv
+    │           ├── statistic_bc_correlation_merged.default.tsv
+    │           ├── statistic_bc_correlation_merged.outlierZscore.tsv
+    │           ├── statistic_oligo_correlation_merged.fromFile.default.tsv
+    │           └── statistic_oligo_correlation_merged.fromFile.outlierZscore.tsv
+    └── logs

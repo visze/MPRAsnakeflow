@@ -1,4 +1,4 @@
-rule experiment_preprocess_trim_reads:
+rule experiment_preprocessing_trim_reads:
     """
     Getting the BCs from the reads using cutadapt.
     """
@@ -10,19 +10,13 @@ rule experiment_preprocess_trim_reads:
             wc.read_type, wc.project, wc.condition, wc.replicate, wc.type
         ),
     output:
-        trimmed_reads=temp(
-            "results/experiments/{project}/fastq/{read_type}.trimmed.{condition}.{replicate}.{type}.fastq.gz"
-        ),
-    params:
-        adapter=lambda wc: config["experiments"][wc.project]["adapters"],
+        trimmed_reads="results/experiments/{project}/fastq/{read_type}.trimmed.{condition}.{replicate}.{type}.fastq.gz",
     wildcard_constraints:
         read_type=r"(FWD)|(REV)|(UMI)",
     params:
         adapters=lambda wc: getExperimentCutadaptAdapters(wc.project, wc.read_type),
     log:
-        temp(
-            "results/logs/experiment/preprocess/trim_reads.{read_type}.{project}.{condition}.{replicate}.{type}.log"
-        ),
+        "results/logs/experiment/preprocessing/trim_reads.{project}.{condition}.{replicate}.{type}.{read_type}.log",
     shell:
         """
         cutadapt --cores {threads} {params.adapters} \

@@ -164,7 +164,7 @@ The folder should look like this:
 MPRAsnakeflow
 =================================
 
-We will run assignmenta nd count workflow together. But it is of course possible to run them seperately using different config files. Then you have to use the assignment `fromFile` not `fromConfig`. But first we need to define the config file and the experiment CSV file to map DNA/RNA counts to the correct replicate.
+We will run assignment and count workflow together. But it is of course possible to run them separately using different config files. Then you have to use the assignment `fromFile` not `fromConfig`. But first we need to define the config file and the experiment CSV file to map DNA/RNA counts to the correct replicate.
 
 
 Create config files
@@ -174,15 +174,16 @@ Create config files
 
     cat << 'EOF' >  config.yaml
     ---
-    version: "0.5.4"
+    version: "0.6.0"
     assignments:
         ENCFF074MMOAssignment:
             bc_length: 20
             BC_rev_comp: false
             linker: TCTAGAGGTTCGTCGACGCGATCGCAGGAGCCGCAGTG
             adapters:
-                3prime:
-                    - CGTCAAGCGGCCAGTT
+                REV:
+                    five_prime:
+                        - AACTGGCCGCTTGACG
             alignment_tool:
                 split_number: 30
                 tool: bbmap
@@ -227,7 +228,7 @@ And the :code:`experiment.csv` file to map the DNA/RNA counts to the correct rep
     A549,3,ENCFF448RQK.fastq.gz;ENCFF019RUN.fastq.gz;ENCFF850RIY.fastq.gz;ENCFF966RRE.fastq.gz;ENCFF168OJL.fastq.gz;ENCFF891CIZ.fastq.gz;ENCFF696HJK.fastq.gz;ENCFF491IXU.fastq.gz;ENCFF944CEQ.fastq.gz;ENCFF564JPU.fastq.gz,ENCFF501AHK.fastq.gz
     A549,4,ENCFF448RQK.fastq.gz;ENCFF019RUN.fastq.gz;ENCFF850RIY.fastq.gz;ENCFF966RRE.fastq.gz;ENCFF168OJL.fastq.gz;ENCFF891CIZ.fastq.gz;ENCFF696HJK.fastq.gz;ENCFF491IXU.fastq.gz;ENCFF944CEQ.fastq.gz;ENCFF564JPU.fastq.gz,ENCFF371LCK.fastq.gz
     A549,5,ENCFF448RQK.fastq.gz;ENCFF019RUN.fastq.gz;ENCFF850RIY.fastq.gz;ENCFF966RRE.fastq.gz;ENCFF168OJL.fastq.gz;ENCFF891CIZ.fastq.gz;ENCFF696HJK.fastq.gz;ENCFF491IXU.fastq.gz;ENCFF944CEQ.fastq.gz;ENCFF564JPU.fastq.gz,ENCFF061UCM.fastq.gz
-        EOF
+    EOF
 
 Run snakemake
 -------------
@@ -247,11 +248,10 @@ You should see a list of rules that will be executed. Here is the summary:
 
 .. code-block:: text
 
-    Job stats:                                                                      
+    Job stats:
     job                                                                        count
     -----------------------------------------------------------------------  -------
-    all  1
-    assignment_adapter_remove                                                     30
+    all                                                                            1
     assignment_attach_idx                                                         60
     assignment_check_design                                                        1
     assignment_collect                                                             1
@@ -259,11 +259,12 @@ You should see a list of rules that will be executed. Here is the summary:
     assignment_fastq_split                                                         3
     assignment_filter                                                              1
     assignment_flagstat                                                            1
-    assignment_hybridFWRead_get_reads_by_cutadapt                                  1
+    assignment_hybridFWDRead_get_reads_by_cutadapt                                 1
     assignment_idx_bam                                                             1
     assignment_mapping_bbmap                                                      30
     assignment_mapping_bbmap_getBCs                                               30
     assignment_merge                                                              30
+    assignment_preprocessing_adapter_remove                                        1
     assignment_statistic_assignedCounts                                            1
     assignment_statistic_assignment                                                1
     assignment_statistic_quality_metric                                            1
@@ -279,7 +280,7 @@ You should see a list of rules that will be executed. Here is the summary:
     experiment_counts_dna_rna_merge_counts                                        10
     experiment_counts_filter_counts                                                6
     experiment_counts_final_counts                                                 6
-    experiment_counts_onlyFWD_raw_counts                                            6
+    experiment_counts_onlyFWD_raw_counts                                           6
     experiment_statistic_assigned_counts_combine_BC_assignment_stats               1
     experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper        1
     experiment_statistic_assigned_counts_combine_stats_dna_rna_merge               1
@@ -304,7 +305,7 @@ You should see a list of rules that will be executed. Here is the summary:
     experiment_statistic_quality_metric                                            1
     qc_report_assoc                                                                1
     qc_report_count                                                                1
-    total                                                                        307
+    total                                                                        278
 
 
 When dry-run does not give any errors we will run the workflow. We use a machine with 30 threads/cores to run the workflow and 60GB memory. Therefore :code:`split_number` is set to 30 to parallelize the workflow. Also we are using 10 threads for mapping (bbmap). But snakemake takes care that no more than 30 threads are used.
@@ -322,4 +323,4 @@ Results
 For the assignment all output files will be in the :code:`results/assignment/ENCFF074MMOAssignment` folder. The final assignment is in :code:`results/assignment/ENCFF074MMOAssignment/assignment_barcodes.default.tsv.gz`. Also you should have a look at the qc report: :code:`results/assignment/ENCFF074MMOAssignment/qc_report.default.html`. You can find an example qc report here: `Example assignment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/plasmid_assignment.qc_report.default.html>`_.
 
 
-For the experiment all output files will be in the :code:`results/experiment/ENCFF074MMOExperiment` folder. The final count files is :code:`results/experiment/ENCFF074MMOExperiment/reporter_experiment.barcode.A549.ENCFF074MMOAssignment.default.all.tsv.gz` for the barcode file and :code:`results/experiment/ENCFF074MMOExperiment/reporter_experiment.oligo.A549.ENCFF074MMOAssignment.default.all.tsv.gz` for the aggregated oligo files. Also you should have a look at the qc report: :code:`results/experiment/ENCFF074MMOExperiment/qc_report.A549.ENCFF074MMOAssignment.default.html`. You can find an example qc report here: `Example experiment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/plasmid_experiment.qc_report.A549.ENCFF074MMOAssignment.default.html>`_.
+For the experiment all output files will be in the :code:`results/experiments/ENCFF074MMOExperiment` folder. The final count files is :code:`results/experiments/ENCFF074MMOExperiment/reporter_experiment.barcode.A549.ENCFF074MMOAssignment.default.all.tsv.gz` for the barcode file and :code:`results/experiments/ENCFF074MMOExperiment/reporter_experiment.oligo.A549.ENCFF074MMOAssignment.default.all.tsv.gz` for the aggregated oligo files. Also you should have a look at the qc report: :code:`results/experiments/ENCFF074MMOExperiment/qc_report.A549.ENCFF074MMOAssignment.default.html`. You can find an example qc report here: `Example experiment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/plasmid_experiment.qc_report.A549.ENCFF074MMOAssignment.default.html>`_.

@@ -30,6 +30,7 @@ jobs:
       - name: Formatting
         uses: super-linter/super-linter@v8
         env:
+          LINTER_RULES_PATH: .
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
