@@ -58,7 +58,7 @@ We need the design file and have to modify it by trimming not sequenced adapters
 Reads association data
 ----------------------
 
-There are four sets of association sequencing for this data, which contain a barcode and oligo-forward (FW read) and oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
+There are four sets of association sequencing for this data, which contain a barcode and oligo-forward (FWD read) and oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
 
 .. code-block:: bash
 

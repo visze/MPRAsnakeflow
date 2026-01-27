@@ -1,12 +1,12 @@
 """
 Forward read is a hybrid read with BC at the beginning, then linker sequence and the the insert/oligo.
-This sankefile will extract the BC and FW read from the hybrid read.
+This sankefile will extract the BC and FWD read from the hybrid read.
 """
 
 
 rule assignment_hybridFWDRead_get_reads_by_length:
     """
-    Get the barcode and read from the FW read using fixed length
+    Get the barcode and read from the FWD read using fixed length
     """
     conda:
         getCondaEnv("default.yaml")

@@ -25,7 +25,7 @@ Comma separated file (CSV) that assigns all fastq files present in a directory t
     Condidtion2,3,C2R3_DNA_barcode_F.fastq.gz,C2R3_DNA_barcode_UMI.fastq.gz,C2R3_DNA_barcode_R.fastq.gz,C2R3_RNA_barcode_F.fastq.gz,C2R3_RNA_barcode_UMI.fastq.gz,C2R3_RNA_barcode_R.fastq.gz
     
 
-We allow different flavours of experiment files because sometimes no UMI exists or only a FW read is used. Different options are:
+We allow different flavours of experiment files because sometimes no UMI exists or only a FWD read is used. Different options are:
     * :code:`Condition,Replicate,DNA_BC_F,DNA_UMI,DNA_BC_R,RNA_BC_F,RNA_UMI,RNA_BC_R`
     * :code:`Condition,Replicate,DNA_BC_F,DNA_BC_R,RNA_BC_F,RNA_BC_R`
     * :code:`Condition,Replicate,DNA_BC_F,RNA_BC_F`
@@ -132,11 +132,11 @@ Rules run by snakemake in the experiment workflow. Some rules will be run only i
 - **experiment_counts_filter_counts**: Filter the counts to BCs only of the correct length (defined in the config file)
 - **experiment_counts_final_counts**: Counting BCs. Discarding PCR duplicates (taking BCxUMI only one time)
 - **experiment_counts_final_counts_sampler**: Creates full + new distribution DNA files
-- **experiment_counts_noUMI_create_BAM**: Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
+- **experiment_counts_noUMI_create_BAM**: Create a BAM file from FASTQ input, merge FWD and REV read and save UMI in XI flag.
 - **experiment_counts_noUMI_raw_counts**: Counting BCsxUMIs from the BAM files.
 - **experiment_counts_onlyFWDUMI_raw_counts**: Getting the BCs and UMIs from the reads using fixed length.
 - **experiment_counts_onlyFWD_raw_counts**: Getting the BCs from the reads using fixed length.
-- **experiment_counts_umi_create_BAM**: Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
+- **experiment_counts_umi_create_BAM**: Create a BAM file from FASTQ input, merge FWD and REV read and save UMI in XI flag.
 - **experiment_counts_umi_raw_counts**: Counting BCsxUMIs from the BAM files.
 - **experiment_preprocessing_trim_reads**: Getting the BCs from the reads using cutadapt.
 - **experiment_statistic_assigned_counts_combine_BC_assignment_stats**: Combined assinged counts statistic per condition (DNA and aRNA not merged)

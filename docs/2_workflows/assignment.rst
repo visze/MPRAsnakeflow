@@ -101,14 +101,14 @@ Rules run by Snakemake in the assignment utility:
 - **all_assignments**: All rule to get all output files for the assignments workflow.
 - **all_qc_report**: All rule to generate QC reports.
 - **assignment_attach_idx**: Extract the index sequence and add it to the header.
-- **assignment_check_design**: Check if the design file is correct and no duplicated sequences are present (FW and reverse). Also check if no duplicated headers and no illegal characters in header.
+- **assignment_check_design**: Check if the design file is correct and no duplicated sequences are present (FWD and reverse). Also check if no duplicated headers and no illegal characters in header.
 - **assignment_collect**: Collect mapped reads.
 - **assignment_collectBCs**: Get the barcodes.
 - **assignment_fastq_split**: Split the fastq files into n files for parallelisation.
 - **assignment_filter**: Filter the barcodes file based on the config given in the config-file. Results are here: :code:`results/assignment/<assignment_name>/assignment_barcodes.<config_name>.tsv.gz`.
 - **assignment_flagstat**: Run samtools flagstat
 - **assignment_hybridFWDRead_get_reads_by_cutadapt**: Get the barcode and read from the FWD read using cutadapt. Uses the paired end mode of cutadapt to write the FWD and BC read.
-- **assignment_hybridFWDRead_get_reads_by_length**: Get the barcode and read from the FW read using fixed length
+- **assignment_hybridFWDRead_get_reads_by_length**: Get the barcode and read from the FWD read using fixed length
 - **assignment_idx_bam**: Index the BAM file
 - **assignment_mapping_bbmap**: Map the reads to the reference and sort unsing bwa mem.
 - **assignment_mapping_bbmap_getBCs**: Get the barcodes with the bbmap routine.
@@ -118,7 +118,7 @@ Rules run by Snakemake in the assignment utility:
 - **assignment_mapping_bwa_ref**: Create mapping reference for BWA from design file.
 - **assignment_mapping_exact**: Map the reads to the reference and sort using exact match.
 - **assignment_mapping_exact_reference**: Create reference to map the exact design
-- **assignment_merge**: Merge the FW,REV and BC fastq files into one. Extract the index sequence and add it to the header.
+- **assignment_merge**: Merge the FWD, REV and BC fastq files into one. Extract the index sequence and add it to the header.
 - **assignment_preprocessing_adapter_remove**: Remove adapter sequence from the reads (3' or 5'). Uses cutadapt to trim adapters based on the primer direction.
 - **assignment_statistic_assignedCounts**: Statistic of the assigned counts.
 - **assignment_statistic_assignment**: Statistic of the filtered assignment.

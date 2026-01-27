@@ -75,15 +75,15 @@ For each assignment you want to process, you must give it a name like :code:`exa
 :linker:
     (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. Uses cutadapt to trim the linker to get the barcode as well as the start of the insert.
 :FWD:
-    List of forward-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+    List of forward-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :REV:
-    (Optional) List of reverse-read files in gzipped fastq format. Files have to overlap the FW read by at least 10 bp (see :code:`NGmerge` and :code:`min_dovetailed_overlap`). The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+    (Optional) List of reverse-read files in gzipped fastq format. Files have to overlap the FWD read by at least 10 bp (see :code:`NGmerge` and :code:`min_dovetailed_overlap`). The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :BC:
-    List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+    List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :adapters:
     (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, BC). See :ref:`Adapter trimming` for a detailed overview.
 :NGmerge:
-    (Optional) Options for NGmerge. NGmerge is used to merge FW and REV reads. The following options are possible (we recommend using the default values):
+    (Optional) Options for NGmerge. NGmerge is used to merge FWD and REV reads. The following options are possible (we recommend using the default values):
 
     :min_overlap:
         (Optional) Minimum overlap of the reads. Default is :code:`20`.
@@ -131,7 +131,7 @@ The experiment workflow is configured in the :code:`experiments` section. Each e
    :end-before: end_experiments
 
 :bc_length:
-    Length of the barcode. This is used to extract the barcode from the index read. The barcode is extracted from the first :code:`bc_length` bases of the index read. When no reverse read is given and :code:`adapter` is not set teh exact length is used to extract the DNA BC from the FW read.
+    Length of the barcode. This is used to extract the barcode from the index read. The barcode is extracted from the first :code:`bc_length` bases of the index read. When no reverse read is given and :code:`adapter` is not set teh exact length is used to extract the DNA BC from the FWD read.
 :umi_length:
     (Optional) Length of the UMI. This is used to extract the UMI from the index read. The UMI is extracted from the last :code:`umi_length` bases of the index read. Please provide if you use UMIs.
 :adapters:

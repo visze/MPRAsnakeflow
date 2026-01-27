@@ -14,7 +14,7 @@ include: "assignment/statistic.smk"
 
 rule assignment_check_design:
     """
-    Check if the design file is correct and no duplicated sequences are present (FW and reverse).
+    Check if the design file is correct and no duplicated sequences are present (FWD and reverse).
     Also check if no duplicated headers and no illegal characters in header.
     """
     conda:
@@ -174,7 +174,7 @@ rule assignment_attach_idx:
 
 rule assignment_merge:
     """
-    Merge the FW,REV and BC fastq files into one.
+    Merge the FWD, REV and BC fastq files into one.
     Extract the index sequence and add it to the header.
     """
     conda:

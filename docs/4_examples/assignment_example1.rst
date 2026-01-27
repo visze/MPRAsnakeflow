@@ -154,7 +154,7 @@ assignment_fastq_split
 assignment_attach_idx
     Extract the index sequence and add it to the header.
 assignment_merge
-   Merge the FW,REV and BC fastq files into one. Extract the index sequence from the middle and end of an Illumina run. Separates reads for Paired End runs. Merge/Adapter trim reads stored in BAM.
+   Merge the FWD, REV and BC fastq files into one. Extract the index sequence from the middle and end of an Illumina run. Separates reads for Paired End runs. Merge/Adapter trim reads stored in BAM.
 assignment_mapping_bbmap
    Map the reads to the reference using BBMap.
 assignment_mapping_bbmap_getBCs

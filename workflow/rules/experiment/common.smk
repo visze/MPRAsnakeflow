@@ -33,7 +33,7 @@ def useUMI(project, type="DNA"):
     return "UMI" in experiments[project] or f"{type}_UMI" in experiments[project]
 
 
-def onlyFW(project, type="DNA"):
+def onlyFWD(project, type="DNA"):
     """
     Helper to check if only forward reads should be used
     """
@@ -147,12 +147,12 @@ def getUMIBamFile(project, condition, replicate, type):
 
 def getRawCounts(project, type):
     """
-    Helper to get the correct raw counts file (umi/noUMI or just FW read)
+    Helper to get the correct raw counts file (umi/noUMI or just FWD read)
     """
     if useUMI(project, type):
-        if onlyFW(project, type):
+        if onlyFWD(project, type):
             return (
-                "results/experiments/{project}/counts/onlyFWUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
+                "results/experiments/{project}/counts/onlyFWDUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
                 % type
             )
         else:
@@ -165,9 +165,9 @@ def getRawCounts(project, type):
             "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
             % type
         )
-    elif onlyFW(project, type):
+    elif onlyFWD(project, type):
         return (
-            "results/experiments/{project}/counts/onlyFW.{condition}.{replicate}.%s.raw_counts.tsv.gz"
+            "results/experiments/{project}/counts/onlyFWD.{condition}.{replicate}.%s.raw_counts.tsv.gz"
             % type
         )
     else:

@@ -40,7 +40,7 @@ We need the design file. Unfortunately the headers are not compatible with our p
 Reads association data
 -----------------------
 
-There are four sets of association sequencing for this data, which contains a barcode and oligo-forward (FW read) and  oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
+There are four sets of association sequencing for this data, which contains a barcode and oligo-forward (FWD read) and  oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
 
 .. note:: You need 23 GB disk space to the download association data!
 

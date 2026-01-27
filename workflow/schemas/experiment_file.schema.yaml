@@ -36,10 +36,10 @@ properties:
     description: BC for RNA used by demultiplexing
   BC_F:
     type: string
-    description: Read for FW BC (for demultiplexing)
+    description: Read for FWD BC (for demultiplexing)
   BC_R:
     type: string
-    description: Read for RV BC (for demultiplexing)
+    description: Read for REV BC (for demultiplexing)
   UMI:
     type: string
     description: Read for UMI (for demultiplexing)
