@@ -68,7 +68,7 @@ avg_outfile <- opt$statistic
 precision <- 4
 
 ## MAKE MASTER TABLE
-master_table <- data.frame()
+master_table <- list()
 for (i in seq_along(files)) {
   file <- files[i]
   rep <- replicates[i]
@@ -76,8 +76,9 @@ for (i in seq_along(files)) {
   table <- as.data.frame(read.table(file, header = TRUE, sep = "\t", comment.char = ""), stringsAsFactors = FALSE)
   table$replicate <- rep
 
-  master_table <- master_table |> bind_rows(table)
+  master_table[[i]] <- table
 }
+master_table <- bind_rows(master_table)
 
 master_table <- master_table |>
   group_by(replicate) |>
