@@ -14,7 +14,7 @@ set-threads:
   assignment_mapping_bbmap: 30
   assignment_collect: 30
   assignment_collectBCs: 20
-  assignment_merge: 10
+  assignment_merge_NGmerge: 10
   assignment_hybridFWDRead_get_reads_by_cutadapt: 10
   assignment_adapter_remove: 2
 set-resources:
@@ -28,7 +28,7 @@ set-resources:
   assignment_hybridFWDRead_get_reads_by_cutadapt:
     runtime: 1200
     mem: 4G
-  assignment_merge:
+  assignment_merge_NGmerge:
     runtime: 480
   assignment_fastq_split:
     runtime: 1440

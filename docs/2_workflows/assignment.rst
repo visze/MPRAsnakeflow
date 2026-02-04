@@ -118,7 +118,8 @@ Rules run by Snakemake in the assignment utility:
 - **assignment_mapping_bwa_ref**: Create mapping reference for BWA from design file.
 - **assignment_mapping_exact**: Map the reads to the reference and sort using exact match.
 - **assignment_mapping_exact_reference**: Create reference to map the exact design
-- **assignment_merge**: Merge the FWD, REV and BC fastq files into one. Extract the index sequence and add it to the header.
+- **assignment_merge_NGmerge**: Merge the FWD, REV and BC fastq files into one using NGmerge.
+- **assignment_merge_fastqjoin**: Merge the FWD, REV and BC fastq files into one using fastq-join.
 - **assignment_preprocessing_adapter_remove**: Remove adapter sequence from the reads (3' or 5'). Uses cutadapt to trim adapters based on the primer direction.
 - **assignment_statistic_assignedCounts**: Statistic of the assigned counts.
 - **assignment_statistic_assignment**: Statistic of the filtered assignment.

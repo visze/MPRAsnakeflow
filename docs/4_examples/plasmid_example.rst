@@ -265,7 +265,7 @@ You should see a list of rules that will be executed. Here is the summary:
     assignment_idx_bam                                                             1
     assignment_mapping_bbmap                                                      30
     assignment_mapping_bbmap_getBCs                                               30
-    assignment_merge                                                              30
+    assignment_merge_NGmerge                                                      30
     assignment_preprocessing_adapter_remove                                        1
     assignment_statistic_assignedCounts                                            1
     assignment_statistic_assignment                                                1

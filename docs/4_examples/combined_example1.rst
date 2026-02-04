@@ -109,7 +109,7 @@ You should see a list of rules that will be executed. This is the summary:
     assignment_idx_bam                                                             1
     assignment_mapping_bbmap                                                      30
     assignment_mapping_bbmap_getBCs                                               30
-    assignment_merge                                                              30
+    assignment_merge_NGmerge                                                      30
     experiment_assigned_counts_combine_replicates_barcode_output                   1
     experiment_assigned_counts_copy_final_all_files                                1
     experiment_assigned_counts_copy_final_thresh_files                             1

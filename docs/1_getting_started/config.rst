@@ -82,6 +82,8 @@ For each assignment you want to process, you must give it a name like :code:`exa
     List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :adapters:
     (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, BC). See :ref:`Adapter trimming` for a detailed overview.
+:merge_tool:
+    (Optional) Tool to merge the FWD and REV reads into one read. Currently, :code:`NGmerge` and :code:`fastq-join` are supported. Default is :code:`NGmerge`.
 :NGmerge:
     (Optional) Options for NGmerge. NGmerge is used to merge FWD and REV reads. The following options are possible (we recommend using the default values):
 
@@ -91,6 +93,14 @@ For each assignment you want to process, you must give it a name like :code:`exa
         (Optional) Fraction of mismatches allowed in the overlap. Default is :code:`0.1`.
     :min_dovetailed_overlap:
         (Optional) Minimum dovetailed overlap. Default is :code:`10`.
+
+:fastq-join:
+    (Optional) Options for fastq-join. Fastq-join is used to merge FWD and REV reads. The following options are possible (we recommend using the default values):
+
+    :min_overlap:
+        (Optional) N-minimum overlap. fastq-join option :code:`-m`. Default is :code:`6`.
+    :max_pct_mismatch:
+        (Optional) N-percent maximum difference. fastq-join option :code:`-p`. Default is :code:`8`.
 
 :design_file:
     Design file (full or relative path) in fasta format. The design file should contain the oligos in fasta format. The header should contain the oligo name and should be unique. The sequence should be the sequence of the oligo and must also be unique. When having multiple oligo names with the same sequence, please merge them into one fasta entry. The oligo name is later used to link the barcode to the oligo. The sequence is used to map the reads to the oligos. Adapters can be in the sequence, and therefore :code:`alignment_start` has to be adjusted.
