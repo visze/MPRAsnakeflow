@@ -198,7 +198,7 @@ rule assignment_merge:
             "NGmerge"
         ]["min_dovetailed_overlap"],
     log:
-        temp("results/logs/assignment/merge.{assignment}.{split}.log.gz"),
+        "results/logs/assignment/merge.{assignment}.{split}.log",
     shell:
         """
         NGmerge \
@@ -209,8 +209,7 @@ rule assignment_merge:
         -e {params.min_dovetailed_overlap} \
         -z \
         -o  {output.join} \
-        -i -f {output.un} \
-        -l >(gzip -c - > {log})
+        -i -f {output.un} &> {log}
         """
 
 
