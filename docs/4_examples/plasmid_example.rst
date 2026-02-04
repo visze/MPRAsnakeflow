@@ -27,19 +27,20 @@ Please install conda, the MPRAsnakeflow environment and clone the actual MPRAsna
 Design file
 -------------
 
-We need the 
+We need the design file. Unfortunately the headers are not compatible with our pipeline. Therefore, we will fix them first.
 
 .. code-block:: bash
 
    mkdir -p ENCFF074MMO/data/fasta
    cd ENCFF074MMO/data/fasta
    wget https://www.encodeproject.org/files/ENCFF074MMO/@@download/ENCFF074MMO.fasta.gz
+   zcat ENCFF074MMO.fasta.gz | sed 's/[\(\)]//g' > ENCFF074MMO.fix.fa
    cd ../../
 
 Reads association data
 -----------------------
 
-There are four sets of association sequencing for this data, which contains a barcode and oligo-forward (FW read) and  oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
+There are four sets of association sequencing for this data, which contains a barcode and oligo-forward (FWD read) and  oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
 
 .. note:: You need 23 GB disk space to the download association data!
 
@@ -73,7 +74,8 @@ The folder should look like this:
 
     data
     ├── fasta
-    │   └── ENCFF074MMO.fasta.gz
+    │   ├── ENCFF074MMO.fasta.gz
+    │   └── ENCFF074MMO.fix.fa
     └── oligo_barcode
         ├── ENCFF215NWC.fastq.gz
         ├── ENCFF235LUE.fastq.gz
@@ -200,7 +202,7 @@ Create config files
                 - data/oligo_barcode/ENCFF317FNS.fastq.gz
                 - data/oligo_barcode/ENCFF504ZPY.fastq.gz
                 - data/oligo_barcode/ENCFF420UFL.fastq.gz
-            design_file: data/fasta/ENCFF074MMO.fasta.gz
+            design_file: data/fasta/ENCFF074MMO.fix.fa
             configs:
                 default: {}
     experiments:

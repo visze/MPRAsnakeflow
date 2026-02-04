@@ -1,4 +1,4 @@
-ARG VERSION=0.5.6
+ARG VERSION=0.6.0
 
 FROM condaforge/miniforge3:latest
 LABEL io.github.snakemake.containerized="true"

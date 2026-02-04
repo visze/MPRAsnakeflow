@@ -7,3 +7,4 @@ dependencies:
   - rstcheck
   - myst-parser
   - sphinx-rtd-theme
+  - sphinx-autodoc-typehints

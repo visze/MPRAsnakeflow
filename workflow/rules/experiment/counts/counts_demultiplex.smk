@@ -31,7 +31,7 @@ checkpoint experiment_counts_demultiplex_BAM_umi:
     Demultiplexing the data and create demultiplexed bam files per condition.
     """
     input:
-        fw_fastq=lambda wc: getFWDWithIndex(wc.project),
+        fwd_fastq=lambda wc: getFWDWithIndex(wc.project),
         rev_fastq=lambda wc: getREVWithIndex(wc.project),
         umi_fastq=lambda wc: getUMIWithIndex(wc.project),
         index_fastq=lambda wc: getIndexWithIndex(wc.project),
@@ -55,7 +55,7 @@ checkpoint experiment_counts_demultiplex_BAM_umi:
             idx_length=`zcat {input.index_fastq} | head -2 | tail -1 | wc -c`;
             idx_length=$(expr $(($idx_length-1)));
 
-            fwd_length=`zcat {input.fw_fastq} | head -2 | tail -1 | wc -c`;
+            fwd_length=`zcat {input.fwd_fastq} | head -2 | tail -1 | wc -c`;
             fwd_length=$(expr $(($fwd_length-1)));
 
             rev_start=$(expr $(($fwd_length+$idx_length+1)));
@@ -66,7 +66,7 @@ checkpoint experiment_counts_demultiplex_BAM_umi:
 
             python {input.script} -s $rev_start -l $idx_length -m $umi_length -i {input.index_list} --outdir {params.outdir} --remove --summary --separate_files \
             <(\
-        paste <( zcat {input.fw_fastq} ) <( zcat {input.index_fastq} ) <( zcat {input.rev_fastq} ) <( zcat {input.umi_fastq} ) | \
+        paste <( zcat {input.fwd_fastq} ) <( zcat {input.index_fastq} ) <( zcat {input.rev_fastq} ) <( zcat {input.umi_fastq} ) | \
             awk '{{ count+=1; if ((count == 1) || (count == 3)) {{ print $1 }} else {{ print $1$2$3$4 }}; if (count == 4) {{ count=0 }} }}'\
             ) &> {log}
         """
