@@ -53,10 +53,10 @@ rule assignment_check_design:
             if config["assignments"][wc.assignment]["design_check"]["fast"]
             else "--slow-string-search"
         ),
-        sequence_collitions=lambda wc: (
+        sequence_collisions=lambda wc: (
             "sense_antisense"
             if config["assignments"][wc.assignment]["design_check"][
-                "sequence_collitions"
+                "sequence_collisions"
             ]
             else "skip"
         ),
@@ -83,7 +83,7 @@ rule assignment_check_design:
         python {input.script} --input {output.ref_tmp} \
         --output {output.ref} \
         --start {params.start} --length {params.length} \
-        {params.fast_check} --sequence-check {params.sequence_collitions} \
+        {params.fast_check} --sequence-check {params.sequence_collisions} \
         {params.attach_sequence} > {log.log} 2> {log.err};
         """
 

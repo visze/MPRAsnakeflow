@@ -324,13 +324,13 @@ properties:
               fast:
                 type: boolean
                 default: true
-              sequence_collitions:
+              sequence_collisions:
                 type: boolean
                 default: true
             default: {}
             required:
               - fast
-              - sequence_collitions
+              - sequence_collisions
           strand_sensitive:
             type: object
             default: {}
