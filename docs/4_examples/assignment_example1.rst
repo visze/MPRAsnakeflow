@@ -128,7 +128,7 @@ You should see a list of rules that will be executed. This is the summary:
     assignment_idx_bam                         1
     assignment_mapping_bbmap                  30
     assignment_mapping_bbmap_getBCs           30
-    assignment_merge                          30
+    assignment_merge_NGmerge                  30
     assignment_statistic_assignedCounts        1
     assignment_statistic_assignment            1
     assignment_statistic_quality_metric        1
@@ -153,8 +153,8 @@ assignment_fastq_split
    Split the fastq files into n files for parallelisation. N is given by split_read in the configuration file.
 assignment_attach_idx
     Extract the index sequence and add it to the header.
-assignment_merge
-   Merge the FWD, REV and BC fastq files into one. Extract the index sequence from the middle and end of an Illumina run. Separates reads for Paired End runs. Merge/Adapter trim reads stored in BAM.
+assignment_merge_NGmerge
+   Merge the FWD, REV and BC fastq files into one using NGmerge.
 assignment_mapping_bbmap
    Map the reads to the reference using BBMap.
 assignment_mapping_bbmap_getBCs

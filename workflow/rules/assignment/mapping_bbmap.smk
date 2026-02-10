@@ -24,7 +24,7 @@ rule assignment_mapping_bbmap:
     """
     conda:
         getCondaEnv("bbmap_samtools_htslib.yaml")
-    threads: 1
+    threads: 10
     resources:
         mem="4G",
     input:

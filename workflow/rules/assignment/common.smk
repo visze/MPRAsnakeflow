@@ -71,7 +71,15 @@ def getMappingRead(assignment: str) -> str:
     if hasOnlyForwardRead(assignment):
         return "results/assignment/{assignment}/fastq/splits/FWD.split{split}.BCattached.fastq.gz"
     else:
-        return "results/assignment/{assignment}/fastq/merge_split{split}.join.fastq.gz"
+        if config["assignments"][assignment]["merge_tool"] == "NGmerge":
+            return "results/assignment/{assignment}/fastq/merge_split{split}.join.NGmerge.fastq.gz"
+        elif config["assignments"][assignment]["merge_tool"] == "fastq-join":
+            return "results/assignment/{assignment}/fastq/merge_split{split}.join.fastqjoin.fastq.gz"
+        else:
+            raise RuntimeError(
+                "Wrong assignment configuration. Unknown merge tool %s for assignment %s"
+                % (config["assignments"][assignment]["merge_tool"], assignment)
+            )
 
 
 def getAssignmentCutadaptAdapters(assignment: str, read: str) -> str:

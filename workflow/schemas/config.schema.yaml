@@ -280,6 +280,12 @@ properties:
                       type: integer
                     minItems: 1
                     uniqueItems: true
+          merge_tool:
+            type: string
+            enum:
+              - NGmerge
+              - fastq-join
+            default: NGmerge
           NGmerge:
             type: object
             properties:
@@ -297,6 +303,19 @@ properties:
               - frac_mismatches_allowed
               - min_dovetailed_overlap
             default: {}
+          fastq-join:
+            type: object
+            properties:
+              min_overlap:
+                type: integer
+                default: 6
+              max_pct_mismatch:
+                type: number
+                default: 8
+            required:
+              - min_overlap
+              - max_pct_mismatch
+            default: {}
           design_file:
             type: string
           design_check:
@@ -305,13 +324,13 @@ properties:
               fast:
                 type: boolean
                 default: true
-              sequence_collitions:
+              sequence_collisions:
                 type: boolean
                 default: true
             default: {}
             required:
               - fast
-              - sequence_collitions
+              - sequence_collisions
           strand_sensitive:
             type: object
             default: {}
@@ -359,7 +378,6 @@ properties:
           - design_file
           - configs
           - alignment_tool
-          - NGmerge
     minProperties: 1
   # start_experiments
   experiments:

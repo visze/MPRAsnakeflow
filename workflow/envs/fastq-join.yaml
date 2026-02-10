@@ -1,0 +1,6 @@
+---
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - fastq-join=1.3.1
