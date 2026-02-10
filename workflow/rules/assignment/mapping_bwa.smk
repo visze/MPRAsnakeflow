@@ -40,7 +40,7 @@ rule assignment_mapping_bwa:
     output:
         bam=temp("results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam"),
     params:
-        M=(
+        M=lambda wc: (
             "-M"
             if config["assignments"][wc.assignment]["alignment_tool"]["configs"]["M"]
             else ""
