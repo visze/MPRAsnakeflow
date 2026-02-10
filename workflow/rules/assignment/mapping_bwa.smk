@@ -39,11 +39,23 @@ rule assignment_mapping_bwa:
         ),
     output:
         bam=temp("results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam"),
+    params:
+        M=(
+            "-M"
+            if config["assignments"][wc.assignment]["alignment_tool"]["configs"]["M"]
+            else ""
+        ),
+        L=lambda wc: ",".join(
+            map(
+                str,
+                config["assignments"][wc.assignment]["alignment_tool"]["configs"]["L"],
+            )
+        ),
     log:
         temp("results/logs/assignment/mapping.bwa.{assignment}.{split}.log"),
     shell:
         """
-        bwa mem -t {threads} -L 80 -M -C {input.reference} <(
+        bwa mem -t {threads} -L {params.L} {params.M} -C {input.reference} <(
             gzip -dc {input.reads}
         )  | samtools sort -l 0 -@ {threads} > {output} 2> {log}
         """

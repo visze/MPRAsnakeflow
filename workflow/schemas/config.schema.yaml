@@ -76,6 +76,18 @@ properties:
                           required:
                             - min
                             - max
+                        M:
+                          type: boolean
+                          description: mark shorter split hits as secondary
+                          default: true
+                        L:
+                          type: array
+                          description: penalty for 5'- and 3'-end clipping 80
+                          items:
+                            type: integer
+                          minItems: 1
+                          maxItems: 2
+                          default: [80]
                       required:
                         - sequence_length
                         - alignment_start
