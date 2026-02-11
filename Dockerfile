@@ -7,7 +7,7 @@ LABEL io.github.snakemake.conda_env_hash="9a2cd7d943a12a67aae93978ccc10c6213b846
 # Step 1: Retrieve conda environments
 
 # Conda environment:
-#   source: workflow/envs/fastq-join.yaml 
+#   source: workflow/envs/NGmerge.yaml 
 #   prefix: /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74
 #   ---
 #   channels:

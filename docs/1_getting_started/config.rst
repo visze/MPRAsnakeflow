@@ -83,7 +83,7 @@ For each assignment you want to process, you must give it a name like :code:`exa
 :REV:
     (Optional) List of reverse-read files in gzipped fastq format. Files have to overlap the FWD read by at least 10 bp (see :code:`NGmerge` and :code:`min_dovetailed_overlap`). The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :BC:
-    List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
+    (Optional) List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important. If not set BC must be in the FWD read and the linker or fixed length option has to be used to extract the BC.
 :adapters:
     (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, BC). See :ref:`Adapter trimming` for a detailed overview.
 :merge_tool:
