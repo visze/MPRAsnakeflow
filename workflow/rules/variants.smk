@@ -4,10 +4,10 @@ rule variants_generateVariantTable:
         getCondaEnv("python3.yaml")
     input:
         variant_definition=lambda wc: getVariants(wc.project)["map"],
-        counts="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}_{replicate}_merged_assigned_counts.tsv.gz",
+        counts="results/experiments/{project}/assigned_counts/{assignment}/{config}/{condition}.{replicate}.merged_assigned_counts.tsv.gz",
         script=getScript("variants/generateVariantTable.py"),
     output:
-        "results/experiments/{project}/variants/{assignment}/{config}/{condition}_{replicate}_variantTable.tsv.gz",
+        "results/experiments/{project}/variants/{assignment}/{config}/{condition}.{replicate}.variantTable.tsv.gz",
     log:
         temp(
             "results/logs/experiments/variants/generateVariantTable.{project}.{assignment}.{config}.{condition}.{replicate}.log"
@@ -26,18 +26,18 @@ rule variants_MasterTable:
         getCondaEnv("python3.yaml")
     input:
         variants=lambda wc: expand(
-            "results/experiments/{{project}}/variants/{{assignment}}/{{config}}/{{condition}}_{replicate}_variantTable.tsv.gz",
+            "results/experiments/{{project}}/variants/{{assignment}}/{{config}}/{{condition}}.{replicate}.variantTable.tsv.gz",
             replicate=getReplicatesOfCondition(wc.project, wc.condition),
         ),
         script=getScript("variants/generateMasterVariantTable.py"),
     output:
-        "results/experiments/{project}/variants/{assignment}/{config}/{condition}_variantTable.tsv.gz",
+        "results/experiments/{project}/variants/{assignment}/{config}/{condition}.variantTable.tsv.gz",
     params:
         input=lambda wc: " ".join(
             [
                 "--input %s" % i
                 for i in expand(
-                    "results/experiments/{project}/variants/{assignment}/{config}/{condition}_{replicate}_variantTable.tsv.gz",
+                    "results/experiments/{project}/variants/{assignment}/{config}/{condition}.{replicate}.variantTable.tsv.gz",
                     replicate=getReplicatesOfCondition(wc.project, wc.condition),
                     project=wc.project,
                     assignment=wc.assignment,
@@ -71,18 +71,18 @@ rule variants_correlate:
         getCondaEnv("python3.yaml")
     input:
         counts=lambda wc: expand(
-            "results/experiments/{{project}}/variants/{{assignment}}/{{config}}/{{condition}}_{replicate}_variantTable.tsv.gz",
+            "results/experiments/{{project}}/variants/{{assignment}}/{{config}}/{{condition}}.{replicate}.variantTable.tsv.gz",
             replicate=getReplicatesOfCondition(wc.project, wc.condition),
         ),
         script=getScript("variants/correlateVariantTables.py"),
     output:
-        "results/experiments/{project}/statistic/variants/{assignment}/{config}/{condition}/{condition}_correlation_variantTable_minBC{threshold}.tsv.gz",
+        "results/experiments/{project}/statistic/variants/{assignment}/{config}/{condition}/{condition}.correlation_variantTable_minBC{threshold}.tsv.gz",
     params:
         cond="{condition}",
         threshold="{threshold}",
         tables=lambda wc: " ".join(
             expand(
-                "--variants {replicate} results/experiments/{project}/variants/{assignment}/{config}/{condition}_{replicate}_variantTable.tsv.gz",
+                "--variants {replicate} results/experiments/{project}/variants/{assignment}/{config}/{condition}.{replicate}.variantTable.tsv.gz",
                 project=wc.project,
                 assignment=wc.assignment,
                 config=wc.config,
@@ -109,7 +109,7 @@ rule variants_combineVariantCorrelationTables:
         getCondaEnv("default.yaml")
     input:
         correlation=lambda wc: expand(
-            "results/experiments/{{project}}/statistic/variants/{{assignment}}/{{config}}/{condition}/{condition}_correlation_variantTable_minBC{threshold}.tsv.gz",
+            "results/experiments/{{project}}/statistic/variants/{{assignment}}/{{config}}/{condition}/{condition}.correlation_variantTable_minBC{threshold}.tsv.gz",
             condition=getConditions(wc.project),
             threshold=getVariantsBCThreshold(wc.project),
         ),

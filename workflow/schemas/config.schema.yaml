@@ -76,6 +76,18 @@ properties:
                           required:
                             - min
                             - max
+                        M:
+                          type: boolean
+                          description: mark shorter split hits as secondary
+                          default: true
+                        L:
+                          type: array
+                          description: penalty for 5'- and 3'-end clipping 80
+                          items:
+                            type: integer
+                          minItems: 1
+                          maxItems: 2
+                          default: [80]
                       required:
                         - sequence_length
                         - alignment_start
@@ -115,6 +127,18 @@ properties:
                           type: integer
                           minimum: 0
                           default: 1
+                        M:
+                          type: boolean
+                          description: mark shorter split hits as secondary
+                          default: true
+                        L:
+                          type: array
+                          description: penalty for 5'- and 3'-end clipping 80
+                          items:
+                            type: integer
+                          minItems: 1
+                          maxItems: 2
+                          default: [80]
                         identity_threshold:
                           description: Identity threshold is used to choose which alignments are worth trying to rescue.
                           type: number
@@ -190,7 +214,7 @@ properties:
           linker:
             type: string
             pattern: ^[ATCGNatcgn]+$
-          FW:
+          FWD:
             type: array
             items:
               type: string
@@ -211,16 +235,81 @@ properties:
           adapters:
             type: object
             properties:
-              3prime:
-                type: array
-                items:
-                  type: string
-                  pattern: ^[ATCG]+$
-              5prime:
-                type: array
-                items:
-                  type: string
-                  pattern: ^[ATCG]+$
+              BC:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
+              FWD:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
+              REV:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
+          merge_tool:
+            type: string
+            enum:
+              - NGmerge
+              - fastq-join
+            default: NGmerge
           NGmerge:
             type: object
             properties:
@@ -238,6 +327,19 @@ properties:
               - frac_mismatches_allowed
               - min_dovetailed_overlap
             default: {}
+          fastq-join:
+            type: object
+            properties:
+              min_overlap:
+                type: integer
+                default: 6
+              max_pct_mismatch:
+                type: number
+                default: 8
+            required:
+              - min_overlap
+              - max_pct_mismatch
+            default: {}
           design_file:
             type: string
           design_check:
@@ -246,13 +348,13 @@ properties:
               fast:
                 type: boolean
                 default: true
-              sequence_collitions:
+              sequence_collisions:
                 type: boolean
                 default: true
             default: {}
             required:
               - fast
-              - sequence_collitions
+              - sequence_collisions
           strand_sensitive:
             type: object
             default: {}
@@ -295,12 +397,11 @@ properties:
           - required:
               - BC
         required:
-          - FW
+          - FWD
           - bc_length
           - design_file
           - configs
           - alignment_tool
-          - NGmerge
     minProperties: 1
   # start_experiments
   experiments:
@@ -314,12 +415,93 @@ properties:
           bc_length:
             type: integer
             minimum: 1
+          bc_extraction:
+            type: string
+            enum:
+              - start
+              - end
+            default: start
           umi_length:
             type: integer
             minimum: 1
-          adapter:
+          umi_extraction:
             type: string
-            pattern: ^[ATCGNatcgn]+$
+            enum:
+              - start
+              - end
+            default: start
+          adapters:
+            type: object
+            properties:
+              UMI:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
+              FWD:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
+              REV:
+                oneOf:
+                  - type: object
+                    properties:
+                      five_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                      three_prime:
+                        type: array
+                        items:
+                          type: string
+                          pattern: ^[ATCGNatcgn]+$
+                        minItems: 1
+                        uniqueItems: true
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    uniqueItems: true
           data_folder:
             type: string
           experiment_file:

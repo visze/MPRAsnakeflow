@@ -147,8 +147,6 @@ plot_correlations_dna <- function(data, plot_data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-
-  return(dna_p)
 }
 
 #' Plot Correlations of RNA Counts
@@ -189,7 +187,6 @@ plot_correlations_rna <- function(data, plot_data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-  return(rna_p)
 }
 
 #' Plot Correlations Ratio
@@ -230,7 +227,6 @@ plot_correlations_ratio <- function(data, plot_data, condition, r1, r2, name) {
     ) +
     geom_abline(intercept = 0, slope = 1) +
     theme_classic(base_size = 30)
-  return(ratio_p)
 }
 
 #' Correlate Two Vectors
@@ -248,7 +244,7 @@ plot_correlations_ratio <- function(data, plot_data, condition, r1, r2, name) {
 #' correlate(x, y, method = "pearson")
 #' @export
 correlate <- function(x, y, method) {
-  return(sprintf("%.5f", cor(x, y, method = method)))
+  sprintf("%.5f", cor(x, y, method = method))
 }
 
 #' Calculate Correlation Statistics for Barcode Counts
@@ -311,9 +307,9 @@ get_correlation_stats <- function(data, n_bc_r1, n_bc_r2, condition, r1, r2, nam
     ReplicateB = r2,
     number_BC_ReplicateA = n_bc_r1,
     number_BC_ReplicateB = n_bc_r2,
-    number_BC_Joined = data %>% nrow(),
-    fraction_BC_ReplicateA = (data %>% nrow() / n_bc_r1),
-    fraction_BC_ReplicateB = (data %>% nrow() / n_bc_r2),
+    number_BC_Joined = data |> nrow(),
+    fraction_BC_ReplicateA = (data |> nrow() / n_bc_r1),
+    fraction_BC_ReplicateB = (data |> nrow() / n_bc_r2),
     DNA_spearman = correlate(data$DNA_normalized.x, data$DNA_normalized.y, "spearman"),
     RNA_spearman = correlate(data$RNA_normalized.x, data$RNA_normalized.y, "spearman"),
     Ratio_spearman = correlate(data$Ratio.x, data$Ratio.y, "spearman"),
@@ -325,7 +321,6 @@ get_correlation_stats <- function(data, n_bc_r1, n_bc_r2, condition, r1, r2, nam
     Ratio_log2_pearson = correlate(data$Ratio_log2.x, data$Ratio_log2.y, "pearson"),
     NormSymmetry = norm, stringsAsFactors = FALSE
   )
-  return(outs)
 }
 
 
@@ -399,7 +394,6 @@ write_correlation <- function(correlations, name) {
 #'   \item{Ratio_log2}{The log2 transformation of Ratio.}
 #'
 #' @import dplyr
-#' @importFrom magrittr %>%
 #' @export
 read_data <- function(file, mindnacounts, minrnacounts, scaling) {
   data <- read.table(file,
@@ -410,8 +404,8 @@ read_data <- function(file, mindnacounts, minrnacounts, scaling) {
 
   pseudocountdna <- if (mindnacounts == 0) 1 else 0
   pseudocountrna <- if (minrnacounts == 0) 1 else 0
-  data <- data %>%
-    filter(DNA >= mindnacounts, RNA >= minrnacounts) %>%
+  data <- data |>
+    filter(DNA >= mindnacounts, RNA >= minrnacounts) |>
     mutate(
       DNA_normalized = (DNA + pseudocountdna) / sum(DNA + pseudocountdna) * scaling,
       RNA_normalized = (RNA + pseudocountrna) / sum(RNA + pseudocountrna) * scaling,
@@ -420,7 +414,6 @@ read_data <- function(file, mindnacounts, minrnacounts, scaling) {
       RNA_normalized_log2 = log2(RNA_normalized),
       Ratio_log2 = log2(Ratio)
     )
-  return(data)
 }
 
 # This script performs pairwise correlation analysis on barcode count data from multiple replicates.
@@ -446,7 +439,7 @@ read_data <- function(file, mindnacounts, minrnacounts, scaling) {
 # - get_correlation_stats(res, n_bc_r1, n_bc_r2, cond, r1, r2, type): Calculates correlation statistics.
 # - write_correlation(stats, filepath): Writes correlation statistics to a file.
 # - write_correlation_plots(plots, filepath): Writes correlation plots to a file.
-if (data %>% nrow() > 1) {
+if (data |> nrow() > 1) {
   # make pairwise combinations
   selected <- combn(data$Replicate, 2)
   print("sel")
@@ -462,19 +455,19 @@ if (data %>% nrow() > 1) {
     r1 <- selected[1, i]
     r2 <- selected[2, i]
     data1 <- read_data(
-      as.character((data %>% filter(Replicate == r1))$File),
+      as.character((data |> filter(Replicate == r1))$File),
       opt$mindnacounts, opt$minrnacounts, scaling
     )
     data2 <- read_data(
-      as.character((data %>% filter(Replicate == r2))$File),
+      as.character((data |> filter(Replicate == r2))$File),
       opt$mindnacounts, opt$minrnacounts, scaling
     )
 
-    n_bc_r1 <- data1 %>% nrow()
-    n_bc_r2 <- data2 %>% nrow()
+    n_bc_r1 <- data1 |> nrow()
+    n_bc_r2 <- data2 |> nrow()
 
-    res <- data1 %>% inner_join(data2, by = c("Barcode"))
-    if (res %>% nrow() > plot_sampling) {
+    res <- data1 |> inner_join(data2, by = c("Barcode"))
+    if (res |> nrow() > plot_sampling) {
       res_plot <- sample_n(res, plot_sampling)
     } else {
       res_plot <- res
@@ -483,15 +476,15 @@ if (data %>% nrow() > 1) {
     plots_correlations_rna[[i]] <- plot_correlations_rna(res, res_plot, cond, r1, r2, "pairwise")
     plots_correlations_ratio[[i]] <- plot_correlations_ratio(res, res_plot, cond, r1, r2, "pairwise")
 
-    stats_correlations <- stats_correlations %>% bind_rows(
+    stats_correlations <- stats_correlations |> bind_rows(
       get_correlation_stats(res, n_bc_r1, n_bc_r2, cond, r1, r2, "correlation")
     )
   }
 
   print("write correlation stats")
-  write_correlation(stats_correlations, sprintf("%s_barcode_correlation.tsv", outdir))
+  write_correlation(stats_correlations, sprintf("%s.barcode.correlation.tsv", outdir))
   print("write correlation plots")
-  write_correlation_plots(plots_correlations_dna, sprintf("%s_barcode_DNA_pairwise.png", outdir))
-  write_correlation_plots(plots_correlations_rna, sprintf("%s_barcode_RNA_pairwise.png", outdir))
-  write_correlation_plots(plots_correlations_ratio, sprintf("%s_barcode_Ratio_pairwise.png", outdir))
+  write_correlation_plots(plots_correlations_dna, sprintf("%s.barcode.DNA.pairwise.png", outdir))
+  write_correlation_plots(plots_correlations_rna, sprintf("%s.barcode.RNA.pairwise.png", outdir))
+  write_correlation_plots(plots_correlations_ratio, sprintf("%s.barcode.Ratio.pairwise.png", outdir))
 }

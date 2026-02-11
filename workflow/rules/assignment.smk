@@ -7,13 +7,14 @@ The output is a tabular file that matched barcodes with oligos.
 
 
 include: "assignment/common.smk"
-include: "assignment/hybridFWRead.smk"
+include: "assignment/preprocessing.smk"
+include: "assignment/hybridFWDRead.smk"
 include: "assignment/statistic.smk"
 
 
 rule assignment_check_design:
     """
-    Check if the design file is correct and no duplicated sequences are present (FW and reverse).
+    Check if the design file is correct and no duplicated sequences are present (FWD and reverse).
     Also check if no duplicated headers and no illegal characters in header.
     """
     conda:
@@ -52,10 +53,10 @@ rule assignment_check_design:
             if config["assignments"][wc.assignment]["design_check"]["fast"]
             else "--slow-string-search"
         ),
-        sequence_collitions=lambda wc: (
+        sequence_collisions=lambda wc: (
             "sense_antisense"
             if config["assignments"][wc.assignment]["design_check"][
-                "sequence_collitions"
+                "sequence_collisions"
             ]
             else "skip"
         ),
@@ -82,7 +83,7 @@ rule assignment_check_design:
         python {input.script} --input {output.ref_tmp} \
         --output {output.ref} \
         --start {params.start} --length {params.length} \
-        {params.fast_check} --sequence-check {params.sequence_collitions} \
+        {params.fast_check} --sequence-check {params.sequence_collisions} \
         {params.attach_sequence} > {log.log} 2> {log.err};
         """
 
@@ -153,7 +154,7 @@ rule assignment_attach_idx:
                 config["assignments"][wc.assignment]["strand_sensitive"][
                     "forward_adapter"
                 ]
-                if wc.read == "FW"
+                if wc.read == "FWD"
                 else reverse_complement(
                     config["assignments"][wc.assignment]["strand_sensitive"][
                         "reverse_adapter"
@@ -171,20 +172,21 @@ rule assignment_attach_idx:
         """
 
 
-rule assignment_merge:
+rule assignment_merge_NGmerge:
     """
-    Merge the FW,REV and BC fastq files into one.
-    Extract the index sequence and add it to the header.
+    Merge the FWD, REV and BC fastq files into one using NGmerge.
     """
     conda:
         getCondaEnv("NGmerge.yaml")
     input:
-        FW="results/assignment/{assignment}/fastq/splits/FW.split{split}.BCattached.fastq.gz",
+        FWD="results/assignment/{assignment}/fastq/splits/FWD.split{split}.BCattached.fastq.gz",
         REV="results/assignment/{assignment}/fastq/splits/REV.split{split}.BCattached.fastq.gz",
     output:
-        un=temp("results/assignment/{assignment}/fastq/merge_split{split}.un.fastq.gz"),
+        un=temp(
+            "results/assignment/{assignment}/fastq/merge_split{split}.un.NGmerge.fastq.gz"
+        ),
         join=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.join.fastq.gz"
+            "results/assignment/{assignment}/fastq/merge_split{split}.join.NGmerge.fastq.gz"
         ),
     params:
         min_overlap=lambda wc: config["assignments"][wc.assignment]["NGmerge"][
@@ -197,81 +199,53 @@ rule assignment_merge:
             "NGmerge"
         ]["min_dovetailed_overlap"],
     log:
-        temp("results/logs/assignment/merge.{assignment}.{split}.log.gz"),
+        "results/logs/assignment/merge_NGmerge.{assignment}.{split}.log",
     shell:
         """
         NGmerge \
-        -1 {input.FW} \
+        -1 {input.FWD} \
         -2 {input.REV} \
         -m {params.min_overlap} -p {params.frac_mismatches_allowed} \
         -d \
         -e {params.min_dovetailed_overlap} \
         -z \
         -o  {output.join} \
-        -i -f {output.un} \
-        -l >(gzip -c - > {log})
+        -i -f {output.un} &> {log}
         """
 
 
-rule assignment_3prime_remove:
+rule assignment_merge_fastqjoin:
     """
-    Remove 3' adapter sequence from the reads.
-    """
-    conda:
-        getCondaEnv("cutadapt.yaml")
-    threads: 1
-    input:
-        reads=lambda wc: getAdapterRemovalReads(wc.assignment, five_prime=False),
-    output:
-        trimmed_reads=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.3prime.fastq.gz"
-        ),
-    params:
-        adapters=lambda wc: " ".join(
-            [
-                "-a %s" % adapter
-                for adapter in config["assignments"][wc.assignment]["adapters"][
-                    "3prime"
-                ]
-            ]
-        ),
-    log:
-        temp("results/logs/assignment/3prime_remove.{assignment}.{split}.log"),
-    shell:
-        """
-        cutadapt --cores {threads} {params.adapters} \
-        -o {output.trimmed_reads} <(zcat {input.reads}) &> {log}
-        """
-
-
-rule assignment_5prime_remove:
-    """
-    Remove 5' adapter sequence from the reads.
+    Merge the FWD, REV and BC fastq files into one using fastq-join.
     """
     conda:
-        getCondaEnv("cutadapt.yaml")
-    threads: 1
+        getCondaEnv("fastq-join.yaml")
     input:
-        reads=lambda wc: getAdapterRemovalReads(wc.assignment, five_prime=True),
+        FWD="results/assignment/{assignment}/fastq/splits/FWD.split{split}.BCattached.fastq.gz",
+        REV="results/assignment/{assignment}/fastq/splits/REV.split{split}.BCattached.fastq.gz",
     output:
-        trimmed_reads=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.5prime.fastq.gz"
+        un1=temp(
+            "results/assignment/{assignment}/fastq/merge_split{split}.un1.fastqjoin.fastq.gz"
+        ),
+        un2=temp(
+            "results/assignment/{assignment}/fastq/merge_split{split}.un2.fastqjoin.fastq.gz"
+        ),
+        join=temp(
+            "results/assignment/{assignment}/fastq/merge_split{split}.join.fastqjoin.fastq.gz"
         ),
     params:
-        adapters=lambda wc: " ".join(
-            [
-                "-g %s" % adapter
-                for adapter in config["assignments"][wc.assignment]["adapters"][
-                    "5prime"
-                ]
-            ]
-        ),
+        min_overlap=lambda wc: config["assignments"][wc.assignment]["fastq-join"][
+            "min_overlap"
+        ],
+        max_pct_mismatch=lambda wc: config["assignments"][wc.assignment]["fastq-join"][
+            "max_pct_mismatch"
+        ],
     log:
-        temp("results/logs/assignment/5prime_remove.{assignment}.{split}.log"),
+        "results/logs/assignment/merge_fastqjoin.{assignment}.{split}.log",
     shell:
         """
-        cutadapt --cores {threads} {params.adapters} \
-        -o {output.trimmed_reads} <(zcat {input.reads}) &> {log}
+        fastq-join -p {params.min_overlap} -m {params.max_pct_mismatch} {input.FWD} {input.REV} \
+        -o {output.un1} -o {output.un2} -o {output.join} &> {log}
         """
 
 
@@ -288,7 +262,7 @@ rule assignment_collectBCs:
         getCondaEnv("default.yaml")
     input:
         lambda wc: expand(
-            "results/assignment/{{assignment}}/BCs/barcodes_{mapper}.{split}.tsv",
+            "results/assignment/{{assignment}}/BCs/barcodes.{mapper}.{split}.tsv",
             split=range(0, getSplitNumber()),
             mapper=config["assignments"][wc.assignment]["alignment_tool"]["tool"],
         ),

@@ -39,11 +39,23 @@ rule assignment_mapping_bwa:
         ),
     output:
         bam=temp("results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam"),
+    params:
+        M=lambda wc: (
+            "-M"
+            if config["assignments"][wc.assignment]["alignment_tool"]["configs"]["M"]
+            else ""
+        ),
+        L=lambda wc: ",".join(
+            map(
+                str,
+                config["assignments"][wc.assignment]["alignment_tool"]["configs"]["L"],
+            )
+        ),
     log:
         temp("results/logs/assignment/mapping.bwa.{assignment}.{split}.log"),
     shell:
         """
-        bwa mem -t {threads} -L 80 -M -C {input.reference} <(
+        bwa mem -t {threads} -L {params.L} {params.M} -C {input.reference} <(
             gzip -dc {input.reads}
         )  | samtools sort -l 0 -@ {threads} > {output} 2> {log}
         """
@@ -58,7 +70,7 @@ rule assignment_mapping_bwa_getBCs:
     input:
         "results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam",
     output:
-        temp("results/assignment/{assignment}/BCs/barcodes_bwa.{split}.tsv"),
+        temp("results/assignment/{assignment}/BCs/barcodes.bwa.{split}.tsv"),
     params:
         alignment_start_min=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"
@@ -103,7 +115,7 @@ rule assignment_mapping_bwa_getBCs_additional_filter:
         bam="results/assignment/{assignment}/bwa/merge_split{split}.mapped.bam",
         script=getScript("assignment/filter_bc_from_bam.py"),
     output:
-        "results/assignment/{assignment}/BCs/barcodes_bwa-additional-filtering.{split}.tsv",
+        "results/assignment/{assignment}/BCs/barcodes.bwa-additional-filtering.{split}.tsv",
     params:
         identity_threshold=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"

@@ -58,7 +58,11 @@ For each assignment you want to process, you must give it a name like :code:`exa
         :alignment_start (bwa, bwa-additional-filtering):
             Defines the :code:`min` and :code:`max` of the start of the alignment in an oligo. When using adapters, you must set the length of the adapter. Otherwise, 1 will be the choice for most cases. We also recommend varying this value slightly because the start might not be exact after the adapter (e.g., ±1).
         :min_mapping_quality (bwa, bwa-additional-filtering, bbmap):
-            (Optional) Defines the minimum mapping quality (MAPQ) of the alignment to an oligo. MAPQs differ between bbmap and bwa. For bwa: When using oligos with only 1bp difference, it is recommended to set it to 1. BBMap is better here, and we can use, for example, 30 or 35. For regions with larger edit distances, 30 or 40 might be a good choice. Default is :code:`30` (use bbmap). 
+            (Optional) Defines the minimum mapping quality (MAPQ) of the alignment to an oligo. MAPQs differ between bbmap and bwa. For bwa: When using oligos with only 1bp difference, it is recommended to set it to 1 (bwa default is :code:`1`). BBMap is better here, and we can use, for example, 30 or 35. For regions with larger edit distances, 30 or 40 might be a good choice. Default is :code:`30` (bbmap).
+        :M: (bwa, bwa-additional-filtering):
+            (Optional) BWA option :code:`-M`: Mark shorter split hits as secondary. Default is :code:`true`.
+        :L: (bwa, bwa-additional-filtering):
+            (Optional) BWA option :code:`-L`: Array with one (both ends same value) or two values for the penalty of 5'- and 3'-end clipping. Default in MPRAsnakeflow is :code:`[80]`. Default BWA mem is :code:`[5, 5]`.
         :identity_threshold (bwa-additional-filtering):
             (Optional) Identity threshold is used to choose which alignments are worth trying to rescue. Default is :code:`0.98`.
         :mismatches_threshold (bwa-additional-filtering):
@@ -74,22 +78,18 @@ For each assignment you want to process, you must give it a name like :code:`exa
     (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. The fixed length is used for the linker after a fixed length of BC. The recommended option is :code:`linker` by defining the exact linker sequence and using cutadapt for trimming.
 :linker:
     (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. Uses cutadapt to trim the linker to get the barcode as well as the start of the insert.
-:FW:
-    List of forward-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+:FWD:
+    List of forward-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :REV:
-    (Optional) List of reverse-read files in gzipped fastq format. Files have to overlap the FW read by at least 10 bp (see :code:`NGmerge` and :code:`min_dovetailed_overlap`). The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+    (Optional) List of reverse-read files in gzipped fastq format. Files have to overlap the FWD read by at least 10 bp (see :code:`NGmerge` and :code:`min_dovetailed_overlap`). The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :BC:
-    List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FW, BC, and REV is important.
+    (Optional) List of index-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important. If not set BC must be in the FWD read and the linker or fixed length option has to be used to extract the BC.
 :adapters:
-    (Optional) List of adapter sequences to trim after merging the reads. Can be specified with:
-
-    :3prime:
-        (Optional) List of adapter sequence at the 3' end that should be removed.
-    :5prime:
-        (Optional) List of adapter sequence at the 5' end that should be removed.
-
+    (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, BC). See :ref:`Adapter trimming` for a detailed overview.
+:merge_tool:
+    (Optional) Tool to merge the FWD and REV reads into one read. Currently, :code:`NGmerge` and :code:`fastq-join` are supported. Default is :code:`NGmerge`.
 :NGmerge:
-    (Optional) Options for NGmerge. NGmerge is used to merge FW and REV reads. The following options are possible (we recommend using the default values):
+    (Optional) Options for NGmerge. NGmerge is used to merge FWD and REV reads. The following options are possible (we recommend using the default values):
 
     :min_overlap:
         (Optional) Minimum overlap of the reads. Default is :code:`20`.
@@ -97,6 +97,14 @@ For each assignment you want to process, you must give it a name like :code:`exa
         (Optional) Fraction of mismatches allowed in the overlap. Default is :code:`0.1`.
     :min_dovetailed_overlap:
         (Optional) Minimum dovetailed overlap. Default is :code:`10`.
+
+:fastq-join:
+    (Optional) Options for fastq-join. Fastq-join is used to merge FWD and REV reads. The following options are possible (we recommend using the default values):
+
+    :min_overlap:
+        (Optional) N-minimum overlap. fastq-join option :code:`-m`. Default is :code:`6`.
+    :max_pct_mismatch:
+        (Optional) N-percent maximum difference. fastq-join option :code:`-p`. Default is :code:`8`.
 
 :design_file:
     Design file (full or relative path) in fasta format. The design file should contain the oligos in fasta format. The header should contain the oligo name and should be unique. The sequence should be the sequence of the oligo and must also be unique. When having multiple oligo names with the same sequence, please merge them into one fasta entry. The oligo name is later used to link the barcode to the oligo. The sequence is used to map the reads to the oligos. Adapters can be in the sequence, and therefore :code:`alignment_start` has to be adjusted.
@@ -137,11 +145,11 @@ The experiment workflow is configured in the :code:`experiments` section. Each e
    :end-before: end_experiments
 
 :bc_length:
-    Length of the barcode. This is used to extract the barcode from the index read. The barcode is extracted from the first :code:`bc_length` bases of the index read. When no reverse read is given and :code:`adapter` is not set teh exact length is used to extract the DNA BC from the FW read.
+    Length of the barcode. This is used to extract the barcode from the index read. The barcode is extracted from the first :code:`bc_length` bases of the index read. When no reverse read is given and :code:`adapter` is not set teh exact length is used to extract the DNA BC from the FWD read.
 :umi_length:
     (Optional) Length of the UMI. This is used to extract the UMI from the index read. The UMI is extracted from the last :code:`umi_length` bases of the index read. Please provide if you use UMIs.
-:adapter:
-    (Optional) Adapter sequence in the FW read when no reverse read is given. This is used to trim the sequence and retrieve the BC using cutadapt.
+:adapters:
+    (Optional) List of adapter sequences or fixed length to trim reads before running the workflow. Can be configured for all read inputs (FWD, REV, UMI). See :ref:`Adapter trimming` for a detailed overview.
 :data_folder:
     Folder where the fastq files are located. Files are defined in the :code:`experiment_file`. The full or relative path to the folder should be used.
 :experiment_file:

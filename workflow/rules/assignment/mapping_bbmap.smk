@@ -24,7 +24,7 @@ rule assignment_mapping_bbmap:
     """
     conda:
         getCondaEnv("bbmap_samtools_htslib.yaml")
-    threads: 1
+    threads: 10
     resources:
         mem="4G",
     input:
@@ -67,7 +67,7 @@ rule assignment_mapping_bbmap_getBCs:
     input:
         "results/assignment/{assignment}/bbmap/merge_split{split}.mapped.bam",
     output:
-        temp("results/assignment/{assignment}/BCs/barcodes_bbmap.{split}.tsv"),
+        temp("results/assignment/{assignment}/BCs/barcodes.bbmap.{split}.tsv"),
     params:
         mapping_quality_min=lambda wc: config["assignments"][wc.assignment][
             "alignment_tool"

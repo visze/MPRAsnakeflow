@@ -1,13 +1,13 @@
-ARG VERSION=0.5.6
+ARG VERSION=0.6.0
 
 FROM condaforge/miniforge3:latest
 LABEL io.github.snakemake.containerized="true"
-LABEL io.github.snakemake.conda_env_hash="7a57714fe74eb25255d53b45e2095cd8a4dd4fe73db79006353670c432af97b1"
+LABEL io.github.snakemake.conda_env_hash="9a2cd7d943a12a67aae93978ccc10c6213b846480366ddb973a181835e0b7947"
 
 # Step 1: Retrieve conda environments
 
 # Conda environment:
-#   source: workflow/envs/NGmerge.yaml
+#   source: workflow/envs/NGmerge.yaml 
 #   prefix: /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74
 #   ---
 #   channels:
@@ -22,16 +22,28 @@ RUN mkdir -p /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74
 COPY workflow/envs/NGmerge.yaml /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74/environment.yaml
 
 # Conda environment:
+#   source: workflow/envs/fastq-join.yaml 
+#   prefix: /conda-envs/7f3db13e2aa951f4484dd79393a5b358
+#   ---
+#   channels:
+#     - conda-forge
+#     - bioconda
+#   dependencies:
+#     - fastq-join=1.3.1
+RUN mkdir -p /conda-envs/7f3db13e2aa951f4484dd79393a5b358
+COPY workflow/envs/fastq-join.yaml /conda-envs/7f3db13e2aa951f4484dd79393a5b358/environment.yaml
+
+# Conda environment:
 #   source: workflow/envs/bbmap_samtools_htslib.yaml
 #   prefix: /conda-envs/a1cc34886525015a2366c351dc84f094
-# ---
-# channels:
-#   - conda-forge
-#   - bioconda
-# dependencies:
-#   - bbmap
-#   - samtools==1.21
-#   - htslib==1.21
+#   ---
+#   channels:
+#     - conda-forge
+#     - bioconda
+#   dependencies:
+#     - bbmap
+#     - samtools==1.21
+#     - htslib==1.21
 RUN mkdir -p /conda-envs/a1cc34886525015a2366c351dc84f094
 COPY workflow/envs/bbmap_samtools_htslib.yaml /conda-envs/a1cc34886525015a2366c351dc84f094/environment.yaml
 
@@ -191,6 +203,7 @@ RUN <<EOR
 EOR
 
 RUN conda env create --no-default-packages --prefix /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74 --file /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74/environment.yaml
+RUN conda env create --no-default-packages --prefix /conda-envs/7f3db13e2aa951f4484dd79393a5b358 --file /conda-envs/7f3db13e2aa951f4484dd79393a5b358/environment.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/a1cc34886525015a2366c351dc84f094 --file /conda-envs/a1cc34886525015a2366c351dc84f094/environment.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/bd140014e61f38f39c52be56455899ed --file /conda-envs/bd140014e61f38f39c52be56455899ed/environment.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/a3e2fce7f2f6fdbe1aa97232e3def601 --file /conda-envs/a3e2fce7f2f6fdbe1aa97232e3def601/environment.yaml

@@ -80,8 +80,7 @@ read_data <- function(file, mindnacounts, minrnacounts) {
   )
   colnames(data) <- c("Barcode", "DNA", "RNA")
 
-  data <- data %>% filter(DNA >= mindnacounts, RNA >= minrnacounts)
-  return(data)
+  data <- data |> filter(DNA >= mindnacounts, RNA >= minrnacounts)
 }
 
 print("hist")
@@ -89,7 +88,7 @@ print("hist")
 plots_dna <- list()
 plots_rna <- list()
 
-for (n in 1:(data %>% nrow())) {
+for (n in 1:(data |> nrow())) {
   counts <- read_data(as.character(data[n, ]$File), opt$mindnacounts, opt$minrnacounts)
   intercept_median <- median(counts$DNA)
   intercept_mean <- mean(counts$DNA)
@@ -110,7 +109,7 @@ for (n in 1:(data %>% nrow())) {
 }
 
 hist_plot <- do.call("plot_grid", c(plots_rna))
-ggsave(sprintf("%s_RNA_perBarcode.png", outdir), hist_plot, dpi = 300, type = "cairo")
+ggsave(sprintf("%s.RNA.perBarcode.png", outdir), hist_plot, dpi = 300, type = "cairo")
 
 hist_plot <- do.call("plot_grid", c(plots_dna))
-ggsave(sprintf("%s_DNA_perBarcode.png", outdir), hist_plot, dpi = 300, type = "cairo")
+ggsave(sprintf("%s.DNA.perBarcode.png", outdir), hist_plot, dpi = 300, type = "cairo")

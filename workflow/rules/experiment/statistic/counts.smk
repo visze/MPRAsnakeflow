@@ -13,10 +13,10 @@ rule experiment_statistic_counts_frequent_umis:
     conda:
         getCondaEnv("default.yaml")
     input:
-        "results/experiments/{project}/counts/{condition}_{replicate}_{type}_filtered_counts.tsv.gz",
+        "results/experiments/{project}/counts/{condition}.{replicate}.{type}.filtered_counts.tsv.gz",
     output:
         report(
-            "results/experiments/{project}/statistic/counts.freqUMIs.{condition}_{replicate}_{type}.txt",
+            "results/experiments/{project}/statistic/counts.freqUMIs.{condition}.{replicate}.{type}.txt",
             caption="../../../report/counts/frequent_umis.rst",
             category="{project}",
             subcategory="UMIs",
@@ -49,14 +49,14 @@ rule experiment_statistic_counts_barcode_base_composition:
     conda:
         getCondaEnv("python3.yaml")
     input:
-        counts="results/experiments/{project}/counts/{condition}_{replicate}_{type}_final_counts.tsv.gz",
+        counts="results/experiments/{project}/counts/{condition}.{replicate}.{type}.final_counts.tsv.gz",
         script=getScript("count/nucleotideCountPerPosition.py"),
     output:
         bc=temp(
-            "results/experiments/{project}/counts/{condition}_{replicate}_{type}_final.BC.tsv.gz"
+            "results/experiments/{project}/counts/{condition}.{replicate}.{type}.final.BC.tsv.gz"
         ),
         stats=report(
-            "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}_{replicate}_{type}.tsv.gz",
+            "results/experiments/{project}/statistic/counts/BCNucleotideComposition.{condition}.{replicate}.{type}.tsv.gz",
             caption="../../../report/counts/barcode_base_composition.rst",
             category="{project}",
             subcategory="Barcode nucleotides",
@@ -68,10 +68,10 @@ rule experiment_statistic_counts_barcode_base_composition:
             },
         ),
     params:
-        name="{condition}_{replicate}_{type}",
+        name="{condition}.{replicate}.{type}",
     log:
         temp(
-            "results/logs/experiment/statistic/counts/barcode_base_composition.{project}.{condition}_{replicate}_{type}.log"
+            "results/logs/experiment/statistic/counts/barcode_base_composition.{project}.{condition}.{replicate}.{type}.log"
         ),
     shell:
         """
@@ -97,13 +97,13 @@ rule experiment_statistic_counts_table:
         getCondaEnv("default.yaml")
     input:
         lambda wc: (
-            "results/experiments/{project}/counts/{condition}_{replicate}_{type}_{countType}_counts.tsv.gz"
+            "results/experiments/{project}/counts/{condition}.{replicate}.{type}.{countType}_counts.tsv.gz"
             if wc.countType != "raw"
             else getRawCounts(wc.project, wc.type)
         ),
     output:
         temp(
-            "results/experiments/{project}/statistic/counts/{condition}_{replicate}_{type}_{countType}_counts.tsv.gz"
+            "results/experiments/{project}/statistic/counts/{condition}.{replicate}.{type}.{countType}_counts.tsv.gz"
         ),
     params:
         cond="{condition}",
@@ -111,7 +111,7 @@ rule experiment_statistic_counts_table:
         type="{type}",
     log:
         temp(
-            "results/logs/experiment/statistic/counts/table.{project}.{condition}_{replicate}_{type}_{countType}.log"
+            "results/logs/experiment/statistic/counts/table.{project}.{condition}.{replicate}.{type}.{countType}.log"
         ),
     shell:
         """
@@ -172,14 +172,14 @@ rule experiment_statistic_counts_BC_in_RNA_DNA:
         ),
     output:
         temp(
-            "results/experiments/{project}/statistic/counts/{condition}_{replicate}_{countType}_BC_in_RNA_DNA.tsv.gz"
+            "results/experiments/{project}/statistic/counts/{condition}.{replicate}.{countType}_BC_in_RNA_DNA.tsv.gz"
         ),
     params:
         cond="{condition}",
         rep="{replicate}",
     log:
         temp(
-            "results/logs/experiment/statistic/counts/BC_in_RNA_DNA.{project}.{condition}_{replicate}_{countType}.log"
+            "results/logs/experiment/statistic/counts/BC_in_RNA_DNA.{project}.{condition}.{replicate}.{countType}.log"
         ),
     shell:
         """

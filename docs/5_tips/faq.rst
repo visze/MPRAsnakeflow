@@ -15,10 +15,19 @@ The design/reference file check failed. Why?
 The design file must meet the following requirements:
 
 * **Unique headers**: Each sequence must have a unique sequence ID starting from :code:`>` to the first whitespace or newline.
-* **No special characters in headers**: Mapping tools create a reference dictionary and cannot handle all characters. Additionally, most databases (like SRA) have a restricted character set for headers.
+* **No special characters in headers**: Mapping tools create a reference dictionary and cannot handle all characters. Additionally, most databases (like SRA) have a restricted character set for headers. Headers must follow this naming rules:
+
+    - The first character must be one of: :code:`0-9`, :code:`A-Z`, :code:`a-z`, or :code:`! # $ % & + . / : ; ? @ ^ _ | ~ -` (notably, :code:`*` and :code:`=` are NOT allowed as the first character)
+    - Subsequent characters may include all of the above, plus :code:`*` and :code:`=`
+    - This prevents headers from starting with :code:`*` or :code:`=`, which may be reserved or problematic in downstream tools.
 * **Unique sequences**: Sequences must be different in both sense and antisense directions. Otherwise, the mapper places the read to both IDs, and the barcode becomes ambiguous and is discarded. 
 
 When you allow min/max start/lengths for sequences (e.g., in BWA mapping), ensure that the smallest substring is unique across all other (sub)sequences. If you have antisense collisions and want to keep strand sensitivity, enable it using the option :code:`strand_sensitive: {enable: true}` in the config file (see the previous question).
+
+My paired reads of the designed oligos do not overlap. Can I use this pipeline?
+-------------------------------------------------------------------------------
+No, MPRAsnakeflow currently requires overlapping paired-end reads to reconstruct the full oligo sequence. If your reads do not overlap, consider using single-end (FWD only option) of the assignment workflow or do a resequencing with longer reads to ensure overlap.
+
 
 MPRAsnakeflow is not able to create a Conda environment
 --------------------------------------------------------

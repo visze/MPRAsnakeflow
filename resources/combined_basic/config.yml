@@ -1,5 +1,5 @@
 ---
-version: "0.5"
+version: "0.6"
 assignments:
   assocBasic:
     bc_length: 15
@@ -9,7 +9,7 @@ assignments:
       configs:
         sequence_length: 171
         alignment_start: 1
-    FW:
+    FWD:
       - data/SRR10800986_1.fastq.gz
     BC:
       - data/SRR10800986_2.fastq.gz

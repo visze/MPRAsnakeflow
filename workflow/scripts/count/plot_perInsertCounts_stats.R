@@ -96,29 +96,28 @@ read_data <- function(file) {
     header = TRUE,
     comment.char = "",
     stringsAsFactors = FALSE
-  ) %>%
-    filter(oligo_name != "no_BC") %>%
+  ) |>
+    filter(oligo_name != "no_BC") |>
     mutate(
       dna_normalized_log2 = log2(dna_normalized),
       rna_normalized_log2 = log2(rna_normalized),
     )
-  return(data)
 }
 
 
 print("Read data")
 all <- data.frame()
 
-for (n in 1:(data %>% nrow())) {
+for (n in 1:(data |> nrow())) {
   print(data[n, ]$File)
   assigned_counts <- read_data(as.character(data[n, ]$File))
   assigned_counts["replicate"] <- toString(data[n, ]$Replicate)
-  all <- all %>% bind_rows(assigned_counts)
+  all <- all |> bind_rows(assigned_counts)
 }
 
 if (use_labels) {
-  all <- all %>%
-    left_join(label_f, by = c("oligo_name")) %>%
+  all <- all |>
+    left_join(label_f, by = c("oligo_name")) |>
     mutate(label = replace_na(label, "NA"))
 } else {
   all$label <- "NA"
@@ -128,10 +127,10 @@ print("Histogram plots, RNA/DNA correlation plots, Violin plots")
 
 
 plot_median_dna_rna_cor <- function(data) {
-  data <- data %>%
-    group_by(oligo_name) %>%
+  data <- data |>
+    group_by(oligo_name) |>
     summarise(dna_normalized = median(log10(dna_normalized)), rna_normalized = median(log10(rna_normalized)), n = n())
-  data <- data %>% filter(n == length(replicates))
+  data <- data |> filter(n == length(replicates))
   p <- ggplot(data, aes(x = dna_normalized, y = rna_normalized)) +
     geom_point() +
     ggtitle("Median normalized counts across replicates") +
@@ -148,7 +147,6 @@ plot_median_dna_rna_cor <- function(data) {
       plot.title = element_text(size = 20),
     ) +
     guides(fill = "none")
-  return(p)
 }
 
 plot_group_bc_per_insert <- function(data) {
@@ -173,15 +171,14 @@ plot_group_bc_per_insert <- function(data) {
       legend.text = element_text(size = 15)
     ) +
     guides(fill = "none")
-  return(bp)
 }
 
-ggsave(sprintf("%s_dna_vs_rna.png", outdir),
+ggsave(sprintf("%s.dna_vs_rna.png", outdir),
   plot_median_dna_rna_cor(all),
   width = 10, height = 10
 )
-ggsave(sprintf("%s_dna_vs_rna_minThreshold.png", outdir),
-  plot_median_dna_rna_cor(all %>% filter(n_bc >= thresh)),
+ggsave(sprintf("%s.dna_vs_rna_minThreshold.png", outdir),
+  plot_median_dna_rna_cor(all |> filter(n_bc >= thresh)),
   width = 10, height = 10
 )
 
@@ -192,9 +189,9 @@ box_plot_thresh_list <- list()
 box_plot_insert_list <- list()
 box_plot_insert_thresh_list <- list()
 
-for (n in 1:(data %>% nrow())) {
+for (n in 1:(data |> nrow())) {
   rep <- toString(data[n, ]$Replicate)
-  assigned_counts <- all %>% filter(replicate == rep)
+  assigned_counts <- all |> filter(replicate == rep)
 
   # Histograms
   x_lim_n_bc <- min(max(assigned_counts$n_bc), 300)
@@ -216,17 +213,17 @@ for (n in 1:(data %>% nrow())) {
     ggtitle(paste("replicate", rep, sep = " "))
 
   box_plot_insert_thresh_list[[n]] <-
-    plot_group_bc_per_insert(assigned_counts %>% filter(n_bc >= thresh)) +
+    plot_group_bc_per_insert(assigned_counts |> filter(n_bc >= thresh)) +
     ggtitle(paste("replicate", rep, sep = " "))
 }
 
 hist_plot <- do.call("plot_grid", c(hist_plot_list))
-ggsave(sprintf("%s_barcodesPerInsert.png", outdir), hist_plot, dpi = 300, type = "cairo")
+ggsave(sprintf("%s.barcodesPerInsert.png", outdir), hist_plot, dpi = 300, type = "cairo")
 
 
 
 box_plot_insert <- do.call("plot_grid", c(box_plot_insert_list))
-ggsave(sprintf("%s_group_barcodesPerInsert_box.png", outdir),
+ggsave(sprintf("%s.group_barcodesPerInsert_box.png", outdir),
   box_plot_insert,
   dpi = 300, type = "cairo"
 )
@@ -234,7 +231,7 @@ ggsave(sprintf("%s_group_barcodesPerInsert_box.png", outdir),
 box_plot_insert_thresh <-
   do.call("plot_grid", c(box_plot_insert_thresh_list))
 ggsave(
-  sprintf("%s_group_barcodesPerInsert_box_minThreshold.png", outdir),
+  sprintf("%s.group_barcodesPerInsert_box_minThreshold.png", outdir),
   box_plot_insert_thresh,
   dpi = 300, type = "cairo"
 )

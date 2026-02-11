@@ -8,22 +8,28 @@
 
 rule experiment_counts_umi_create_BAM:
     """
-    Create a BAM file from FASTQ input, merge FW and REV read and save UMI in XI flag.
+    Create a BAM file from FASTQ input, merge FWD and REV read and save UMI in XI flag.
     """
     input:
-        fw_fastq=lambda wc: getFW(wc.project, wc.condition, wc.replicate, wc.type),
-        rev_fastq=lambda wc: getRev(wc.project, wc.condition, wc.replicate, wc.type),
-        umi_fastq=lambda wc: getUMI(wc.project, wc.condition, wc.replicate, wc.type),
+        fwd_fastq=lambda wc: getFWD(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
+        rev_fastq=lambda wc: getREV(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
+        umi_fastq=lambda wc: getUMI(
+            wc.project, wc.condition, wc.replicate, wc.type, check_trimming=True
+        ),
         script_FastQ2doubleIndexBAM=getScript("count/FastQ2doubleIndexBAM_python3.py"),
         module_FastQ2doubleIndexBAM=getScript("count/library_python3.py"),
         script_MergeTrimReadsBAM=getScript("count/MergeTrimReadsBAM_python3.py"),
         module_MergeTrimReadsBAM=getScript("count/MergeTrimReads_python3.py"),
     output:
-        "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_{type}.bam",
+        "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.{type}.bam",
     params:
         bc_length=lambda wc: config["experiments"][wc.project]["bc_length"],
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     conda:
         getCondaEnv("python3.yaml")
     log:
@@ -34,7 +40,7 @@ rule experiment_counts_umi_create_BAM:
         """
         set +o pipefail;
 
-        fwd_length=`zcat {input.fw_fastq} | head -2 | tail -1 | wc -c`;
+        fwd_length=`zcat {input.fwd_fastq} | head -2 | tail -1 | wc -c`;
         fwd_length=$(expr $(($fwd_length-1)));
 
         rev_start=$(expr $(($fwd_length+1)));
@@ -44,7 +50,7 @@ rule experiment_counts_umi_create_BAM:
         echo $rev_start >> {log}
         echo $minoverlap >> {log}
 
-        paste <( zcat {input.fw_fastq} ) <( zcat {input.rev_fastq}  ) <( zcat {input.umi_fastq} ) | \
+        paste <( zcat {input.fwd_fastq} ) <( zcat {input.rev_fastq}  ) <( zcat {input.umi_fastq} ) | \
         awk '{{if (NR % 4 == 2 || NR % 4 == 0) {{print $1$2$3}} else {{print $1}}}}' | \
         python {input.script_FastQ2doubleIndexBAM} -p -s $rev_start -l 0 -m {params.umi_length} --RG {params.datasetID} | \
         python {input.script_MergeTrimReadsBAM} --FirstReadChimeraFilter '' --adapterFirstRead '' --adapterSecondRead '' -p --mergeoverlap --minoverlap $minoverlap > {output} 2>> {log}
@@ -63,10 +69,10 @@ rule experiment_counts_umi_raw_counts:
     input:
         lambda wc: getUMIBamFile(wc.project, wc.condition, wc.replicate, wc.type),
     output:
-        "results/experiments/{project}/counts/useUMI.{condition}_{replicate}_{type}_raw_counts.tsv.gz",
+        "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.{type}.raw_counts.tsv.gz",
     params:
         umi_length=lambda wc: config["experiments"][wc.project]["umi_length"],
-        datasetID="{condition}_{replicate}_{type}",
+        datasetID="{condition}.{replicate}.{type}",
     log:
         temp(
             "results/logs/experiment/counts/umi/raw_counts.{project}.{condition}.{replicate}.{type}.log"
