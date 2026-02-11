@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.6.0](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.5.9...v0.6.0) (2026-02-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* renaming output files to use dots instead as undersocres a file separators ([#239](https://github.com/kircherlab/MPRAsnakeflow/issues/239))
+* assignment adapter removal by length.  Assignment config, adapter and forward read (now FWD), changed ([#237](https://github.com/kircherlab/MPRAsnakeflow/issues/237))
+
+### Features
+
+* assignment adapter removal by length.  Assignment config, adapter and forward read (now FWD), changed ([#237](https://github.com/kircherlab/MPRAsnakeflow/issues/237)) ([521735e](https://github.com/kircherlab/MPRAsnakeflow/commit/521735e9b6911114bb8382fc4e7bac4dcab89b5f))
+* configurable bwa ([#244](https://github.com/kircherlab/MPRAsnakeflow/issues/244)) ([9550e22](https://github.com/kircherlab/MPRAsnakeflow/commit/9550e223bf66f3aeeef0c249148962b571a2f61b))
+* enhance trimming functionality and update config schema for adapter specifications ([798cebb](https://github.com/kircherlab/MPRAsnakeflow/commit/798cebb8ad24b6d2b38816522fe86072d1b0df04))
+* experiment adapter trimming and option to do BC (also UMI if available) selection from end of the read (FWD only) ([#238](https://github.com/kircherlab/MPRAsnakeflow/issues/238)) ([04dd683](https://github.com/kircherlab/MPRAsnakeflow/commit/04dd6831d243bf22508b390b7c1926f744eb4759))
+* fastq-join as option for merging reads (assignment workflow) ([#243](https://github.com/kircherlab/MPRAsnakeflow/issues/243)) ([093e288](https://github.com/kircherlab/MPRAsnakeflow/commit/093e288fd9a6f38df2be2f7e25ae18ecba0d3f7a))
+* implement adapter trimming functionality in experiment rules ([9fd32ce](https://github.com/kircherlab/MPRAsnakeflow/commit/9fd32cee97dc69217f88f994249ea92ed0dd5b5e))
+
+
+### Bug Fixes
+
+* correct parameter name in check_version function ([7cd50a5](https://github.com/kircherlab/MPRAsnakeflow/commit/7cd50a52f3eaa8baae4d2d6937219b58c492d8d7))
+* snakemake reverted default value handling ([#236](https://github.com/kircherlab/MPRAsnakeflow/issues/236)) ([fa5109b](https://github.com/kircherlab/MPRAsnakeflow/commit/fa5109baacc8252c9f407c9cc54e080ca72e32e4))
+
+
+### Code Refactoring
+
+* renaming output files to use dots instead as undersocres a file separators ([#239](https://github.com/kircherlab/MPRAsnakeflow/issues/239)) ([0546082](https://github.com/kircherlab/MPRAsnakeflow/commit/0546082a2edca83566dcb2283db61c423533524f))
+
 ## [0.5.9](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.5.8...v0.5.9) (2026-01-07)
 
 
