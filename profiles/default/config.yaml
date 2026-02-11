@@ -18,6 +18,8 @@ set-threads:
   assignment_hybridFWDRead_get_reads_by_cutadapt: 10
   assignment_adapter_remove: 2
 set-resources:
+  assignment_statistic_quality_metric:
+    mem: 20G
   assigned_counts_combined_replicates_barcode_output:
     runtime: 60
   assignment_check_design:

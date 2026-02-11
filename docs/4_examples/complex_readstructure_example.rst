@@ -33,11 +33,11 @@ This example depends on the following data and software:
 Installation of MPRAsnakeflow
 ------------------------------
 
-Please install conda, the MPRAsnakeflow environment and clone the actual MPRAsnakeflow master branch. You will find more help under :ref:`Installation`. In addition install `cutadapt`, `seqkit` and `sra-toolkit` e.g. via conda:
+Please install conda, the MPRAsnakeflow environment and clone the actual MPRAsnakeflow master branch. You will find more help under :ref:`Installation`. In addition install `seqkit` and `sra-toolkit` e.g. via conda:
 
 .. code-block:: bash
 
-    conda install -c bioconda cutadapt seqkit sra-tools
+    conda install -c bioconda seqkit sra-tools
 
 Design file
 -----------
@@ -58,7 +58,7 @@ We need the design file and have to modify it by trimming not sequenced adapters
 Reads association data
 ----------------------
 
-There are four sets of association sequencing for this data, which contain a barcode and oligo-forward (FWD read) and oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE.
+There are four sets of association sequencing for this data, which contain a barcode and oligo-forward (FWD read) and oligo-reverse (REV read) sequence. These data must be downloaded. All data is publicly available on ENCODE. We skip the `SRR14567164` assignemt run bataset because  it is very large and we already get good assignment rates with `SRR14567165`.
 
 .. code-block:: bash
 
@@ -66,12 +66,6 @@ There are four sets of association sequencing for this data, which contain a bar
     cd data/association
     prefetch --max-size 50GB SRR14567165
     fastq-dump --gzip --split-files SRR14567165
-
-    prefetch --max-size 200GB SRR14567164
-    fastq-dump --gzip --split-files SRR14567164
-
-    # trim 1 bp from FWD read of SRR14567164
-    cutadapt -u 1 <(zcat SRR14567164_1.fastq.gz) | gzip -c > SRR14567164_1.trim1bp.fastq.gz
         
     cd ../../
 
@@ -91,9 +85,6 @@ The folder should look like this:
     data/
     └── association
         ├── GSM5319012_Variant-Oligo-Design.txt.gz
-        ├── SRR14567164_1.fastq.gz
-        ├── SRR14567164_1.trim1bp.fastq.gz
-        ├── SRR14567164_2.fastq.gz
         ├── SRR14567165_1.fastq.gz
         ├── SRR14567165_2.fastq.gz
         ├── variant_oligo_design_trimmed.fa
@@ -133,9 +124,6 @@ The folder should look like this:
     data/
     ├── association
     │   ├── GSM5319012_Variant-Oligo-Design.txt.gz
-    │   ├── SRR14567164_1.fastq.gz
-    │   ├── SRR14567164_1.trim1bp.fastq.gz
-    │   ├── SRR14567164_2.fastq.gz
     │   ├── SRR14567165_1.fastq.gz
     │   ├── SRR14567165_2.fastq.gz
     │   ├── variant_oligo_design_trimmed.fa
@@ -169,7 +157,7 @@ Create config files
     ---
     version: "0.6"
     assignments:
-        SRR14567164SRR14567165:
+        SRR14567165:
             bc_length: 20
             linker_length: 38
             adapters:
@@ -184,10 +172,8 @@ Create config files
                     sequence_length: 150
                     alignment_start: 1
             FWD:
-                - data/association/SRR14567164_1.trim1bp.fastq.gz
                 - data/association/SRR14567165_1.fastq.gz
             REV:
-                - data/association/SRR14567164_2.fastq.gz
                 - data/association/SRR14567165_2.fastq.gz
             design_file: data/association/variant_oligo_design_trimmed_RC.fa
             configs:
@@ -198,9 +184,9 @@ Create config files
             data_folder: data/counts
             experiment_file: experiment.csv
             assignments:
-                SRR14567164SRR14567165Assignment:
+                SRR14567165:
                     type: config
-                    assignment_name: SRR14567164SRR14567165
+                    assignment_name: SRR14567165
                     assignment_config: default
             configs:
                 default: {}
@@ -308,7 +294,7 @@ When dry-run does not give any errors we will run the workflow. We use a machine
 Results
 -------
 
-For the assignment all output files will be in the :code:`results/assignment/SRR14567164SRR14567165` folder. The final assignment is in :code:`results/assignment/SRR14567164SRR14567165/assignment_barcodes.default.tsv.gz`. Also you should have a look at the QC report: :code:`results/assignment/SRR14567164SRR14567165/qc_report.default.html`. You can find an example QC report here: `Example assignment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/SRR14567164SRR14567165.qc_report.default.html>`_.
+For the assignment all output files will be in the :code:`results/assignment/SRR14567165` folder. The final assignment is in :code:`results/assignment/SRR14567165/assignment_barcodes.default.tsv.gz`. Also you should have a look at the QC report: :code:`results/assignment/SRR14567165/qc_report.default.html`. You can find an example QC report here: `Example assignment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/SRR14567165.qc_report.default.html>`_.
 
 
-For the experiment all output files will be in the :code:`results/experiments/abellEtAl` folder. The final count file is :code:`results/experiments/abellEtAl/reporter_experiment.barcode.GM12878.SRR14567164SRR14567165Assignment.default.all.tsv.gz` for the barcode file and :code:`results/experiments/abellEtAl/reporter_experiment.oligo.GM12878.SRR14567164SRR14567165Assignment.default.all.tsv.gz` for the aggregated oligo files. Also you should have a look at the QC report: :code:`results/experiments/abellEtAl/qc_report.GM12878.SRR14567164SRR14567165Assignment.default.html`. You can find an example QC report here: `Example experiment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/abeletall.qc_report.GM12878.SRR14567164SRR14567165Assignment.default.html>`_.
+For the experiment all output files will be in the :code:`results/experiments/abellEtAl` folder. The final count file is :code:`results/experiments/abellEtAl/reporter_experiment.barcode.GM12878.SRR14567165Assignment.default.all.tsv.gz` for the barcode file and :code:`results/experiments/abellEtAl/reporter_experiment.oligo.GM12878.SRR14567165Assignment.default.all.tsv.gz` for the aggregated oligo files. Also you should have a look at the QC report: :code:`results/experiments/abellEtAl/qc_report.GM12878.SRR14567165Assignment.default.html`. You can find an example QC report here: `Example experiment QC report <https://htmlpreview.github.io/?https://github.com/kircherlab/MPRAsnakeflow/blob/master/docs/4_examples/abeletall.qc_report.GM12878.SRR14567165Assignment.default.html>`_.
