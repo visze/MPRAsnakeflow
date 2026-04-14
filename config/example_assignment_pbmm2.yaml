@@ -1,0 +1,23 @@
+version: "0.6"
+
+assignments:
+  exampleLongRead:
+    bc_length: 15
+    long_read_input: "path/to/reads.bam"
+    design_file: "path/to/design.fa"
+    alignment_tool:
+      split_number: 1
+      tool: "pbmm2"
+      configs:
+        preset: "SUBREAD"
+        min_concordance: 100.0
+        pattern: "GCAAAGTGAACACATCGCTAAGCGAAAGCTAAG"
+    design_check:
+      fast: true
+      sequence_collisions: false
+    strand_sensitive:
+      enable: false
+    configs:
+      default:
+        min_support: 1
+        fraction: 0.0

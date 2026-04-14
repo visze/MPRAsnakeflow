@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - pbmm2
+  - pysam
+  - biopython
+  - python>=3.10
