@@ -252,6 +252,7 @@ rule assignment_merge_fastqjoin:
 include: "assignment/mapping_exact.smk"
 include: "assignment/mapping_bwa.smk"
 include: "assignment/mapping_bbmap.smk"
+include: "assignment/mapping_pbmm2.smk"
 
 
 rule assignment_collectBCs:

@@ -31,7 +31,7 @@ rule assignment_mapping_pbmm2_align:
         temp("results/assignment/{assignment}/pbmm2/aligned.bam"),
     params:
         preset=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"].get("preset", "SUBREAD"),
-        min_concordance=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"].get("min_concordance", 100.0),
+        min_concordance=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"].get("min_concordance", 0.9),
     log:
         temp("results/logs/assignment/mapping_pbmm2_align.{assignment}.log"),
     shell:

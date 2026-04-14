@@ -29,9 +29,13 @@ rule qc_report_assoc:
             wc.assignment_config
         ]["min_support"],
         fwd=lambda wc: (
-            ";".join(config["assignments"][wc.assignment]["FWD"])
-            if isinstance(config["assignments"][wc.assignment]["FWD"], list)
-            else config["assignments"][wc.assignment]["FWD"]
+            (
+                ";".join(config["assignments"][wc.assignment]["FWD"])
+                if isinstance(config["assignments"][wc.assignment]["FWD"], list)
+                else config["assignments"][wc.assignment]["FWD"]
+            ) 
+            if "FWD" in config["assignments"][wc.assignment] 
+            else config["assignments"][wc.assignment]["long_read_input"]
         ),
         rev=lambda wc: (
             (
@@ -42,7 +46,7 @@ rule qc_report_assoc:
             if "REV" in config["assignments"][wc.assignment]
             else "NA"
         ),
-        bc=lambda wc: [
+        bc=lambda wc: "".join([
             (
                 ";".join(config["assignments"][wc.assignment][key])
                 if isinstance(config["assignments"][wc.assignment][key], list)
@@ -50,7 +54,7 @@ rule qc_report_assoc:
             )
             for key in ["BC", "linker", "linker_length"]
             if key in config["assignments"][wc.assignment]
-        ][0],
+        ]) if any(key in config["assignments"][wc.assignment] for key in ["BC", "linker", "linker_length"]) else "NA",
         workdir=os.getcwd(),
     log:
         "results/logs/qc_report/assoc.{assignment}.{assignment_config}.log",
