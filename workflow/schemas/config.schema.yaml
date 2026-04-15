@@ -407,6 +407,8 @@ properties:
                 type: string
                 pattern: ^[ATCGN]+$
                 default: TCGGTTCACGCAATG
+            required:
+              - enable
           configs:
             type: object
             patternProperties:
@@ -439,7 +441,6 @@ properties:
           - required:
               - long_read_input
               - linker
-              - strand_sensitive
         required:
           - strand_sensitive
           - bc_length
