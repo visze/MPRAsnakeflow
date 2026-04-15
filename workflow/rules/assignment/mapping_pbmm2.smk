@@ -55,7 +55,7 @@ rule assignment_mapping_pbmm2_getBCs:
         bam="results/assignment/{assignment}/pbmm2/aligned.bam",
         script=getScript("assignment/longread_extract.py"),
     output:
-        temp("results/assignment/{assignment}/BCs/barcodes.pbmm2.0.tsv"),
+        temp("results/assignment/{assignment}/BCs/barcodes.pbmm2.tsv"),
     log:
         temp("results/logs/assignment/mapping_pbmm2_getBCs.{assignment}.log"),
     conda:
