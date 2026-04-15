@@ -1,7 +1,7 @@
 rule assignment_mapping_pbmm2_index:
     """
-    Create pbmm2 index from design reference.
-    """
+Create pbmm2 index from design reference.
+"""
     input:
         ref="results/assignment/{assignment}/reference/reference.fa",
         check="results/assignment/{assignment}/design_check.done",
@@ -19,8 +19,8 @@ rule assignment_mapping_pbmm2_index:
 
 rule assignment_mapping_pbmm2_align:
     """
-    Align long reads (BAM or FASTA) to reference using pbmm2.
-    """
+Align long reads (BAM or FASTA) to reference using pbmm2.
+"""
     input:
         reads=lambda wc: config["assignments"][wc.assignment]["long_read_input"],
         index="results/assignment/{assignment}/reference/reference.fa.mmi",
@@ -34,7 +34,6 @@ rule assignment_mapping_pbmm2_align:
     params:
         preset=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["preset"],
         min_concordance=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["min_concordance"] * 100,
-        # convert to percentage
     shell:
         """
         pbmm2 align {input.index} {input.reads} {output} \
@@ -48,9 +47,9 @@ rule assignment_mapping_pbmm2_align:
 
 rule assignment_mapping_pbmm2_getBCs:
     """
-    Extract barcodes from aligned long reads. Produces the standard
-    barcode TSV for downstream collection and filtering.
-    """
+Extract barcodes from aligned long reads. Produces the standard
+barcode TSV for downstream collection and filtering.
+"""
     input:
         bam="results/assignment/{assignment}/pbmm2/aligned.bam",
         script=getScript("assignment/longread_extract.py"),

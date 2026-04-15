@@ -3,10 +3,8 @@ import os
 
 rule qc_report_assoc:
     """
-    This rule generates the QC report for the assignment.
-    """
-    conda:
-        getCondaEnv("quarto.yaml")
+This rule generates the QC report for the assignment.
+"""
     input:
         quarto_script=getScript("report/qc_report_assoc.qmd"),
         design_file=lambda wc: config["assignments"][wc.assignment]["design_file"],
@@ -17,24 +15,22 @@ rule qc_report_assoc:
         qc_metrics="results/assignment/{assignment}/qc_metrics.{assignment_config}.json",
     output:
         assi_file="results/assignment/{assignment}/qc_report.{assignment_config}.html",
-        quarto_file=temp(
-            "results/assignment/{assignment}/qc_report.{assignment_config}.qmd"
-        ),
+        quarto_file=temp("results/assignment/{assignment}/qc_report.{assignment_config}.qmd"),
+    log:
+        "results/logs/qc_report/assoc.{assignment}.{assignment_config}.log",
+    conda:
+        getCondaEnv("quarto.yaml")
     params:
         bc_length=lambda wc: config["assignments"][wc.assignment]["bc_length"],
-        fraction=lambda wc: config["assignments"][wc.assignment]["configs"][
-            wc.assignment_config
-        ]["fraction"],
-        min_support=lambda wc: config["assignments"][wc.assignment]["configs"][
-            wc.assignment_config
-        ]["min_support"],
+        fraction=lambda wc: config["assignments"][wc.assignment]["configs"][wc.assignment_config]["fraction"],
+        min_support=lambda wc: config["assignments"][wc.assignment]["configs"][wc.assignment_config]["min_support"],
         fwd=lambda wc: (
             (
                 ";".join(config["assignments"][wc.assignment]["FWD"])
                 if isinstance(config["assignments"][wc.assignment]["FWD"], list)
                 else config["assignments"][wc.assignment]["FWD"]
-            ) 
-            if "FWD" in config["assignments"][wc.assignment] 
+            )
+            if "FWD" in config["assignments"][wc.assignment]
             else config["assignments"][wc.assignment]["long_read_input"]
         ),
         rev=lambda wc: (
@@ -46,18 +42,22 @@ rule qc_report_assoc:
             if "REV" in config["assignments"][wc.assignment]
             else "NA"
         ),
-        bc=lambda wc: "".join([
-            (
-                ";".join(config["assignments"][wc.assignment][key])
-                if isinstance(config["assignments"][wc.assignment][key], list)
-                else config["assignments"][wc.assignment][key]
+        bc=lambda wc: (
+            "".join(
+                [
+                    (
+                        ";".join(config["assignments"][wc.assignment][key])
+                        if isinstance(config["assignments"][wc.assignment][key], list)
+                        else config["assignments"][wc.assignment][key]
+                    )
+                    for key in ["BC", "linker", "linker_length"]
+                    if key in config["assignments"][wc.assignment]
+                ]
             )
-            for key in ["BC", "linker", "linker_length"]
-            if key in config["assignments"][wc.assignment]
-        ]) if any(key in config["assignments"][wc.assignment] for key in ["BC", "linker", "linker_length"]) else "NA",
+            if any(key in config["assignments"][wc.assignment] for key in ["BC", "linker", "linker_length"])
+            else "NA"
+        ),
         workdir=os.getcwd(),
-    log:
-        "results/logs/qc_report/assoc.{assignment}.{assignment_config}.log",
     shell:
         """
         (
@@ -85,10 +85,8 @@ rule qc_report_assoc:
 
 rule qc_report_count:
     """
-    This rule generates the QC report for the count data.
-    """
-    conda:
-        getCondaEnv("quarto.yaml")
+This rule generates the QC report for the count data.
+"""
     input:
         quarto_script=getScript("report/qc_report_count.qmd"),
         dna_oligo_coor_min_thre_plot="results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/{condition}.DNA.pairwise.minThreshold.png",
@@ -111,19 +109,17 @@ rule qc_report_count:
         qc_metrics="results/experiments/{project}/qc_metrics.{condition}.{assignment}.{config}.json",
     output:
         count_file="results/experiments/{project}/qc_report.{condition}.{assignment}.{config}.html",
-        quarto_file=temp(
-            "results/experiments/{project}/qc_report.{condition}.{assignment}.{config}.qmd"
-        ),
+        quarto_file=temp("results/experiments/{project}/qc_report.{condition}.{assignment}.{config}.qmd"),
+    log:
+        "results/logs/qc_report/count.{project}.{condition}.{assignment}.{config}.log",
+    conda:
+        getCondaEnv("quarto.yaml")
     params:
         condition=lambda wildcards: getConditions(wildcards.project),
         workdir=os.getcwd(),
         thresh=lambda wildcards: str(
-            config["experiments"][wildcards.project]["configs"][wildcards.config][
-                "filter"
-            ]["bc_threshold"]
+            config["experiments"][wildcards.project]["configs"][wildcards.config]["filter"]["bc_threshold"]
         ),
-    log:
-        "results/logs/qc_report/count.{project}.{condition}.{assignment}.{config}.log",
     shell:
         """
         (
