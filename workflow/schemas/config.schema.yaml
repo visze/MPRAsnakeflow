@@ -25,7 +25,7 @@ properties:
     type: object
     patternProperties:
       description: name of the assignment
-      ^([^\_\.]+)$:
+      ^([^_\.]+)$:
         type: object
         properties:
           alignment_tool:
