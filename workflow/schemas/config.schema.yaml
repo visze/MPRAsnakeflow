@@ -440,6 +440,7 @@ properties:
               - long_read_input
               - linker
         required:
+          - strand_sensitive
           - bc_length
           - design_file
           - configs
