@@ -32,13 +32,8 @@ rule assignment_mapping_pbmm2_align:
         getCondaEnv("pbmm2_pysam.yaml")
     threads: 8
     params:
-        preset=lambda wc: config["assignments"][wc.assignment]["alignment_tool"][
-            "configs"
-        ]["preset"],
-        min_concordance=lambda wc: config["assignments"][wc.assignment][
-            "alignment_tool"
-        ]["configs"]["min_concordance"]
-        * 100,
+        preset=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["preset"],
+        min_concordance=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["min_concordance"] * 100,
         # convert to percentage
     shell:
         """
