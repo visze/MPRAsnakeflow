@@ -394,7 +394,7 @@ properties:
               - sequence_collisions
           strand_sensitive:
             type: object
-            default: {}
+            default: { enable: false }
             properties:
               enable:
                 type: boolean
