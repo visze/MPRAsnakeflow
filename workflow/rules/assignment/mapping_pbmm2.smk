@@ -66,9 +66,7 @@ rule assignment_mapping_pbmm2_getBCs:
     conda:
         getCondaEnv("pbmm2_pysam.yaml")
     params:
-        pattern=lambda wc: config["assignments"][wc.assignment]["alignment_tool"][
-            "configs"
-        ]["pattern"],
+        pattern=lambda wc: config["assignments"][wc.assignment]["linker"],
         bc_length=lambda wc: config["assignments"][wc.assignment]["bc_length"],
     shell:
         """

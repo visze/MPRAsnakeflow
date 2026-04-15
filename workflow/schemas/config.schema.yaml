@@ -232,16 +232,11 @@ properties:
                           minimum: 0
                           maximum: 1
                           default: 0.9
-                        pattern:
-                          type: string
-                          pattern: ^[ATCGNatcgn]+$
-                          default: GCAAAGTGAACACATCGCTAAGCGAAAGCTAAG
                       required:
                         - alignment_start
                         - sequence_length
                         - preset
                         - min_concordance
-                        - pattern
                   required:
                     - configs
             required:
@@ -443,6 +438,7 @@ properties:
               - BC
           - required:
               - long_read_input
+              - linker
         required:
           - bc_length
           - design_file
