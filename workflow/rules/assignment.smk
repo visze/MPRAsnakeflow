@@ -226,7 +226,7 @@ Get the barcodes.
 """
     input:
         lambda wc: (
-            "results/assignment/{wc.assignment}/BCs/barcodes.pbmm2.tsv"
+            "results/assignment/{assignment}/BCs/barcodes.pbmm2.tsv"
             if config["assignments"][wc.assignment]["alignment_tool"]["tool"] == "pbmm2"
             else expand(
                 "results/assignment/{{assignment}}/BCs/barcodes.{mapper}.{split}.tsv",
