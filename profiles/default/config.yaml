@@ -42,6 +42,8 @@ set-resources:
   assignment_mapping_bbmap:
     runtime: 240
     mem: 10G
+  assignment_mapping_pbmm2_align:
+    runtime: 240
   assignment_collect:
     runtime: 2160
     mem: 10G

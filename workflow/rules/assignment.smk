@@ -14,11 +14,9 @@ include: "assignment/statistic.smk"
 
 rule assignment_check_design:
     """
-    Check if the design file is correct and no duplicated sequences are present (FWD and reverse).
-    Also check if no duplicated headers and no illegal characters in header.
-    """
-    conda:
-        getCondaEnv("python3.yaml")
+Check if the design file is correct and no duplicated sequences are present (FWD and reverse).
+Also check if no duplicated headers and no illegal characters in header.
+"""
     input:
         design=lambda wc: config["assignments"][wc.assignment]["design_file"],
         script=getScript("assignment/check_design_file.py"),
@@ -27,55 +25,45 @@ rule assignment_check_design:
         touch("results/assignment/{assignment}/design_check.done"),
         ref="results/assignment/{assignment}/reference/reference.fa",
         ref_tmp=temp("results/assignment/{assignment}/reference/reference.tmp.fa"),
+    log:
+        log=temp("results/logs/assignment/check_design.{assignment}.log"),
+        err="results/assignment/{assignment}/design_check.err",
+    conda:
+        getCondaEnv("python3.yaml")
     params:
         start=lambda wc: (
-            config["assignments"][wc.assignment]["alignment_tool"]["configs"][
-                "alignment_start"
-            ]["max"]
+            config["assignments"][wc.assignment]["alignment_tool"]["configs"]["alignment_start"]["max"]
             if config["assignments"][wc.assignment]["alignment_tool"]["tool"]
-            in ["bwa", "bwa-additional-filtering"]
-            else config["assignments"][wc.assignment]["alignment_tool"]["configs"][
-                "alignment_start"
+            in [
+                "bwa",
+                "bwa-additional-filtering",
             ]
+            else config["assignments"][wc.assignment]["alignment_tool"]["configs"]["alignment_start"]
         ),
         length=lambda wc: (
-            config["assignments"][wc.assignment]["alignment_tool"]["configs"][
-                "sequence_length"
-            ]["min"]
+            config["assignments"][wc.assignment]["alignment_tool"]["configs"]["sequence_length"]["min"]
             if config["assignments"][wc.assignment]["alignment_tool"]["tool"]
-            in ["bwa", "bwa-additional-filtering"]
-            else config["assignments"][wc.assignment]["alignment_tool"]["configs"][
-                "sequence_length"
+            in [
+                "bwa",
+                "bwa-additional-filtering",
             ]
+            else config["assignments"][wc.assignment]["alignment_tool"]["configs"]["sequence_length"]
         ),
         fast_check=lambda wc: (
-            "--fast-dict"
-            if config["assignments"][wc.assignment]["design_check"]["fast"]
-            else "--slow-string-search"
+            "--fast-dict" if config["assignments"][wc.assignment]["design_check"]["fast"] else "--slow-string-search"
         ),
         sequence_collisions=lambda wc: (
-            "sense_antisense"
-            if config["assignments"][wc.assignment]["design_check"][
-                "sequence_collisions"
-            ]
-            else "skip"
+            "sense_antisense" if config["assignments"][wc.assignment]["design_check"]["sequence_collisions"] else "skip"
         ),
         attach_sequence=lambda wc: (
             "--attach-sequence %s %s"
             % (
-                config["assignments"][wc.assignment]["strand_sensitive"][
-                    "forward_adapter"
-                ],
-                config["assignments"][wc.assignment]["strand_sensitive"][
-                    "reverse_adapter"
-                ],
+                config["assignments"][wc.assignment]["strand_sensitive"]["forward_adapter"],
+                config["assignments"][wc.assignment]["strand_sensitive"]["reverse_adapter"],
             )
             if config["assignments"][wc.assignment]["strand_sensitive"]["enable"]
             else ""
         ),
-    log:
-        log=temp("results/logs/assignment/check_design.{assignment}.log"),
-        err="results/assignment/{assignment}/design_check.err",
     shell:
         """
         trap "cat {log.err}" ERR
@@ -90,25 +78,31 @@ rule assignment_check_design:
 
 rule assignment_fastq_split:
     """
-    Split the fastq files into n files for parallelisation.
-    n is given by split_read in the configuration file.
+Split the fastq files into n files for parallelisation.
+n is given by split_read in the configuration file.
 
-    Runs only if the design file is correct.
-    """
-    conda:
-        getCondaEnv("fastqsplitter.yaml")
+Runs only if the design file is correct.
+"""
     input:
-        fastq=lambda wc: getAssignmentRead(wc.assignment, wc.read),
+        fastq=lambda wc: getAssignmentRead(
+            wc.assignment,
+            wc.read,
+        ),
         check="results/assignment/{assignment}/design_check.done",
     output:
         temp(
             expand(
                 "results/assignment/{{assignment}}/fastq/splits/{{read}}.split{split}.fastq.gz",
-                split=range(0, getSplitNumber()),
+                split=range(
+                    0,
+                    getSplitNumber(),
+                ),
             ),
         ),
     log:
         temp("results/logs/assignment/fastq_split.{assignment}.{read}.log"),
+    conda:
+        getCondaEnv("fastqsplitter.yaml")
     params:
         files=lambda wc: " ".join(
             [
@@ -117,7 +111,10 @@ rule assignment_fastq_split:
                     "results/assignment/{assignment}/fastq/splits/{read}.split{split}.fastq.gz",
                     assignment=wc.assignment,
                     read=wc.read,
-                    split=range(0, getSplitNumber()),
+                    split=range(
+                        0,
+                        getSplitNumber(),
+                    ),
                 )
             ]
         ),
@@ -129,43 +126,31 @@ rule assignment_fastq_split:
 
 rule assignment_attach_idx:
     """
-    Extract the index sequence and add it to the header.
-    """
-    conda:
-        getCondaEnv("NGmerge.yaml")
+Extract the index sequence and add it to the header.
+"""
     input:
         read="results/assignment/{assignment}/fastq/splits/{read}.split{split}.fastq.gz",
         BC="results/assignment/{assignment}/fastq/splits/BC.split{split}.fastq.gz",
         script=getScript("attachBCToFastQ.py"),
         libs=getScript("common.py"),
     output:
-        read=temp(
-            "results/assignment/{assignment}/fastq/splits/{read}.split{split}.BCattached.fastq.gz"
-        ),
+        read=temp("results/assignment/{assignment}/fastq/splits/{read}.split{split}.BCattached.fastq.gz"),
+    log:
+        temp("results/logs/assignment/attach_idx.{assignment}.{split}.{read}.log"),
+    conda:
+        getCondaEnv("NGmerge.yaml")
     params:
-        BC_rev_comp=lambda wc: (
-            "--reverse-complement"
-            if config["assignments"][wc.assignment]["BC_rev_comp"]
-            else ""
-        ),
+        BC_rev_comp=lambda wc: ("--reverse-complement" if config["assignments"][wc.assignment]["BC_rev_comp"] else ""),
         attach_sequence=lambda wc: (
             "--attach-sequence left %s"
             % (
-                config["assignments"][wc.assignment]["strand_sensitive"][
-                    "forward_adapter"
-                ]
+                config["assignments"][wc.assignment]["strand_sensitive"]["forward_adapter"]
                 if wc.read == "FWD"
-                else reverse_complement(
-                    config["assignments"][wc.assignment]["strand_sensitive"][
-                        "reverse_adapter"
-                    ]
-                )
+                else reverse_complement(config["assignments"][wc.assignment]["strand_sensitive"]["reverse_adapter"])
             )
             if config["assignments"][wc.assignment]["strand_sensitive"]["enable"]
             else ""
         ),
-    log:
-        temp("results/logs/assignment/attach_idx.{assignment}.{split}.{read}.log"),
     shell:
         """
         python {input.script} -r {input.read} -b {input.BC} {params.BC_rev_comp} {params.attach_sequence} | bgzip -c > {output.read} 2> {log}
@@ -174,32 +159,22 @@ rule assignment_attach_idx:
 
 rule assignment_merge_NGmerge:
     """
-    Merge the FWD, REV and BC fastq files into one using NGmerge.
-    """
-    conda:
-        getCondaEnv("NGmerge.yaml")
+Merge the FWD, REV and BC fastq files into one using NGmerge.
+"""
     input:
         FWD="results/assignment/{assignment}/fastq/splits/FWD.split{split}.BCattached.fastq.gz",
         REV="results/assignment/{assignment}/fastq/splits/REV.split{split}.BCattached.fastq.gz",
     output:
-        un=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.un.NGmerge.fastq.gz"
-        ),
-        join=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.join.NGmerge.fastq.gz"
-        ),
-    params:
-        min_overlap=lambda wc: config["assignments"][wc.assignment]["NGmerge"][
-            "min_overlap"
-        ],
-        frac_mismatches_allowed=lambda wc: config["assignments"][wc.assignment][
-            "NGmerge"
-        ]["frac_mismatches_allowed"],
-        min_dovetailed_overlap=lambda wc: config["assignments"][wc.assignment][
-            "NGmerge"
-        ]["min_dovetailed_overlap"],
+        un=temp("results/assignment/{assignment}/fastq/merge_split{split}.un.NGmerge.fastq.gz"),
+        join=temp("results/assignment/{assignment}/fastq/merge_split{split}.join.NGmerge.fastq.gz"),
     log:
         "results/logs/assignment/merge_NGmerge.{assignment}.{split}.log",
+    conda:
+        getCondaEnv("NGmerge.yaml")
+    params:
+        min_overlap=lambda wc: config["assignments"][wc.assignment]["NGmerge"]["min_overlap"],
+        frac_mismatches_allowed=lambda wc: config["assignments"][wc.assignment]["NGmerge"]["frac_mismatches_allowed"],
+        min_dovetailed_overlap=lambda wc: config["assignments"][wc.assignment]["NGmerge"]["min_dovetailed_overlap"],
     shell:
         """
         NGmerge \
@@ -216,32 +191,22 @@ rule assignment_merge_NGmerge:
 
 rule assignment_merge_fastqjoin:
     """
-    Merge the FWD, REV and BC fastq files into one using fastq-join.
-    """
-    conda:
-        getCondaEnv("fastq-join.yaml")
+Merge the FWD, REV and BC fastq files into one using fastq-join.
+"""
     input:
         FWD="results/assignment/{assignment}/fastq/splits/FWD.split{split}.BCattached.fastq.gz",
         REV="results/assignment/{assignment}/fastq/splits/REV.split{split}.BCattached.fastq.gz",
     output:
-        un1=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.un1.fastqjoin.fastq.gz"
-        ),
-        un2=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.un2.fastqjoin.fastq.gz"
-        ),
-        join=temp(
-            "results/assignment/{assignment}/fastq/merge_split{split}.join.fastqjoin.fastq.gz"
-        ),
-    params:
-        min_overlap=lambda wc: config["assignments"][wc.assignment]["fastq-join"][
-            "min_overlap"
-        ],
-        max_pct_mismatch=lambda wc: config["assignments"][wc.assignment]["fastq-join"][
-            "max_pct_mismatch"
-        ],
+        un1=temp("results/assignment/{assignment}/fastq/merge_split{split}.un1.fastqjoin.fastq.gz"),
+        un2=temp("results/assignment/{assignment}/fastq/merge_split{split}.un2.fastqjoin.fastq.gz"),
+        join=temp("results/assignment/{assignment}/fastq/merge_split{split}.join.fastqjoin.fastq.gz"),
     log:
         "results/logs/assignment/merge_fastqjoin.{assignment}.{split}.log",
+    conda:
+        getCondaEnv("fastq-join.yaml")
+    params:
+        min_overlap=lambda wc: config["assignments"][wc.assignment]["fastq-join"]["min_overlap"],
+        max_pct_mismatch=lambda wc: config["assignments"][wc.assignment]["fastq-join"]["max_pct_mismatch"],
     shell:
         """
         fastq-join -p {params.min_overlap} -m {params.max_pct_mismatch} {input.FWD} {input.REV} \
@@ -252,26 +217,34 @@ rule assignment_merge_fastqjoin:
 include: "assignment/mapping_exact.smk"
 include: "assignment/mapping_bwa.smk"
 include: "assignment/mapping_bbmap.smk"
+include: "assignment/mapping_pbmm2.smk"
 
 
 rule assignment_collectBCs:
     """
-    Get the barcodes.
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Get the barcodes.
+"""
     input:
-        lambda wc: expand(
-            "results/assignment/{{assignment}}/BCs/barcodes.{mapper}.{split}.tsv",
-            split=range(0, getSplitNumber()),
-            mapper=config["assignments"][wc.assignment]["alignment_tool"]["tool"],
+        lambda wc: (
+            "results/assignment/{assignment}/BCs/barcodes.pbmm2.tsv"
+            if config["assignments"][wc.assignment]["alignment_tool"]["tool"] == "pbmm2"
+            else expand(
+                "results/assignment/{{assignment}}/BCs/barcodes.{mapper}.{split}.tsv",
+                split=range(
+                    0,
+                    getSplitNumber(),
+                ),
+                mapper=config["assignments"][wc.assignment]["alignment_tool"]["tool"],
+            )
         ),
     output:
         "results/assignment/{assignment}/barcodes_incl_other.tsv.gz",
-    params:
-        batch_size="--batch-size=%d" % getSplitNumber() if getSplitNumber() > 1 else "",
     log:
         temp("results/logs/assignment/collectBCs.{assignment}.log"),
+    conda:
+        getCondaEnv("default.yaml")
+    params:
+        batch_size=("--batch-size=%d" % getSplitNumber() if getSplitNumber() > 1 else ""),
     shell:
         """
         export LC_ALL=C # speed up sort
@@ -282,11 +255,9 @@ rule assignment_collectBCs:
 
 rule assignment_filter:
     """
-    Filter the barcodes file based on the config given in the config-file.
-    FIXME: Limitation is that oligos cannot have a name ambiguous or other.
-    """
-    conda:
-        getCondaEnv("python3.yaml")
+Filter the barcodes file based on the config given in the config-file.
+FIXME: Limitation is that oligos cannot have a name ambiguous or other.
+"""
     input:
         assignment="results/assignment/{assignment}/barcodes_incl_other.tsv.gz",
         script=getScript("assignment/filterAssignmentTsv.py"),
@@ -296,13 +267,11 @@ rule assignment_filter:
     log:
         log=temp("results/logs/assignment/filter.{assignment}.{assignment_config}.log"),
         err=temp("results/logs/assignment/filter.{assignment}.{assignment_config}.err"),
+    conda:
+        getCondaEnv("python3.yaml")
     params:
-        min_support=lambda wc: config["assignments"][wc.assignment]["configs"][
-            wc.assignment_config
-        ]["min_support"],
-        fraction=lambda wc: config["assignments"][wc.assignment]["configs"][
-            wc.assignment_config
-        ]["fraction"],
+        min_support=lambda wc: config["assignments"][wc.assignment]["configs"][wc.assignment_config]["min_support"],
+        fraction=lambda wc: config["assignments"][wc.assignment]["configs"][wc.assignment_config]["fraction"],
         unknown_other="-o",
         ambiguous="-a",
         bc_length=lambda wc: config["assignments"][wc.assignment]["bc_length"],

@@ -45,13 +45,13 @@ For each assignment you want to process, you must give it a name like :code:`exa
     :split_number:
         To parallelize mapping for assignment, the reads are split into :code:`split_number` files. For example, setting it to 300 means that the reads are split into 300 files, and each file is mapped in parallel. This is only useful when using a cluster. When running the workflow on a single machine, the default value should be used. The default is set to :code:`1`. (For technical reasons, when multiple assignments are defined, all will be set to the maximum defined in the config.)
     :tool:
-        Alignment tool that is used. Currently, :code:`bbmap`, :code:`bwa`, :code:`bwa-additional-filtering`, and :code:`exact` are supported. Default is :code:`bbmap`.
+        Alignment tool that is used. Currently, :code:`bbmap`, :code:`bwa`, :code:`bwa-additional-filtering`, :code:`exact`, and :code:`pbmm2` are supported. Default is :code:`bbmap`.
     :configs:
         Configurations of the alignment tool selected.
 
-        :sequence_length (exact, bbmap):
+        :sequence_length (exact, bbmap, pbmm2):
             Defines the :code:`sequence_length`, which is the length of a sequence alignment to an oligo in the design file. Only one length design is supported.
-        :alignment_start (exact, bbmap):
+        :alignment_start (exact, bbmap, pbmm2):
             Defines the start of the alignment in an oligo. When using adapters, you must set the length of the adapter. Otherwise, 1 will be the choice for most cases.
         :sequence_length (bwa, bwa-additional-filtering):
             Defines the :code:`min` and :code:`max` of a :code:`sequence_length` specification. :code:`sequence_length` is the length of a sequence alignment to an oligo in the design file. Because there can be insertions and deletions, we recommend varying it slightly around the exact length (e.g., ±5). This option enables designs with multiple sequence lengths.
@@ -69,15 +69,19 @@ For each assignment you want to process, you must give it a name like :code:`exa
             (Optional) Threshold of mismatches we investigate if we should try to rescue. Default is :code:`3`.
         :verbose (bwa-additional-filtering):
             (Optional) Print which alignments were rescued and which could not be rescued. Default is :code:`false`.
+        :preset (pbmm2):
+            (Optional) Preset for pbmm2 alignment. Default is :code:`SUBREAD`.
+        :min_concordance (pbmm2):
+            (Optional) Minimum concordance for pbmm2 alignment. Default is :code:`0.9`.
 
 :bc_length:
     Length of the barcode. Must match the length of :code:`BC`.
 :BC_rev_comp:
     (Optional) If set to :code:`true`, the barcode is reverse complemented. Default is :code:`false`.
 :linker_length:
-    (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. The fixed length is used for the linker after a fixed length of BC. The recommended option is :code:`linker` by defining the exact linker sequence and using cutadapt for trimming.
+    (Optional) Length of the linker. O nly needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. The fixed length is used for the linker after a fixed length of BC. The recommended option is :code:`linker` by defining the exact linker sequence and using cutadapt for trimming. 
 :linker:
-    (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. Uses cutadapt to trim the linker to get the barcode as well as the start of the insert.
+    (Required for long read, otherwise optional) The exact linker between BC and oligo. *Short read data:* Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. Uses cutadapt to trim the linker to get the barcode as well as the start of the insert. *Long read data:* Required! BC will be taken after the linker.
 :FWD:
     List of forward-read files in gzipped fastq format. The full or relative path to the files should be used. The same order in FWD, BC, and REV is important.
 :REV:

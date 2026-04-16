@@ -192,6 +192,20 @@ COPY workflow/envs/quarto.yaml /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e/envi
 RUN mkdir -p /conda-envs/1891509f8d9a8a89487739b14cd6dbef
 COPY workflow/envs/mpralib.yaml /conda-envs/1891509f8d9a8a89487739b14cd6dbef/environment.yaml
 
+# Conda environment:
+#   source: workflow/envs/pbmm2_pysam.yaml
+#   prefix: /conda-envs/2308b21c334f9613fdb840777a17d2b9
+#   ---
+#   channels:
+#       - conda-forge
+#       - bioconda
+#   dependencies:
+#       - pbmm2
+#       - pysam
+#       - biopython
+#       - python>=3.10
+RUN mkdir -p /conda-envs/2308b21c334f9613fdb840777a17d2b9
+COPY workflow/envs/pbmm2_pysam.yaml /conda-envs/2308b21c334f9613fdb840777a17d2b9/environment.yaml
 
 # Step 2: Generate conda environments
 
@@ -214,6 +228,7 @@ RUN conda env create --no-default-packages --prefix /conda-envs/a4e1b935cbca52df
 RUN conda env create --no-default-packages --prefix /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e --file /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e/environment.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/ae3e37bf43cbb30416a885168e10c552 --file /conda-envs/ae3e37bf43cbb30416a885168e10c552/environment.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/1891509f8d9a8a89487739b14cd6dbef --file /conda-envs/1891509f8d9a8a89487739b14cd6dbef/environment.yaml
+RUN conda env create --no-default-packages --prefix /conda-envs/2308b21c334f9613fdb840777a17d2b9 --file /conda-envs/2308b21c334f9613fdb840777a17d2b9/environment.yaml
 
 # cleanup when version changed
 ARG VERSION
