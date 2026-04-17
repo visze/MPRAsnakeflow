@@ -3,10 +3,7 @@
 
 def getExperimentCutadaptAdapters(project, read):
     output = []
-    if (
-        "adapters" in config["experiments"][project]
-        and read in config["experiments"][project]["adapters"]
-    ):
+    if "adapters" in config["experiments"][project] and read in config["experiments"][project]["adapters"]:
         adapters_config = config["experiments"][project]["adapters"][read]
         if isinstance(adapters_config, list) and isinstance(adapters_config[0], int):
             output = ["-u %d" % u for u in adapters_config]
@@ -58,6 +55,17 @@ def useTrimming(project, read_type):
     return False
 
 
+def getReads(read_type, project, condition, replicate, rnaDna_type, check_trimming=False):
+    if read_type == "FWD":
+        return getFWD(project, condition, replicate, rnaDna_type, check_trimming)
+    elif read_type == "REV":
+        return getREV(project, condition, replicate, rnaDna_type, check_trimming)
+    elif read_type == "UMI":
+        return getUMI(project, condition, replicate, rnaDna_type, check_trimming)
+    else:
+        raise ValueError("read_type must be one of FWD, REV or UMI")
+
+
 def getFWD(project, condition, replicate, rnaDna_type, check_trimming=False):
     if check_trimming and useTrimming(project, "FWD"):
         return "results/experiments/{project}/fastq/FWD.trimmed.{condition}.{replicate}.{type}.fastq.gz"
@@ -66,15 +74,13 @@ def getFWD(project, condition, replicate, rnaDna_type, check_trimming=False):
     exp = exp[exp.Condition == condition]
     exp = exp[exp.Replicate.astype(str) == replicate]
     return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in exp["%s_BC_F" % rnaDna_type].iloc[0].split(";")
+        "%s/%s" % (config["experiments"][project]["data_folder"], f) for f in exp["%s_BC_F" % rnaDna_type].iloc[0].split(";")
     ]
 
 
 def getFWDWithIndex(project):
     return [
-        "%s/%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_F.iloc[0].split(";")
+        "%s/%s" % (config["experiments"][project]["data_folder"], f) for f in getExperiments(project).BC_F.iloc[0].split(";")
     ]
 
 
@@ -93,8 +99,7 @@ def getREV(project, condition, replicate, rnaDna_type, check_trimming=False):
 
 def getREVWithIndex(project):
     return [
-        "%s%s" % (config["experiments"][project]["data_folder"], f)
-        for f in getExperiments(project).BC_R.iloc[0].split(";")
+        "%s%s" % (config["experiments"][project]["data_folder"], f) for f in getExperiments(project).BC_R.iloc[0].split(";")
     ]
 
 
@@ -112,17 +117,11 @@ def getUMI(project, condition, replicate, rnaDna_type, check_trimming=False):
 
 
 def getUMIWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).UMI.iloc[0].split(";")
-    ]
+    return [config["experiments"][project]["data_folder"] + f for f in getExperiments(project).UMI.iloc[0].split(";")]
 
 
 def getIndexWithIndex(project):
-    return [
-        config["experiments"][project]["data_folder"] + f
-        for f in getExperiments(project).INDEX.iloc[0].split(";")
-    ]
+    return [config["experiments"][project]["data_folder"] + f for f in getExperiments(project).INDEX.iloc[0].split(";")]
 
 
 def getUMIBamFile(project, condition, replicate, type):
@@ -151,30 +150,15 @@ def getRawCounts(project, type):
     """
     if useUMI(project, type):
         if onlyFWD(project, type):
-            return (
-                "results/experiments/{project}/counts/onlyFWDUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
-                % type
-            )
+            return "results/experiments/{project}/counts/onlyFWDUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz" % type
         else:
-            return (
-                "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
-                % type
-            )
+            return "results/experiments/{project}/counts/useUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz" % type
     elif noUMI(project, type):
-        return (
-            "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz"
-            % type
-        )
+        return "results/experiments/{project}/counts/noUMI.{condition}.{replicate}.%s.raw_counts.tsv.gz" % type
     elif onlyFWD(project, type):
-        return (
-            "results/experiments/{project}/counts/onlyFWD.{condition}.{replicate}.%s.raw_counts.tsv.gz"
-            % type
-        )
+        return "results/experiments/{project}/counts/onlyFWD.{condition}.{replicate}.%s.raw_counts.tsv.gz" % type
     else:
-        raise RuntimeError(
-            "Error in getRawCounts: no valid option for %s and %s found"
-            % (project, type)
-        )
+        raise RuntimeError("Error in getRawCounts: no valid option for %s and %s found" % (project, type))
 
 
 def counts_aggregate_demultiplex_input(project):
@@ -189,21 +173,13 @@ def counts_aggregate_demultiplex_input(project):
             type=["DNA", "RNA"],
         )
         for name in names:
-            with (
-                checkpoints.experiment_counts_demultiplex_BAM_umi.get(
-                    project=project, name=name
-                )
-                .output[0]
-                .open() as f
-            ):
+            with checkpoints.experiment_counts_demultiplex_BAM_umi.get(project=project, name=name).output[0].open() as f:
                 output += [f.name]
     return output
 
 
 def counts_getFilterConfig(project, conf, dna_or_rna, command):
-    value = config["experiments"][project]["configs"][conf]["filter"][
-        "min_%s_counts" % dna_or_rna.lower()
-    ]
+    value = config["experiments"][project]["configs"][conf]["filter"]["min_%s_counts" % dna_or_rna.lower()]
     filterMap = {"min_counts": "minCounts"}
     if isinstance(value, int):
         return "--%s %d" % (filterMap.get(command, command), value)
@@ -214,15 +190,8 @@ def counts_getFilterConfig(project, conf, dna_or_rna, command):
 def counts_getSamplingConfig(project, conf, dna_or_rna, command):
     if useSampling(project, conf, dna_or_rna):
         if dna_or_rna in config["experiments"][project]["configs"][conf]["sampling"]:
-            if (
-                command
-                in config["experiments"][project]["configs"][conf]["sampling"][
-                    dna_or_rna
-                ]
-            ):
-                value = config["experiments"][project]["configs"][conf]["sampling"][
-                    dna_or_rna
-                ][command]
+            if command in config["experiments"][project]["configs"][conf]["sampling"][dna_or_rna]:
+                value = config["experiments"][project]["configs"][conf]["sampling"][dna_or_rna][command]
                 if isinstance(value, int):
                     return "--%s %d" % (command, value)
                 else:
@@ -242,20 +211,23 @@ def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
 
     if raw_or_assigned == "counts":
         if useSampling(project, conf, rna_or_dna):
-            output = (
-                "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.sampling.{config}.tsv.gz"
-                % (raw_or_assigned, replicate, rna_or_dna)
+            output = "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.sampling.{config}.tsv.gz" % (
+                raw_or_assigned,
+                replicate,
+                rna_or_dna,
             )
 
         else:
-            output = (
-                "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.tsv.gz"
-                % (raw_or_assigned, replicate, rna_or_dna)
+            output = "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.tsv.gz" % (
+                raw_or_assigned,
+                replicate,
+                rna_or_dna,
             )
     else:
-        output = (
-            "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.config.{config}.tsv.gz"
-            % (raw_or_assigned, replicate, rna_or_dna)
+        output = "results/experiments/{project}/%s/{condition}.%s.%s.final_counts.config.{config}.tsv.gz" % (
+            raw_or_assigned,
+            replicate,
+            rna_or_dna,
         )
     return output
 
@@ -265,16 +237,10 @@ def getFinalCounts(project, conf, condition, rna_or_dna, raw_or_assigned):
 
 def getAssignmentFile(project, assignment):
     if config["experiments"][project]["assignments"][assignment]["type"] == "file":
-        return config["experiments"][project]["assignments"][assignment][
-            "assignment_file"
-        ]
+        return config["experiments"][project]["assignments"][assignment]["assignment_file"]
     if config["experiments"][project]["assignments"][assignment]["type"] == "config":
-        conf = config["experiments"][project]["assignments"][assignment][
-            "assignment_config"
-        ]
-        name = config["experiments"][project]["assignments"][assignment][
-            "assignment_name"
-        ]
+        conf = config["experiments"][project]["assignments"][assignment]["assignment_config"]
+        name = config["experiments"][project]["assignments"][assignment]["assignment_name"]
         return expand(
             "results/assignment/{assignment}/assignment_barcodes.{config}.tsv.gz",
             assignment=name,
@@ -284,13 +250,8 @@ def getAssignmentFile(project, assignment):
 
 def assignedCounts_getAssignmentSamplingConfig(project, assignment, command):
     if "sampling" in config["experiments"][project]["assignments"][assignment]:
-        if (
-            command
-            in config["experiments"][project]["assignments"][assignment]["sampling"]
-        ):
-            value = config["experiments"][project]["assignments"][assignment][
-                "sampling"
-            ][command]
+        if command in config["experiments"][project]["assignments"][assignment]["sampling"]:
+            value = config["experiments"][project]["assignments"][assignment]["sampling"][command]
             if isinstance(value, int):
                 return "--%s %d" % (command, value)
             else:
