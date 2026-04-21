@@ -71,6 +71,9 @@ Example of an assignment file using long read data with pbmm2 mapping:
 
 If you want to use the strand sensitivity option (e.g., testing enhancers in both directions), you can add the following to the config file: :code:`strand_sensitive: {enable: true}`. Otherwise, MPRAsnakeflow will give you an error because it cannot handle the same sequences in both sense and antisense directions. This is an issue with the mappers because they do not consider the strand and will always call your read ambiguous due to multiple matches. **Not available for long read data.**
 
+.. note:: 
+    Don't forget to look at the best practice recommendations for the :ref:`best-practice-assignment-workflow`.
+
 Snakemake
 ============================
 

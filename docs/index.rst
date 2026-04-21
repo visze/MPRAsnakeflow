@@ -176,6 +176,7 @@ Indices and Tables
     :maxdepth: 1
     :hidden:
 
+    3_further_documentation/best_practice
     3_further_documentation/tutorial
     3_further_documentation/adapter
 

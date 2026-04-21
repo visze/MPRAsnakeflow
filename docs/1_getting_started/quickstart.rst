@@ -4,7 +4,7 @@
 Getting Started
 =====================
 
-We highly recommend starting with the MPRAsnakeflow :ref:`Tutorial` or the :ref:`Assignment example` and :ref:`Count example` examples. Below, we provide a quick overview of what you need to start the workflow.
+We highly recommend starting with the MPRAsnakeflow :ref:`Tutorial` or the :ref:`Assignment example` and :ref:`Count example` examples. Further, the :ref:`Best practice` section provides additional guidance on Snakemake and on the subworkflows. Below, we provide a quick overview of what you need to start the workflow.
 
 MPRAsnakeflow consists of two subworkflows: :ref:`Assignment` and :ref:`Experiment`. This quickstart shows the configuration for both. If you only want to run one of them, leave out the respective part.
 
