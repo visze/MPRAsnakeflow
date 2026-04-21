@@ -168,29 +168,16 @@ COPY workflow/envs/quarto.yaml /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e/envi
 
 # Conda environment:
 #   source: workflow/envs/mpralib.yaml
-#   prefix: /conda-envs/f14db2daf3d94b49e39ea8fded7fe87e
+#   prefix: /conda-envs/8a065417982df56be3b310bca28e7765
 #   ---
 #   channels:
 #       - bioconda
 #       - conda-forge
 #   dependencies:
-#       - python
-#       - click
-#       - pip
-#       - pandas
-#       - numpy
-#       - biopython
-#       - matplotlib
-#       - scikit-learn
-#       - seaborn
-#       - scipy
-#       - anndata
-#       - pysam
-#       - scipy
-#       - pip:
-#           - mpralib==0.6.0
-RUN mkdir -p /conda-envs/1891509f8d9a8a89487739b14cd6dbef
-COPY workflow/envs/mpralib.yaml /conda-envs/1891509f8d9a8a89487739b14cd6dbef/environment.yaml
+#       - 'conda-forge::biopython>=1.80'
+#       - mpralib=0.10.3
+RUN mkdir -p /conda-envs/8a065417982df56be3b310bca28e7765
+COPY workflow/envs/mpralib.yaml /conda-envs/8a065417982df56be3b310bca28e7765/environment.yaml
 
 # Conda environment:
 #   source: workflow/envs/pbmm2_pysam.yaml
@@ -216,18 +203,31 @@ RUN <<EOR
 	conda config --set channel_priority strict
 EOR
 
+# workflow/envs/NGmerge.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74 --file /conda-envs/2abb0048c6dce1e9bf1a7960f16f3a74/environment.yaml
+# workflow/envs/fastq-join.yaml 
 RUN conda env create --no-default-packages --prefix /conda-envs/7f3db13e2aa951f4484dd79393a5b358 --file /conda-envs/7f3db13e2aa951f4484dd79393a5b358/environment.yaml
+# workflow/envs/bbmap_samtools_htslib.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/a1cc34886525015a2366c351dc84f094 --file /conda-envs/a1cc34886525015a2366c351dc84f094/environment.yaml
+# workflow/envs/bwa_samtools_picard_htslib.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/bd140014e61f38f39c52be56455899ed --file /conda-envs/bd140014e61f38f39c52be56455899ed/environment.yaml
+# workflow/envs/cutadapt.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/a3e2fce7f2f6fdbe1aa97232e3def601 --file /conda-envs/a3e2fce7f2f6fdbe1aa97232e3def601/environment.yaml
+# workflow/envs/default.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/bc0b5d56a68abe252a6b7f205988f848 --file /conda-envs/bc0b5d56a68abe252a6b7f205988f848/environment.yaml
+# workflow/envs/fastqsplitter.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/e9dc603fe82e22dfa110fb43a9265aca --file /conda-envs/e9dc603fe82e22dfa110fb43a9265aca/environment.yaml
+# workflow/envs/python27.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/05a8eaa56b4a44e5531fbad1610b05d8 --file /conda-envs/05a8eaa56b4a44e5531fbad1610b05d8/environment.yaml
+# workflow/envs/python3.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/a4e1b935cbca52df9b6f192ff86c464c --file /conda-envs/a4e1b935cbca52df9b6f192ff86c464c/environment.yaml
+# workflow/envs/quarto.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e --file /conda-envs/b933cc1aa7c25db04635e7ec0e37f80e/environment.yaml
+# workflow/envs/r.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/ae3e37bf43cbb30416a885168e10c552 --file /conda-envs/ae3e37bf43cbb30416a885168e10c552/environment.yaml
-RUN conda env create --no-default-packages --prefix /conda-envs/1891509f8d9a8a89487739b14cd6dbef --file /conda-envs/1891509f8d9a8a89487739b14cd6dbef/environment.yaml
+# workflow/envs/mpralib.yaml
+RUN conda env create --no-default-packages --prefix /conda-envs/8a065417982df56be3b310bca28e7765 --file /conda-envs/8a065417982df56be3b310bca28e7765/environment.yaml
+# workflow/envs/pbmm2_pysam.yaml
 RUN conda env create --no-default-packages --prefix /conda-envs/2308b21c334f9613fdb840777a17d2b9 --file /conda-envs/2308b21c334f9613fdb840777a17d2b9/environment.yaml
 
 # cleanup when version changed
