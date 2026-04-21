@@ -117,8 +117,8 @@ Use the following steps for installing Sphinx and the dependencies for building 
 .. code-block:: bash
 
     cd MPRAsnakeflow/docs
-    mamba env create -f environment.yml -n sphinx
-    mamba activate sphinx
+    conda env create -f environment.yml -n sphinx
+    conda activate sphinx
 
 Use the following commands for building the documentation.
 The first two lines are only required for loading the virtual environment.
