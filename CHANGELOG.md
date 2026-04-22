@@ -12,7 +12,6 @@
 ### Bug Fixes
 
 * **experiment:** :bug: Missing getReads function for correct trimming ([440e7bd](https://github.com/kircherlab/MPRAsnakeflow/commit/440e7bd653152c0bdaec87f64989fc6276a495a3))
-* **experiment:** :bug: Missing getReads function for correct trimming ([eb214eb](https://github.com/kircherlab/MPRAsnakeflow/commit/eb214ebb9246cbfb94ebdac91a235d4b02a026b5))
 
 ## [0.6.0](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.5.9...v0.6.0) (2026-02-11)
 
