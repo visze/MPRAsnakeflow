@@ -41,6 +41,7 @@ properties:
                   - bwa
                   - bbmap
                   - bwa-additional-filtering
+                  - pbmm2
                 default: bbmap
             allOf:
               - if:
@@ -200,6 +201,42 @@ properties:
                       required:
                         - sequence_length
                         - alignment_start
+                  required:
+                    - configs
+              - if:
+                  properties:
+                    tool:
+                      const: pbmm2
+                then:
+                  properties:
+                    configs:
+                      type: object
+                      properties:
+                        alignment_start:
+                          type: integer
+                          minimum: 1
+                        sequence_length:
+                          type: integer
+                          minimum: 1
+                        preset:
+                          type: string
+                          enum:
+                            - SUBREAD
+                            - CCS
+                            - ISOSEQ
+                            - HIFI
+                            - UNROLLED
+                          default: SUBREAD
+                        min_concordance:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                          default: 0.9
+                      required:
+                        - alignment_start
+                        - sequence_length
+                        - preset
+                        - min_concordance
                   required:
                     - configs
             required:
@@ -370,6 +407,8 @@ properties:
                 type: string
                 pattern: ^[ATCGN]+$
                 default: TCGGTTCACGCAATG
+            required:
+              - enable
           configs:
             type: object
             patternProperties:
@@ -391,13 +430,19 @@ properties:
             minProperties: 1
         oneOf:
           - required:
+              - FWD
               - linker_length
           - required:
+              - FWD
               - linker
           - required:
+              - FWD
               - BC
+          - required:
+              - long_read_input
+              - linker
         required:
-          - FWD
+          - strand_sensitive
           - bc_length
           - design_file
           - configs
@@ -412,6 +457,9 @@ properties:
       ^([^_\.]+)$:
         type: object
         properties:
+          split_number:
+            type: integer
+            default: 1
           bc_length:
             type: integer
             minimum: 1
@@ -635,6 +683,7 @@ properties:
               - min_barcodes
         # entries that have to be in the config file for successful validation
         required:
+          - split_number
           - bc_length
           - data_folder
           - experiment_file

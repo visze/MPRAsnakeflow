@@ -64,7 +64,15 @@ Example of an assignment file using exact matches and read 1 with BC, linker, an
 .. literalinclude:: ../../config/example_assignment_exact_linker.yaml
    :language: yaml
 
-If you want to use the strand sensitivity option (e.g., testing enhancers in both directions), you can add the following to the config file: :code:`strand_sensitive: {enable: true}`. Otherwise, MPRAsnakeflow will give you an error because it cannot handle the same sequences in both sense and antisense directions. This is an issue with the mappers because they do not consider the strand and will always call your read ambiguous due to multiple matches.
+Example of an assignment file using long read data with pbmm2 mapping:
+
+.. literalinclude:: ../../config/example_assignment_pbmm2.yaml
+   :language: yaml
+
+If you want to use the strand sensitivity option (e.g., testing enhancers in both directions), you can add the following to the config file: :code:`strand_sensitive: {enable: true}`. Otherwise, MPRAsnakeflow will give you an error because it cannot handle the same sequences in both sense and antisense directions. This is an issue with the mappers because they do not consider the strand and will always call your read ambiguous due to multiple matches. **Not available for long read data.**
+
+.. note:: 
+    Don't forget to look at the best practice recommendations for the :ref:`best-practice-assignment-workflow`.
 
 Snakemake
 ============================
@@ -118,6 +126,9 @@ Rules run by Snakemake in the assignment utility:
 - **assignment_mapping_bwa_ref**: Create mapping reference for BWA from design file.
 - **assignment_mapping_exact**: Map the reads to the reference and sort using exact match.
 - **assignment_mapping_exact_reference**: Create reference to map the exact design
+- **assignment_mapping_pbmm2_align**: Align long reads (BAM or FASTA) to reference using pbmm2.
+- **assignment_mapping_pbmm2_getBCs**: Extract barcodes from aligned long reads. Produces the standard barcode TSV for downstream collection and filtering.
+- **assignment_mapping_pbmm2_index**: Create pbmm2 index from design reference.
 - **assignment_merge_NGmerge**: Merge the FWD, REV and BC fastq files into one using NGmerge.
 - **assignment_merge_fastqjoin**: Merge the FWD, REV and BC fastq files into one using fastq-join.
 - **assignment_preprocessing_adapter_remove**: Remove adapter sequence from the reads (3' or 5'). Uses cutadapt to trim adapters based on the primer direction.
