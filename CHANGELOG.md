@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.2](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.1...v0.6.2) (2026-04-23)
+
+
+### Bug Fixes
+
+* **experiment:** :ambulance: Do not allow _ or . in Condition or Replicate ([b4f3234](https://github.com/kircherlab/MPRAsnakeflow/commit/b4f32343f36230f73df57ed9a9328ab75a2734d7))
+* **experiment:** :fire: split_numer was used wrongly when multiple experiments where defined ([370411f](https://github.com/kircherlab/MPRAsnakeflow/commit/370411ff981eceb6a487e019712f3baeb823f0c1))
+
 ## [0.6.1](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.0...v0.6.1) (2026-04-22)
 
 
