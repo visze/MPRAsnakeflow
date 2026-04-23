@@ -79,7 +79,7 @@ For each assignment you want to process, you must give it a name like :code:`exa
 :BC_rev_comp:
     (Optional) If set to :code:`true`, the barcode is reverse complemented. Default is :code:`false`.
 :linker_length:
-    (Optional) Length of the linker. O nly needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. The fixed length is used for the linker after a fixed length of BC. The recommended option is :code:`linker` by defining the exact linker sequence and using cutadapt for trimming. 
+    (Optional) Length of the linker. Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. The fixed length is used for the linker after a fixed length of BC. The recommended option is :code:`linker` by defining the exact linker sequence and using cutadapt for trimming. 
 :linker:
     (Required for long read, otherwise optional) The exact linker between BC and oligo. *Short read data:* Only needed if you don't have a barcode read and the barcode is in the forward read with the structure: BC+Linker+Insert. Uses cutadapt to trim the linker to get the barcode as well as the start of the insert. *Long read data:* Required! BC will be taken after the linker.
 :FWD:

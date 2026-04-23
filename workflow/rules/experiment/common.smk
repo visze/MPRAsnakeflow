@@ -71,7 +71,7 @@ def useSplitting(project: str, rnaDna_type: str) -> bool:
     """
     Helper to check if splitting should be used. Will only apply for merging FWD and REV reads (creating BAM file) and split_number is > 1.
     """
-    return not onlyFWD(project, rnaDna_type) and config["experiments"][project]["split_number"] > 1
+    return not onlyFWD(project, rnaDna_type) and getMaxExperimentSplitNumber() > 1
 
 
 def getExperimentReads(

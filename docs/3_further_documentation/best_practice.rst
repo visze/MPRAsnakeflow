@@ -86,6 +86,17 @@ Strand specificity and adapter handling
 - If reads do not include required adapter sequence and your assay/design setup requires strand-specific disambiguation, trimming or synthetic adapter handling may be needed.
 
 
+Using ``linker`` vs ``linker_length`` for hybrid forward reads
+==============================================================
+
+- This setting is relevant when no barcode read (``BC``) is provided and barcode and insert are in one forward read with a structure like ``BC + linker + insert``.
+- Using ``linker`` triggers cutadapt-based linker detection and trimming before barcode extraction.
+- Using ``linker_length`` performs fixed-position extraction based on sequence length.
+- In practice, ``linker`` can lead to fewer assigned barcodes than ``linker_length`` because barcode sequences with unexpected length after trimming are filtered later against ``bc_length``.
+- The lower yield with ``linker`` does not necessarily indicate worse results. In some datasets, this stricter behavior can improve downstream consistency (e.g. replicate correlation) by removing more error-prone reads.
+- If your barcode is known to be at a fixed position and you prioritize assignment yield, ``linker_length`` can be a useful choice.
+- If you prioritize stricter read parsing around the linker sequence, use ``linker`` and compare replicate-level QC metrics.
+- If you are unsure you can define two assignment configurations (one using ``linker``, one using ``linker_length``), run both (e.g. only on a subset), and choose based on assignment count and downstream QC stability.
 
 
 -------------------
