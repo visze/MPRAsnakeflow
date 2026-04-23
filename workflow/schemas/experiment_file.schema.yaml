@@ -6,10 +6,12 @@ description: an entry in the experiment file
 properties:
   Condition:
     type: string
-    description: The xperiment condition (e.g. cell-type)
+    description: The experiment condition (e.g. cell-type)
+    pattern: "^[^_.]+$"
   Replicate:
     type: [integer, string]
     description: The replicate (e.g. 1, 2, or 3)
+    pattern: "^[^_.]+$"
   DNA_BC_F:
     type: string
     description: The forward DNA barcode
