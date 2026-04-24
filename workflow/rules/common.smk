@@ -195,16 +195,19 @@ def getVariants(project):
         raise MissingVariantInConfigException(project)
 
 
-def getReplicatesOfCondition(project, condition):
+def getReplicatesOfCondition(project: str, condition: str) -> list[str]:
     exp = getExperiments(project)
     exp = exp[exp.Condition == condition]
-    return list(exp.Replicate.astype(str))
+    replicates: list[str] = list(exp.Replicate.astype(str))
+    if not replicates:
+        raise ValueError(f"No replicates found for project '{project}' and condition '{condition}'. Check if the experiment file is correct and contains the expected columns.")
+    return replicates
 
 
-def getReplicatesOfConditionType(project, condition, rna_or_dna):
+def getReplicatesOfConditionType(project: str, condition: str, rna_or_dna: str) -> list[str]:
     exp = getExperiments(project)
 
-    replicates = getReplicatesOfCondition(project, condition)
+    replicates: list[str] = getReplicatesOfCondition(project, condition)
 
     if f"{rna_or_dna}_BC_F" in exp.columns:
 
@@ -216,7 +219,7 @@ def getReplicatesOfConditionType(project, condition, rna_or_dna):
     return replicates
 
 
-def hasReplicates(project, condition=None):
+def hasReplicates(project: str, condition: str | None = None) -> bool:
     if condition == None:
         conditions = getConditions(project)
         for condition in conditions:
@@ -227,10 +230,10 @@ def hasReplicates(project, condition=None):
     return True
 
 
-def getReplicatesOfConditionType(project, condition, rna_or_dna):
+def getReplicatesOfConditionType(project: str, condition: str, rna_or_dna: str) -> list[str]:
     exp = getExperiments(project)
 
-    replicates = getReplicatesOfCondition(project, condition)
+    replicates: list[str] = getReplicatesOfCondition(project, condition)
 
     if f"{rna_or_dna}_BC_F" in exp.columns:
 
@@ -242,7 +245,7 @@ def getReplicatesOfConditionType(project, condition, rna_or_dna):
     return replicates
 
 
-def getConfigs(project):
+def getConfigs(project: str) -> list[str]:
     return list(config["experiments"][project]["configs"].keys())
 
 
