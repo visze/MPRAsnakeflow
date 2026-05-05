@@ -1,7 +1,7 @@
 ---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: (\.html$|^workflow/scripts/count/MergeTrimReads\.py$)
+exclude: (\.html$|^workflow/scripts/count/MergeTrimReads\.py$|^workflow/scripts/count/library\.py)
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
