@@ -20,29 +20,25 @@
 
 rule assignment_mapping_bbmap:
     """
-    Map the reads to the reference and sort unsing bwa mem
-    """
-    conda:
-        getCondaEnv("bbmap_samtools_htslib.yaml")
-    threads: 10
-    resources:
-        mem="4G",
+Map the reads to the reference and sort unsing bwa mem
+"""
     input:
         reads=lambda wc: getMappingRead(wc.assignment),
         check="results/assignment/{assignment}/design_check.done",
         reference="results/assignment/{assignment}/reference/reference.fa",
     output:
-        bam=temp(
-            "results/assignment/{assignment}/bbmap/merge_split{split}.unsorted.bam"
-        ),
-        sorted_bam=temp(
-            "results/assignment/{assignment}/bbmap/merge_split{split}.mapped.bam"
-        ),
+        bam=temp("results/assignment/{assignment}/bbmap/merge_split{split}.unsorted.bam"),
+        sorted_bam=temp("results/assignment/{assignment}/bbmap/merge_split{split}.mapped.bam"),
     log:
         temp("results/logs/assignment/mapping.bbmap.{assignment}.{split}.log"),
+    conda:
+        getCondaEnv("bbmap_samtools_htslib.yaml")
+    threads: 10
+    resources:
+        mem="4G",
     shell:
         """
-        bbmap.sh -eoom -Xmx{resources.mem} -t={threads} nullifybrokenquality \
+        bbmap.sh -eoom -Xmx{resources.mem_mb}M -t={threads} nullifybrokenquality \
         in={input.reads} ref={input.reference} nodisk out={output.bam} &> {log};
         samtools sort -l 0 -@ {threads} {output.bam} > {output.sorted_bam} 2>> {log};
         """
@@ -50,30 +46,28 @@ rule assignment_mapping_bbmap:
 
 rule assignment_mapping_bbmap_getBCs:
     """
-    Get the barcodes.
+Get the barcodes.
 
-    BAM/SAM fields:
-    - bc_string = $2;
-    - ref_name = $3;
-    - alignement_start = $4;
-    - mapping_quality = $5;
-    - cigar = $6;
-    - aligned_sequence = $10;
-    - edit_distance = $12;
-    - alignment_score = $13;
-    """
-    conda:
-        getCondaEnv("bbmap_samtools_htslib.yaml")
+BAM/SAM fields:
+- bc_string = $2;
+- ref_name = $3;
+- alignement_start = $4;
+- mapping_quality = $5;
+- cigar = $6;
+- aligned_sequence = $10;
+- edit_distance = $12;
+- alignment_score = $13;
+"""
     input:
         "results/assignment/{assignment}/bbmap/merge_split{split}.mapped.bam",
     output:
         temp("results/assignment/{assignment}/BCs/barcodes.bbmap.{split}.tsv"),
-    params:
-        mapping_quality_min=lambda wc: config["assignments"][wc.assignment][
-            "alignment_tool"
-        ]["configs"]["min_mapping_quality"],
     log:
         temp("results/logs/assignment/mapping.bbmap.getBCs.{assignment}.{split}.log"),
+    conda:
+        getCondaEnv("bbmap_samtools_htslib.yaml")
+    params:
+        mapping_quality_min=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["min_mapping_quality"],
     shell:
         """
         export LC_ALL=C # speed up sorting

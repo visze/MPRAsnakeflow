@@ -1,9 +1,7 @@
 rule assignment_mapping_exact_reference:
     """
-    Create reference to map the exact design
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Create reference to map the exact design
+"""
     input:
         check="results/assignment/{assignment}/design_check.done",
         ref="results/assignment/{assignment}/reference/reference.fa",
@@ -11,6 +9,8 @@ rule assignment_mapping_exact_reference:
         "results/assignment/{assignment}/reference/reference_exact.fa",
     log:
         temp("results/logs/assignment/mapping_exact_reference.{assignment}.log"),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         paste <(
@@ -25,10 +25,8 @@ rule assignment_mapping_exact_reference:
 
 rule assignment_mapping_exact:
     """
-    Map the reads to the reference and sort using exact match.
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Map the reads to the reference and sort using exact match.
+"""
     input:
         reads=lambda wc: getMappingRead(wc.assignment),
         reference="results/assignment/{assignment}/reference/reference_exact.fa",
@@ -36,13 +34,11 @@ rule assignment_mapping_exact:
         temp("results/assignment/{assignment}/BCs/barcodes.exact.{split}.tsv"),
     log:
         temp("results/logs/assignment/mapping_exact.{assignment}.{split}.log"),
+    conda:
+        getCondaEnv("default.yaml")
     params:
-        alignment_start=lambda wc: config["assignments"][wc.assignment][
-            "alignment_tool"
-        ]["configs"]["alignment_start"],
-        sequence_length=lambda wc: config["assignments"][wc.assignment][
-            "alignment_tool"
-        ]["configs"]["sequence_length"],
+        alignment_start=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["alignment_start"],
+        sequence_length=lambda wc: config["assignments"][wc.assignment]["alignment_tool"]["configs"]["sequence_length"],
     shell:
         """
         # Look up exact matches in design file
