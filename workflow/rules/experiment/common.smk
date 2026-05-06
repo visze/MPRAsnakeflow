@@ -62,7 +62,7 @@ def useTrimming(project: str, read_type: str) -> bool:
     Helper to check if trimming should be used for a specific read type.
     """
     if "adapters" in config["experiments"][project]:
-        if read_type in config["experiments"][project]["read_type"]:
+        if read_type in config["experiments"][project]["adapters"]:
             return True
     return False
 
