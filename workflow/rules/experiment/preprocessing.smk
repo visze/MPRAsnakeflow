@@ -36,7 +36,7 @@ rule experiment_preprocessing_trim_reads:
 Getting the BCs from the reads using cutadapt.
 """
     input:
-        lambda wc: getExperimentReads(
+        reads=lambda wc: getExperimentReads(
             wc.read_type, wc.project, wc.condition, wc.replicate, wc.type, check_splitting=True, check_trimming=False
         ),
     output:
