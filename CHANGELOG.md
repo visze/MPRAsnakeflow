@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.6.5](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.4...v0.6.5) (2026-05-06)
+
+
+### Bug Fixes
+
+* **experiment:** :bug: Fix input of rul experiment_preprocessing_trim_reads ([#267](https://github.com/kircherlab/MPRAsnakeflow/issues/267)) ([47c796d](https://github.com/kircherlab/MPRAsnakeflow/commit/47c796d0c53b26ff4d11d1757bd22b330e5b5567))
+
+## [0.6.4](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.3...v0.6.4) (2026-05-06)
+
+
+### Bug Fixes
+
+* **experiment:** :bug: Fix error in check if trimming is needed ([625c6ea](https://github.com/kircherlab/MPRAsnakeflow/commit/625c6ea741cc8526b03c5f02849fc5fb83b54da1))
+
+## [0.6.3](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.2...v0.6.3) (2026-05-05)
+
+
+### Bug Fixes
+
+* **assignment:** :tada: Using mem_mb resoucres for bbmap for snakemake &gt;=9.20.0 compatibility ([8ddd146](https://github.com/kircherlab/MPRAsnakeflow/commit/8ddd1467a3893d7823c5f32ccc7eccf193de83cb))
+
 ## [0.6.2](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.6.1...v0.6.2) (2026-04-23)
 
 
@@ -239,7 +260,7 @@
 * Normalization changed which may result in different outputs
 
 ### Features
- 
+
  * outlier removal methods ([#132](https://github.com/kircherlab/MPRAsnakeflow/pull/132))
  * No min max length for bbmap. default mapq is 30. ([#131](https://github.com/kircherlab/MPRAsnakeflow/pull/131))
  * IGVF outputs ([#129](https://github.com/kircherlab/MPRAsnakeflow/pull/129))
@@ -257,7 +278,7 @@
 
 ## [0.1.0](https://github.com/kircherlab/MPRAsnakeflow/compare/v0.0.1...v0.1.0) (2024-09-18)
 
-First release of MPRAsnakeflow! 
+First release of MPRAsnakeflow!
 
 ### Feature highlights
 

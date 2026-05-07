@@ -6,10 +6,8 @@
 
 rule experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper:
     """
-    Combine assigned counts statistic per replicate and modality (DNA and RNA not merged)
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Combine assigned counts statistic per replicate and modality (DNA and RNA not merged)
+"""
     input:
         stats=lambda wc: expand(
             "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{condition}}.{replicate}.{type}.{{config}}.statistic.tsv.gz",
@@ -24,6 +22,8 @@ rule experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper:
         temp(
             "results/logs/experiment/statistic/assigned_counts/combine_BC_assignment_stats_helper.{project}.{condition}.{config}.{assignment}.log"
         ),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         set +o pipefail;
@@ -38,10 +38,8 @@ rule experiment_statistic_assigned_counts_combine_BC_assignment_stats_helper:
 
 rule experiment_statistic_assigned_counts_combine_BC_assignment_stats:
     """
-    Combined assinged counts statistic per condition (DNA and aRNA not merged)
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Combined assinged counts statistic per condition (DNA and aRNA not merged)
+"""
     input:
         stats=lambda wc: expand(
             "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/helper.{condition}.{{config}}.statistic.tsv.gz",
@@ -64,6 +62,8 @@ rule experiment_statistic_assigned_counts_combine_BC_assignment_stats:
         temp(
             "results/logs/experiment/statistic/assigned_counts/combine_BC_assignment_stats.{project}.{assignment}.{config}.log"
         ),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         set +o pipefail;
@@ -84,10 +84,8 @@ rule experiment_statistic_assigned_counts_combine_BC_assignment_stats:
 
 rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge:
     """
-    Combine assigned counts statistic per replicate (DNA and RNA merged)
-    """
-    conda:
-        getCondaEnv("python3.yaml")
+Combine assigned counts statistic per replicate (DNA and RNA merged)
+"""
     input:
         files=lambda wc: expand(
             "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/{{condition}}.{replicate}.merged_assigned_counts.statistic.tsv.gz",
@@ -98,17 +96,15 @@ rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge:
         temp(
             "results/experiments/{project}/statistic/assigned_counts/{assignment}/{config}/combined/{condition}.merged_assigned_counts.statistic.tsv.gz"
         ),
-    params:
-        cond="{condition}",
-        statistic=lambda wc: " ".join(
-            getAssignedCountsStatistic(
-                wc.project, wc.assignment, wc.config, wc.condition
-            )
-        ),
     log:
         temp(
             "results/logs/experiment/statistic/assigned_counts/combine_stats_dna_rna_merge.{project}.{condition}.{config}.{assignment}.log"
         ),
+    conda:
+        getCondaEnv("python3.yaml")
+    params:
+        cond="{condition}",
+        statistic=lambda wc: " ".join(getAssignedCountsStatistic(wc.project, wc.assignment, wc.config, wc.condition)),
     shell:
         """
         python {input.script} \
@@ -120,10 +116,8 @@ rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge:
 
 rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge_all:
     """
-    Combine assigned counts statistic per condition (DNA and RNA merged)
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Combine assigned counts statistic per condition (DNA and RNA merged)
+"""
     input:
         files=lambda wc: expand(
             "results/experiments/{{project}}/statistic/assigned_counts/{{assignment}}/{{config}}/combined/{condition}.merged_assigned_counts.statistic.tsv.gz",
@@ -146,6 +140,8 @@ rule experiment_statistic_assigned_counts_combine_stats_dna_rna_merge_all:
         temp(
             "results/logs/experiment/statistic/assigned_counts/combine_stats_dna_rna_merge_all.{project}.{config}.{assignment}.log"
         ),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         set +o pipefail;

@@ -5,15 +5,11 @@
 
 rule experiment_statistic_bc_overlap_run:
     """
-    Get overlap of counts and barcodes between replicates.
-    """
-    conda:
-        getCondaEnv("r.yaml")
+Get overlap of counts and barcodes between replicates.
+"""
     input:
         files=lambda wc: expand(
-            getFinalCounts(
-                wc.project, wc.config, wc.condition, wc.type, wc.raw_or_assigned
-            ),
+            getFinalCounts(wc.project, wc.config, wc.condition, wc.type, wc.raw_or_assigned),
             project=wc.project,
             condition=wc.condition,
             config=wc.config,
@@ -24,12 +20,14 @@ rule experiment_statistic_bc_overlap_run:
         temp(
             "results/experiments/{project}/statistic/bc_overlap/{raw_or_assigned}/overlapBCandCounts.{condition}.{type}.{config}.tsv"
         ),
+    log:
+        temp("results/logs/experiment/statistic/bc_overlap/run.{project}.{condition}.{type}.{config}.{raw_or_assigned}.log"),
+    conda:
+        getCondaEnv("r.yaml")
     params:
         input=lambda wc: ",".join(
             expand(
-                getFinalCounts(
-                    wc.project, wc.config, wc.condition, wc.type, wc.raw_or_assigned
-                ),
+                getFinalCounts(wc.project, wc.config, wc.condition, wc.type, wc.raw_or_assigned),
                 project=wc.project,
                 condition=wc.condition,
                 config=wc.config,
@@ -37,13 +35,7 @@ rule experiment_statistic_bc_overlap_run:
             )
         ),
         cond="{condition}_{type}",
-        replicates=lambda wc: ",".join(
-            getReplicatesOfConditionType(wc.project, wc.condition, wc.type)
-        ),
-    log:
-        temp(
-            "results/logs/experiment/statistic/bc_overlap/run.{project}.{condition}.{type}.{config}.{raw_or_assigned}.log"
-        ),
+        replicates=lambda wc: ",".join(getReplicatesOfConditionType(wc.project, wc.condition, wc.type)),
     shell:
         """
         Rscript {input.script} \
@@ -55,10 +47,8 @@ rule experiment_statistic_bc_overlap_run:
 
 rule experiment_statistic_bc_overlap_combine_counts:
     """
-    Combine overlap BC and count statistic into one file (raw counts).
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Combine overlap BC and count statistic into one file (raw counts).
+"""
     input:
         statistic=lambda wc: expand(
             "results/experiments/{{project}}/statistic/bc_overlap/counts/overlapBCandCounts.{condition}.{type}.{config}.tsv",
@@ -79,9 +69,9 @@ rule experiment_statistic_bc_overlap_combine_counts:
             },
         ),
     log:
-        temp(
-            "results/logs/experiment/statistic/bc_overlap/combine_counts.{project}.{config}.log"
-        ),
+        temp("results/logs/experiment/statistic/bc_overlap/combine_counts.{project}.{config}.log"),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         set +o pipefail;
@@ -96,10 +86,8 @@ rule experiment_statistic_bc_overlap_combine_counts:
 
 rule experiment_statistic_bc_overlap_combine_assigned_counts:
     """
-    Combine overlap BC and count statistic into one file (assigned counts).
-    """
-    conda:
-        getCondaEnv("default.yaml")
+Combine overlap BC and count statistic into one file (assigned counts).
+"""
     input:
         statistic=lambda wc: expand(
             "results/experiments/{{project}}/statistic/bc_overlap/assigned_counts/{{assignment}}/overlapBCandCounts.{condition}.{type}.{{config}}.tsv",
@@ -119,9 +107,9 @@ rule experiment_statistic_bc_overlap_combine_assigned_counts:
             },
         ),
     log:
-        temp(
-            "results/logs/experiment/statistic/bc_overlap/combine_assigned_counts.{project}.{config}.{assignment}.log"
-        ),
+        temp("results/logs/experiment/statistic/bc_overlap/combine_assigned_counts.{project}.{config}.{assignment}.log"),
+    conda:
+        getCondaEnv("default.yaml")
     shell:
         """
         set +o pipefail;
