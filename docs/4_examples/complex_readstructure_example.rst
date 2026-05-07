@@ -207,7 +207,7 @@ And the :code:`experiment.csv` file to map the DNA/RNA counts to the correct rep
 Run snakemake
 -------------
 
-Now we are ready to run MPRAsnakeflow. We will do it on one node with 50GB memory and 30 cores.
+Now we are ready to run MPRAsnakeflow. We will do it on one node with 60 GB memory and 30 cores.
 
 We will run the pipeline directly in the actual folder. The MPRAsnakeflow workflow can be in a different directory. Let's assume :code:`/home/user/MPRAsnakeflow`.
 
