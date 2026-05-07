@@ -1,11 +1,11 @@
-.. _Complex example:
+.. _GSE306816 example:
 
 .. role:: bash(code)
     :language: bash
 
-======================
+===============
 GSE306816 dpSTR
-======================
+===============
 
 This example runs the assignment and experiment workflows on data from the preprint by `Zhang et al. Systematic Evaluation of the Impact of Promoter Proximal Short Tandem Repeats on Expression. bioRxiv (2025). <https://doi.org/10.1101/2025.09.14.676153>`_. The data were published in `GEO:GSE306816 <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE306816>`_.
 
@@ -43,7 +43,7 @@ We need the design file and must modify it by trimming non-sequenced sequence pa
     wget -O data/assignment/uber_seq.fa https://raw.githubusercontent.com/gymreklab/str-mpra/refs/heads/master/design-uber/uber_seq.fa
 
     # Use only the first 135 bp of each oligo and remove duplicates.
-    # The full oligo design is 150 bp, but only 135 bp are sequenced.
+    # The full oligo design is 231 bp, but only 135 bp are sequenced.
     # Duplicates can exist because one oligo can map to multiple barcodes.
     awk -v N=135 '
     function flush(   s,key) {
@@ -117,20 +117,20 @@ Reads count data
 We have three replicates of DNA and RNA counts each. These data must be downloaded.
 
 .. list-table::
-        :header-rows: 1
+    :header-rows: 1
 
-        * - Replicate
-            - gDNA
-            - cDNA
-        * - 1
-            - SRR35184099
-            - SRR35184102
-        * - 2
-            - SRR35184098
-            - SRR35184101
-        * - 3
-            - SRR35184097
-            - SRR35184100
+    * - Replicate
+        - gDNA
+        - cDNA
+    * - 1
+        - SRR35184099
+        - SRR35184102
+    * - 2
+        - SRR35184098
+        - SRR35184101
+    * - 3
+        - SRR35184097
+        - SRR35184100
 
 .. code-block:: bash
 
